@@ -1,0 +1,17 @@
+.container {
+    -fx-background-color: linear-gradient(to right,  #e2bd53 62%, white 62%);
+    -fx-background-image: url("../../../assets/icons/icon.png"), url("../../../assets/shape/circle.png"),url("../../../assets/shape/circle.png");
+    -fx-background-repeat: stretch;
+    -fx-background-position:  top 10%  left 10%, top 115% right 105% , left 8% bottom 20%;
+    -fx-background-size: 20%,15%,4%;
+}
+
+.form{
+    -fx-background-color: white;
+    -fx-background-radius: 18px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
+    -fx-background-image: url("../../../assets/shape/cut_circle.png");
+    -fx-background-repeat: stretch;
+    -fx-background-size: 22%;
+    -fx-background-position:  top  right;
+}
