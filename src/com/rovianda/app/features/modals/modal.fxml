@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane prefHeight="300.0" prefWidth="400.0" stylesheets="@Modal.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rovianda.app.features.modals.Modal">
+   <children>
+      <JFXButton layoutX="191.0" layoutY="252.0" prefHeight="30.0" prefWidth="90.0" styleClass="button-cancel" text="Cancelar" />
+      <JFXButton layoutX="296.0" layoutY="252.0" prefHeight="30.0" prefWidth="90.0" styleClass="button-success" text="Aceptar" />
+      <Label layoutX="41.0" layoutY="72.0" prefHeight="88.0" prefWidth="318.0" text="demasiado texto por aqui es encerio es demasiado texto amigo jejejeje la vida es un crimen bro " textAlignment="JUSTIFY" wrapText="true" />
+   </children>
+</AnchorPane>

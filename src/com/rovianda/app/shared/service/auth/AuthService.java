@@ -1,71 +1,39 @@
 package com.rovianda.app.shared.service.auth;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.rovianda.app.shared.models.User;
+import com.rovianda.utility.ConnectService.FirebaseAuth;
+import com.rovianda.utility.ConnectService.HttpClient;
+import com.rovianda.utility.ConnectService.Models.AuthFirebase;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import javax.ws.rs.core.Response;
 
 public class AuthService {
-
-    private static final String BASE_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword";
-    //https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword
-    private static final String OPERATION_AUTH = "verifyPassword";
-    private static final String OPERATION_REFRESH_TOKEN = "token";
-    private static final String OPERATION_ACCOUNT_INFO = "getAccountInfo";
-
-    private String firebaseKey;
-
-    private static AuthService instance = null;
-
-    protected AuthService(){
-        firebaseKey = "AIzaSyDaoKnC-MSM0b069pawJ5KI1eWlbmng99o";
+    private static String uiid;
+    public static  boolean singIn(String email,String password) throws Exception{
+        AuthFirebase auth = new AuthFirebase();
+        auth.setEmail(email);
+        auth.setPassword(password);
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        uiid = firebaseAuth.authWithEmailAndPassword(auth);
+        return uiid != null || uiid != "";
     }
 
-    public static AuthService getInstance() {
-        if(instance == null) {
-            instance = new AuthService();
+    public static boolean getInfoUser () throws Exception {
+        Response response = HttpClient.get("user/"+uiid);
+        if(response.getStatus() == 200){
+            User.initialInstance(response.readEntity(User.class));
+            if(!User.getInstance().getRol().equals("PACKAGING"))
+                throw new Exception("Usuario no válido");
+        }else{
+            throw  new Exception("Error al iniciar sesión intente mas tarde");
         }
-        return instance;
+     return true;
     }
 
-    public void  authWithEmailAndPassword(String email, String password){
-        HttpURLConnection urlRequest = null;
-        String token = null;
-        try {
-            URL url = new URL(BASE_URL+"?key="+firebaseKey);
-            urlRequest = (HttpURLConnection) url.openConnection();
-            urlRequest.setDoOutput(true);
-            urlRequest.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-            OutputStream os = urlRequest.getOutputStream();
-            OutputStreamWriter osw = new OutputStreamWriter(os, "UTF-8");
-            osw.write("{\"email\":\""+email+"\",\"password\":\""+password+"\",\"returnSecureToken\":true}");
-            osw.flush();
-            osw.close();
-            urlRequest.connect();
-            System.out.println(urlRequest.getInputStream());
-            JsonParser jp = new JsonParser();
-            System.out.println(urlRequest.getResponseMessage());
-            JsonElement root = jp.parse(new InputStreamReader((InputStream) urlRequest.getContent()));
-            JsonObject rootobj = root.getAsJsonObject();
-
-            token = rootobj.get("idToken").getAsString();
-            System.out.println(token);
-
-        }catch (Exception e ){
-           e.printStackTrace();
-        }
-
-    }
-
-    public static void main(String[] args) {
-        AuthService oAuth = AuthService.getInstance();
-        oAuth.authWithEmailAndPassword("proceso@yopmail.co","proceso");
+    public static void SignOutSession(){
+        uiid = null;
+        User.initialInstance(null);
+        FirebaseAuth.getInstance().SigOutFirebase();
     }
 
 }

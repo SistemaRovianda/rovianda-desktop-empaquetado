@@ -1,20 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="952.0" prefWidth="1532.0" styleClass="container" stylesheets="@Login.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rovianda.app.features.login.LoginCtrl">
+<AnchorPane fx:id="loginContainer" prefHeight="838.0" prefWidth="1199.0" styleClass="container" stylesheets="@Login.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rovianda.app.features.login.LoginCtrl">
    <children>
       <BorderPane layoutX="274.0" layoutY="83.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <right>
-            <Pane prefHeight="632.0" prefWidth="575.0" styleClass="form" BorderPane.alignment="CENTER">
+            <Pane prefHeight="588.0" prefWidth="449.0" styleClass="form" BorderPane.alignment="CENTER">
                <BorderPane.margin>
-                  <Insets bottom="180.0" right="220.0" top="140.0" />
+                  <Insets bottom="130.0" top="120.0" />
                </BorderPane.margin>
+               <children>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="23.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../assets/icons/user.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="23.0" layoutY="61.0" styleClass="title" text="Login" />
+                  <JFXTextField fx:id="inputEmail" focusColor="#e1bc5c" labelFloat="true" layoutX="82.0" layoutY="164.0" onAction="#updateButton" prefHeight="30.0" prefWidth="320.0" promptText="Usuario" styleClass="item-form">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </JFXTextField>
+                  <JFXPasswordField fx:id="inputPassword" focusColor="#e1bc5c" labelFloat="true" layoutX="80.0" layoutY="289.0" prefHeight="25.0" prefWidth="320.0" promptText="Contraseña" styleClass="item-form">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </JFXPasswordField>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="23.0" layoutY="287.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../assets/icons/lock.png" />
+                     </image>
+                  </ImageView>
+                  <JFXButton fx:id="buttonLogin" disable="true" layoutX="80.0" layoutY="394.0" onAction="#onClick" prefHeight="37.0" prefWidth="105.0" text="Iniciar Sesión" />
+                  <Label fx:id="labelEmail" layoutX="81.0" layoutY="218.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" visible="false" />
+                  <Label fx:id="labelPassword" layoutX="81.0" layoutY="344.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" visible="false" />
+                  <Label fx:id="labelSpinner" layoutX="85.0" layoutY="516.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" textAlignment="CENTER" visible="false" />
+                  <JFXSpinner fx:id="spinner" layoutX="206.0" layoutY="462.0" prefHeight="32.0" prefWidth="38.0" visible="false" />
+               </children>
             </Pane>
          </right>
       </BorderPane>

@@ -1,6 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="javafx-preloader" build-on-make="true" name="rovianda">
-    <output-path>$PROJECT_DIR$/out/artifacts/rovianda</output-path>
-    <root id="archive" name="rovianda.jar" />
-  </artifact>
-</component>

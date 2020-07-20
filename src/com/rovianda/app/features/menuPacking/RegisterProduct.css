@@ -1,0 +1,82 @@
+.icon{
+    -fx-background-color:#e1bc5c ;
+    -fx-background-image: url("../../../assets/icons/icon.png");
+    -fx-background-repeat: stretch;
+    -fx-background-position:  center center;
+    -fx-background-size: 65%;
+}
+
+.menu{
+    -fx-background-color: white;
+}
+.tab-pane{
+    -fx-background-color:#f4f4f4
+}
+
+.tap{
+    -fx-font-size: 10pt;
+    -fx-font-weight: 700;
+}
+
+.tap-selected{
+    -fx-text-fill: #e1bc5c;
+}
+
+
+.exit{
+    -fx-text-fill: #575552 ;
+    -fx-font-size: 10pt;
+    -fx-font-weight: 700;
+}
+
+.container{
+ -fx-background-color:#f4f4f4 ;
+}
+
+.gold{
+    -fx-background-color: #f7ba00;
+    -fx-text-fill: #575552 ;
+    -fx-font-weight: 900;
+}
+.button-cancel{
+    -fx-background-color: #121212;
+    -fx-text-fill: white ;
+    -fx-font-weight: 900;
+}
+.button-success{
+    -fx-background-color: #f7ba00;
+    -fx-text-fill: #484848 ;
+    -fx-font-weight: 900;
+}
+.gray{
+    -fx-background-color: #575552;
+    -fx-text-fill: white ;
+    -fx-font-weight: 900;
+}
+
+.label{
+    -fx-text-fill: #575552;
+    -fx-font-size: 10pt;
+    -fx-font-weight: 800;
+}
+
+.itemForm{
+    -fx-font-weight: 600;
+    -fx-font-size: 10pt;
+}
+.container{
+    -fx-background-color: #f4f4f4
+}
+
+.form{
+    -fx-background-color: white;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #575552;
+    -fx-font-weight: 700;
+    -fx-background-color: white;
+}
+.table-view .column-header,.table-view .column-header-background .filler {
+    -fx-background-color: white;
+}
