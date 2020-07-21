@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.rovianda.app.shared.models.OutputLots;
 import com.rovianda.app.shared.models.ProductCatalog;
 import com.rovianda.app.shared.models.ProductPresentation;
+import com.rovianda.app.shared.models.Unity;
 import com.rovianda.app.shared.service.packaging.ServicePackaging;
 import com.rovianda.app.shared.service.productCatalog.ServiceProductCatalog;
 import javafx.collections.FXCollections;
@@ -39,6 +40,23 @@ public class DataComboBox {
 
             @Override
             public ProductCatalog fromString(String string) {
+                return null;
+            }
+        });
+    }
+
+    public static void fillUnits(JFXComboBox <Unity> comboBox){
+        ObservableList<Unity> units = FXCollections.observableArrayList();
+        units.addAll(new Unity(false,"KG"),new Unity(true,"Pza"));
+        comboBox.setItems(units);
+        comboBox.setConverter(new StringConverter<Unity>() {
+            @Override
+            public String toString(Unity object) {
+                return object.getTag();
+            }
+
+            @Override
+            public Unity fromString(String string) {
                 return null;
             }
         });

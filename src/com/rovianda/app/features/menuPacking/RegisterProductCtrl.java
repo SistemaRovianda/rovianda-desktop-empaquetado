@@ -2,11 +2,12 @@ package com.rovianda.app.features.menuPacking;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import com.rovianda.app.shared.models.OutputLots;
-import com.rovianda.app.shared.models.ProductCatalog;
-import com.rovianda.app.shared.models.ProductPresentation;
+import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.JFXTextField;
+import com.rovianda.app.shared.models.*;
 import com.rovianda.app.shared.provider.DataComboBox;
 import com.rovianda.app.shared.provider.ResponsiveBorderPane;
+import com.rovianda.app.shared.provider.TableViewRegister;
 import com.rovianda.app.shared.service.auth.AuthService;
 import com.rovianda.app.shared.validator.DataValidator;
 import com.rovianda.utility.animation.Fade;
@@ -16,6 +17,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -23,23 +26,43 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class RegisterProductCtrl implements Initializable {
+
+    @FXML
+    private TableView<TableRegisterProduct> tableRegister;
+
+    @FXML
+    private TableColumn <TableRegisterProduct,String>
+            columnProduct,
+            columnLot,
+            columnExpiration,
+            columnPresentation,
+            columnUnity,
+            columnWeight,
+            columnUser,
+            columnObservations;
+
     @FXML
     private AnchorPane container;
     @FXML
-    Pane register,request,addUser,reprocessing;
+    Pane register,request,
+            reprocessing;
 
     @FXML
     private JFXComboBox <ProductCatalog>  productId;
 
-    @FXML JFXComboBox <OutputLots> lotId;
+    @FXML
+    JFXTextField lotId,weight;
 
    @FXML JFXComboBox <ProductPresentation> presentation;
 
+   @FXML JFXComboBox <Unity>  units;
+
     @FXML
-    BorderPane containerRegister,containerRequest,containerAddUser,containerReprocessing;
+    BorderPane containerRegister,containerRequest,containerReprocessing;
 
     @FXML
     private JFXButton buttonRegister, buttonRequest;
@@ -47,11 +70,15 @@ public class RegisterProductCtrl implements Initializable {
     @FXML
     private DatePicker currentDate,expirationDate;
 
+    @FXML
+    private JFXTextArea observation;
+
+    private TableRegisterProduct item;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ResponsiveBorderPane.addSizeBorderPane(containerRegister);
         ResponsiveBorderPane.addSizeBorderPane(containerRequest);
-        ResponsiveBorderPane.addSizeBorderPane(containerAddUser);
         ResponsiveBorderPane.addSizeBorderPane(containerReprocessing);
         buttonRegister.getStyleClass().add("tap-selected");
         register.toFront();
@@ -93,11 +120,6 @@ public class RegisterProductCtrl implements Initializable {
     }
 
     @FXML
-    void onUser(){
-        addUser.toFront();
-    }
-
-    @FXML
     void onReprocessing(){
         reprocessing.toFront();
     }
@@ -109,7 +131,19 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     void addRegister(){
-        System.out.println("Agredando registro");
+        productId.setDisable(true);
+        expirationDate.setDisable(true);
+        item = new TableRegisterProduct();
+        item.setProduct(productId.getValue().getName());
+        item.setLot(lotId.getText());
+        item.setExpiration(expirationDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        item.setPresentation(/*presentation.getValue().getTypePresentation()*/"Example");
+        item.setUnits(units.getValue().getTag());
+        item.setWeight(weight.getText());
+        item.setUser(User.getInstance().getFullName());
+        item.setObservations(observation.getText());
+        TableViewRegister.addItem(item);
+
     }
 
     @FXML
@@ -134,11 +168,27 @@ public class RegisterProductCtrl implements Initializable {
         expirationDate.setValue(LocalDate.now().plusMonths(2));
         DataValidator.minDate(expirationDate,LocalDate.now());
         DataComboBox.FillProductCatalog(productId);
+        DataComboBox.fillUnits(units);
+        buildTableRegister();
+
     }
 
     @FXML
     void selectProduct(){
-        DataComboBox.fillLotsById(lotId,productId.getValue().getProductId());
         DataComboBox.fillPresentationsById(presentation,productId.getValue().getProductId());
+        lotId.setText(productId.getValue().getLot());
+    }
+
+    private void  buildTableRegister(){
+
+        TableViewRegister.currentTable = tableRegister;
+        TableViewRegister.assignColumnProduct(columnProduct);
+        TableViewRegister.assignColumnLot(columnLot);
+        TableViewRegister.assignColumnExpiration(columnExpiration);
+        TableViewRegister.assignColumnPresentation(columnPresentation);
+        TableViewRegister.assignColumnUnity(columnUnity);
+        TableViewRegister.assignColumnWeight(columnWeight);
+        TableViewRegister.assignColumnUser(columnUser);
+        TableViewRegister.assignColumnObservations(columnObservations);
     }
 }
