@@ -1,9 +1,8 @@
 package com.rovianda.utility.ConnectService;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.*;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 public class HttpClient {
@@ -13,6 +12,8 @@ public class HttpClient {
 
     private static Client client = ClientBuilder.newClient();
 
+    private static WebTarget webTarget = client.target(URL);
+
 
     public static Response get(String path){
         Response response = client.target(URL+path).request().
@@ -20,17 +21,17 @@ public class HttpClient {
         return  response;
     }
 
-    public static Response put(String path, Object body){
-        Response response = client.target(URL+path).request().
-                header(HttpHeaders.AUTHORIZATION,authorization).put(Entity.json(body));
-        response.close();
+    public static Response patch(String path, Object body){
+        WebTarget patch = webTarget.path(path);
+        Invocation.Builder ib = patch.request(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION,authorization);
+        Response response = ib.put(Entity.entity(body,MediaType.APPLICATION_JSON));
         return response;
     }
 
-    public static Response post (String path, Object body){
-        Response response = client.target(URL+path).request().
-                header(HttpHeaders.AUTHORIZATION,authorization).post(Entity.json(body));
-        response.close();
+    public static Response post(String path, Object body){
+        WebTarget post = webTarget.path(path);
+        Invocation.Builder ib = post.request(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION,authorization);
+        Response response = ib.post(Entity.entity(body,MediaType.APPLICATION_JSON));
         return response;
     }
 

@@ -1,15 +1,11 @@
 package com.rovianda.app.features.menuPacking;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.*;
 import com.rovianda.app.shared.models.*;
-import com.rovianda.app.shared.provider.DataComboBox;
-import com.rovianda.app.shared.provider.ResponsiveBorderPane;
-import com.rovianda.app.shared.provider.TableViewRegister;
+import com.rovianda.app.shared.provider.*;
 import com.rovianda.app.shared.service.auth.AuthService;
 import com.rovianda.app.shared.validator.DataValidator;
+import com.rovianda.app.shared.validator.ItemFormValidator;
 import com.rovianda.utility.animation.Fade;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +13,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
@@ -27,6 +24,8 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class RegisterProductCtrl implements Initializable {
@@ -46,44 +45,91 @@ public class RegisterProductCtrl implements Initializable {
             columnObservations;
 
     @FXML
+    private TableView<ProductsRequest> productsRequest;
+
+    @FXML
+    private TableColumn<ProductsRequest, Integer> columnRequestId;
+
+    @FXML
+    private TableColumn<ProductsRequest, String>  columnRequestProduct;
+
+    @FXML
+    private TableColumn<ProductsRequest, Integer> columnRequestQuantity;
+
+
+    @FXML
+    private TableView<Order> tableOrders;
+
+    @FXML
+    private TableColumn<Order,String>
+            columnVendedor;
+    @FXML
+    private TableColumn<Order,JFXButton>
+            columnOptions;
+    @FXML
+    private TableColumn<Order,Integer>
+            columnNoOrder;
+
+    @FXML
     private AnchorPane container;
     @FXML
     Pane register,request,
-            reprocessing;
+            reprocessing,modal;
 
     @FXML
-    private JFXComboBox <ProductCatalog>  productId;
+    private JFXComboBox <ProductCatalog>  productId,productReprocessing;
 
     @FXML
-    JFXTextField lotId,weight;
+    private JFXComboBox<Area> areaReprocessing;
+
+    @FXML
+    JFXTextField lotId,weight,lotReprocessing,weightReprocessing,allergenReprocessing,units;
 
    @FXML JFXComboBox <ProductPresentation> presentation;
 
-   @FXML JFXComboBox <Unity>  units;
+    @FXML
+    BorderPane containerRegister,containerRequest,containerReprocessing,containerModal;
 
     @FXML
-    BorderPane containerRegister,containerRequest,containerReprocessing;
+    private JFXButton buttonRegister,
+            buttonRequest,
+            btnSaveProduct,
+            btnSaveReprocessing,
+            btnModalCancel,
+            btnModalAccept;
 
     @FXML
-    private JFXButton buttonRegister, buttonRequest;
+    private JFXSpinner spinnerReprocessing;
 
     @FXML
-    private DatePicker currentDate,expirationDate;
+    private DatePicker currentDate,expirationDate,dateReprocessing;
 
     @FXML
     private JFXTextArea observation;
 
     private TableRegisterProduct item;
 
+    private ProductPackaging productPackaging;
+
+    private List <Product> products = new ArrayList<>();
+
+    @FXML
+    private Label weightError,errorReproProduct,errorReproAllergen,errorReproArea,labelModal,
+            errorPresentation,errorUnits,errorWeight,errorObservations,errorProductId;
+
+    boolean activeProcess = false;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ResponsiveBorderPane.addSizeBorderPane(containerRegister);
         ResponsiveBorderPane.addSizeBorderPane(containerRequest);
         ResponsiveBorderPane.addSizeBorderPane(containerReprocessing);
-        buttonRegister.getStyleClass().add("tap-selected");
-        register.toFront();
+        ResponsiveBorderPane.addSizeBorderPane(containerModal);
+        buildTableRegister();
+        onRegister();
         Fade.visibleElement(container,1000);
-        initializePaneRegister();
+        initModal();
+
     }
 
     @FXML
@@ -91,16 +137,37 @@ public class RegisterProductCtrl implements Initializable {
         buttonRegister.getStyleClass().add("tap-selected");
         buttonRequest.getStyleClass().remove("tap-selected");
         register.toFront();
+        initializePaneRegister();
     }
     @FXML
     private void onRequest(){
+        if(activeProcess){
+            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?",()->{
+                changeTap();
+            });
+        }else{
+           changeTap();
+        }
+    }
+
+    private void changeTap(){
         buttonRequest.getStyleClass().add("tap-selected");
         buttonRegister.getStyleClass().remove("tap-selected");
         request.toFront();
+        initializePaneRequest();
     }
 
     @FXML
     private void onExit(){
+        if(activeProcess)
+            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres salir?",()-> {
+                exit();
+            });
+        else
+            exit();
+    }
+
+    void exit(){
         AuthService.SignOutSession();
         Fade.invisibleElement(container,500,()->{
             try {
@@ -116,12 +183,37 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     void onSave(){
-        System.out.println("Guardando registro");
+        productPackaging.setProducts(products);
+        TableViewRegister.currentProductPackaging = productPackaging;
+        TableViewRegister.registerItems(()->{
+            productId.setDisable(false);
+            expirationDate.setDisable(false);
+            btnSaveProduct.setDisable(true);
+            lotId.setText("");
+            productId.setValue(null);
+            activeProcess = false;
+        });
+
     }
 
     @FXML
     void onReprocessing(){
+
+        if(activeProcess)
+            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?",()-> {
+                changeToReprocessing();
+            });
+        else
+            changeToReprocessing();
+
+    }
+    private void changeToReprocessing(){
+        buttonRegister.setDisable(true);
+        buttonRegister.getStyleClass().remove("tap-selected");
+        buttonRequest.setDisable(true);
+        buttonRequest.getStyleClass().remove("tap-selected");
         reprocessing.toFront();
+        initializePaneReprocessing();
     }
 
     @FXML
@@ -131,52 +223,156 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     void addRegister(){
-        productId.setDisable(true);
-        expirationDate.setDisable(true);
-        item = new TableRegisterProduct();
-        item.setProduct(productId.getValue().getName());
-        item.setLot(lotId.getText());
-        item.setExpiration(expirationDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        item.setPresentation(/*presentation.getValue().getTypePresentation()*/"Example");
-        item.setUnits(units.getValue().getTag());
-        item.setWeight(weight.getText());
-        item.setUser(User.getInstance().getFullName());
-        item.setObservations(observation.getText());
-        TableViewRegister.addItem(item);
+        activeProcess = true;
+        if(ItemFormValidator.isValidSelector(productId,errorProductId)
+                && ItemFormValidator.isValidSelector(presentation,errorPresentation)
+                && ItemFormValidator.isValidInputNumber(units, errorUnits)
+                && ItemFormValidator.isValidInputDecimal(weight,errorWeight)
+                && ItemFormValidator.isValidInput(observation,errorObservations)
+                ){
+            btnSaveProduct.setDisable(false);
+            productId.setDisable(true);
+            expirationDate.setDisable(true);
+            item = new TableRegisterProduct();
+            item.setProduct(productId.getValue().getName());
+            item.setLot(lotId.getText());
+            item.setExpiration(expirationDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            item.setPresentation(presentation.getValue().getTypePresentation());
+            item.setUnits(units.getText());
+            item.setWeight(weight.getText());
+            item.setUser(User.getInstance().getFullName());
+            item.setObservations(observation.getText());
+            TableViewRegister.addItem(item);
+            createItemRegister();
+        }
+
+
 
     }
 
-    @FXML
-    void onCancelAddUser(){
-        register.toFront();
+    private void  createItemRegister(){
+        Product product = new Product();
+        if(TableViewRegister.items.size()<=1){
+            productPackaging.setRegisterDate(currentDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            productPackaging.setProductId(productId.getValue().getProductId());
+            productPackaging.setLotId(lotId.getText());
+            productPackaging.setExpiration(expirationDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        }
+        product.setPresentationId(presentation.getValue().getPresentationId());
+        product.setWeight(Double.parseDouble(weight.getText()));
+        product.setObservations(observation.getText());
+        product.setUnits(Integer.parseInt(units.getText()));
+        products.add(product);
+        presentation.setValue(null);
+        weight.setText("");
+        observation.setText("");
+        units.setText("");
     }
-    @FXML
-    void onSaveUser(){
-        System.out.println("agregando usuario");
-    }
+
     @FXML
     void onCancelReprocessing(){
         register.toFront();
+        buttonRegister.setDisable(false);
+        buttonRequest.setDisable(false);
+        buttonRegister.getStyleClass().add("tap-selected");
     }
     @FXML
     void  onSaveReprocessing (){
+        if(
+        ItemFormValidator.isValidInputDecimal(weightReprocessing,weightError)&&
+        ItemFormValidator.isValidInput(allergenReprocessing,errorReproAllergen)&&
+        ItemFormValidator.isValidSelector(productReprocessing,errorReproProduct)&&
+        ItemFormValidator.isValidSelector(areaReprocessing,errorReproArea))
+            createItemRegisterReprocessing();
+    }
+
+    private void createItemRegisterReprocessing(){
+        Reprocessing itemRegister = new Reprocessing();
+        itemRegister.setAllergen(allergenReprocessing.getText());
+        itemRegister.setArea((areaReprocessing.getValue()==null)?"":areaReprocessing.getValue().getArea());
+        itemRegister.setDate(dateReprocessing.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        itemRegister.setProductId((productReprocessing.getValue()==null)?0:productReprocessing.getValue().getProductId());
+        itemRegister.setLotId(lotReprocessing.getText());
+        try{
+            itemRegister.setWeight(Double.parseDouble(weightReprocessing.getText()));
+        }catch (Exception e){
+            itemRegister.setWeight(0);
+        }
+        ReprocessingData.registerReprocessing(itemRegister, btnSaveReprocessing, spinnerReprocessing,()->{
+            allergenReprocessing.setText("");
+            areaReprocessing.setValue(null);
+            productReprocessing.setValue(null);
+            lotReprocessing.setText("");
+            weightReprocessing.setText("");
+            weightError.setVisible(false);
+            errorReproAllergen.setVisible(false);
+            errorReproProduct.setVisible(false);
+            errorReproArea.setVisible(false);
+        });
 
     }
 
     private void initializePaneRegister(){
+        ModalProvider.currentContainer = register;
+        productPackaging = new ProductPackaging();
+        errorPresentation.setVisible(false);
+        errorUnits.setVisible(false);
+        errorWeight.setVisible(false);
+        errorObservations.setVisible(false);
+        errorProductId.setVisible(false);
         currentDate.setValue(LocalDate.now());
         expirationDate.setValue(LocalDate.now().plusMonths(2));
+        productId.setDisable(false);
+        expirationDate.setDisable(false);
+        btnSaveProduct.setDisable(true);
         DataValidator.minDate(expirationDate,LocalDate.now());
         DataComboBox.FillProductCatalog(productId);
-        DataComboBox.fillUnits(units);
-        buildTableRegister();
+        DataValidator.numberValidate(units,errorUnits);
+        TableViewRegister.clearTable();
+        presentation.setDisable(true);
+        ItemFormValidator.isValidSelectorFocus(productId, errorProductId);
+        ItemFormValidator.isValidSelectorFocus(presentation, errorPresentation);
+        ItemFormValidator.isValidInputFocus(units,errorUnits);
+        ItemFormValidator.isValidInputFocus(weight,errorWeight);
+        ItemFormValidator.isValidInputFocus(observation, errorObservations);
 
+    }
+
+    private void initializePaneReprocessing(){
+        ModalProvider.currentContainer = reprocessing;
+        weightError.setVisible(false);
+        errorReproAllergen.setVisible(false);
+        errorReproProduct.setVisible(false);
+        errorReproArea.setVisible(false);
+        dateReprocessing.setValue(LocalDate.now());
+        DataComboBox.FillProductCatalog(productReprocessing);
+        DataValidator.decimalValidate(weightReprocessing,weightError);
+        DataComboBox.fillAreas(areaReprocessing);
+        ItemFormValidator.isValidInputFocus(weightReprocessing,weightError);
+        ItemFormValidator.isValidInputFocus(allergenReprocessing,errorReproAllergen);
+        ItemFormValidator.isValidSelectorFocus(productReprocessing,errorReproProduct);
+        ItemFormValidator.isValidSelectorFocus(areaReprocessing,errorReproArea);
+
+    }
+
+    private void initializePaneRequest(){
+        ModalProvider.currentContainer =request;
+        buildTableRequest();
     }
 
     @FXML
     void selectProduct(){
-        DataComboBox.fillPresentationsById(presentation,productId.getValue().getProductId());
-        lotId.setText(productId.getValue().getLot());
+        if(productId.getValue() != null){
+            DataComboBox.fillPresentationsById(presentation,productId.getValue().getProductId());
+            lotId.setText(productId.getValue().getLot());
+        }
+
+    }
+
+    @FXML
+    void selectProductReprocessing(){
+        if(productReprocessing.getValue()!= null)
+            lotReprocessing.setText(productReprocessing.getValue().getLot());
     }
 
     private void  buildTableRegister(){
@@ -191,4 +387,24 @@ public class RegisterProductCtrl implements Initializable {
         TableViewRegister.assignColumnUser(columnUser);
         TableViewRegister.assignColumnObservations(columnObservations);
     }
+
+    private void buildTableRequest(){
+        TableViewOrders.currentTableProducts = productsRequest;
+        TableViewOrders.assignTableOrder(tableOrders);
+        TableViewOrders.assignColumnNoOrder(columnNoOrder);
+        TableViewOrders.assignColumnVendedor(columnVendedor);
+        TableViewOrders.assignColumnOptions(columnOptions);
+        TableViewOrders.columnId =columnRequestId;
+        TableViewOrders.assignColumnProductsProduct(columnRequestProduct);
+        TableViewOrders.assignColumnProductsQuantity(columnRequestQuantity);
+        TableViewOrders.fillTableOrders();
+    }
+
+    void initModal(){
+        ModalProvider.cancel = btnModalCancel;
+        ModalProvider.accept = btnModalAccept;
+        ModalProvider.container= modal;
+        ModalProvider.messageLabel = labelModal;
+    }
+
 }

@@ -51,6 +51,7 @@ public class LoginCtrl implements Initializable {
 
     @FXML
     private void onClick(){
+        buttonLogin.setDisable(true);
         labelSpinner.setVisible(false);
         labelSpinner.setText("");
         spinner.setVisible(true);

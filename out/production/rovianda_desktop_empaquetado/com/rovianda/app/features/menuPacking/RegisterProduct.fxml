@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
@@ -16,7 +17,7 @@
                   <Pane prefHeight="120.0" prefWidth="220.0" styleClass="icon" />
                   <JFXButton fx:id="buttonRegister" focusTraversable="false" layoutY="270.0" onAction="#onRegister" prefHeight="41.0" prefWidth="220.0" ripplerFill="#e1bc5c" styleClass="tap" text="Registro" />
                   <JFXButton fx:id="buttonRequest" focusTraversable="false" layoutY="341.0" onAction="#onRequest" prefHeight="41.0" prefWidth="220.0" ripplerFill="#e1bc5c" styleClass="tap" text="Peticiones" />
-                  <JFXButton fx:id="buttonExit" focusTraversable="false" layoutX="25.0" layoutY="599.0" onAction="#onExit" prefHeight="41.0" prefWidth="195.0" ripplerFill="#e1bc5c" styleClass="exit" text="Cerrar sesión" textAlignment="CENTER" />
+                  <JFXButton fx:id="buttonExit" focusTraversable="false" layoutX="27.0" layoutY="620.0" onAction="#onExit" prefHeight="41.0" prefWidth="195.0" ripplerFill="#e1bc5c" styleClass="exit" text="Cerrar sesión" textAlignment="CENTER" />
                   <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="27.0" layoutY="276.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../assets/icons/edit-icon.png" />
@@ -27,7 +28,7 @@
                         <Image url="@../../../assets/icons/list-icon.png" />
                      </image>
                   </ImageView>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="34.0" layoutY="608.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="34.0" layoutY="629.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../assets/icons/exit-icon.png" />
                      </image>
@@ -38,6 +39,29 @@
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
+                  <Pane fx:id="modal" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <BorderPane fx:id="containerModal" prefHeight="792.0" prefWidth="1106.0">
+                           <center>
+                              <Pane maxHeight="280.0" maxWidth="350.0" minHeight="200.0" minWidth="200.0" prefHeight="200.0" prefWidth="200.0" styleClass="containerModal" BorderPane.alignment="CENTER">
+                                 <BorderPane.margin>
+                                    <Insets bottom="150.0" left="150.0" right="150.0" top="150.0" />
+                                 </BorderPane.margin>
+                                 <children>
+                                    <JFXButton fx:id="btnModalCancel" layoutX="135.0" layoutY="223.0" prefHeight="30.0" prefWidth="90.0" styleClass="button-cancel" text="Cancelar" />
+                                    <JFXButton fx:id="btnModalAccept" layoutX="246.0" layoutY="223.0" prefHeight="30.0" prefWidth="90.0" styleClass="gold" text="Aceptar" />
+                                    <Label fx:id="labelModal" alignment="TOP_LEFT" layoutX="35.0" layoutY="85.0" prefHeight="87.0" prefWidth="280.0" styleClass="message-modal" text="Este es un mensaje  de ejemplo para el modal con esto se pretende ver su funcionamiento " textAlignment="JUSTIFY" wrapText="true" />
+                                    <Label layoutX="35.0" layoutY="37.0" styleClass="title-modal" text="Información">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </Pane>
+                           </center>
+                        </BorderPane>
+                     </children>
+                  </Pane>
                   <Pane fx:id="reprocessing" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <BorderPane fx:id="containerReprocessing" prefHeight="792.0" prefWidth="1110.0" styleClass="container">
@@ -49,15 +73,19 @@
                                  <children>
                                     <Pane layoutX="8.0" layoutY="76.0" prefHeight="468.0" prefWidth="497.0" style="-fx-background-color: white;">
                                        <children>
-                                          <JFXTextField fx:id="productReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="301.0" layoutY="80.0" prefHeight="30.0" prefWidth="168.0" promptText="Producto" styleClass="itemForm" />
-                                          <JFXTextField fx:id="lotReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="51.0" layoutY="145.0" prefHeight="30.0" prefWidth="172.0" promptText="Lote" styleClass="itemForm" />
-                                          <Label layoutX="304.0" layoutY="128.0" styleClass="itemForm" text="Peso" />
-                                          <Label fx:id="weightReprocessing" alignment="CENTER_RIGHT" layoutX="301.0" layoutY="150.0" prefHeight="20.0" prefWidth="164.0" styleClass="itemForm" text="0.00" />
-                                          <JFXTextField fx:id="alergenReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="51.0" layoutY="251.0" prefHeight="30.0" prefWidth="171.0" promptText="Alérgeno" styleClass="itemForm" />
-                                          <JFXComboBox fx:id="areaReprocessing" labelFloat="true" layoutX="302.0" layoutY="251.0" prefHeight="30.0" prefWidth="171.0" promptText="Area" styleClass="itemForm" />
-                                          <DatePicker fx:id="dateReprocessing" layoutX="51.0" layoutY="82.0" />
+                                          <JFXTextField fx:id="lotReprocessing" disable="true" focusColor="#e1bc5c" labelFloat="true" layoutX="51.0" layoutY="167.0" onAction="#selectProductReprocessing" prefHeight="30.0" prefWidth="172.0" promptText="Lote" styleClass="itemForm" />
+                                          <JFXTextField fx:id="allergenReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="51.0" layoutY="251.0" prefHeight="30.0" prefWidth="171.0" promptText="Alérgeno" styleClass="itemForm" />
+                                          <JFXComboBox fx:id="areaReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="302.0" layoutY="251.0" prefHeight="30.0" prefWidth="171.0" promptText="Area" styleClass="itemForm" />
+                                          <DatePicker fx:id="dateReprocessing" editable="false" layoutX="51.0" layoutY="82.0" />
                                           <JFXButton layoutX="280.0" layoutY="405.0" onAction="#onCancelReprocessing" prefHeight="30.0" prefWidth="90.0" styleClass="button-cancel" text="Cancelar" />
-                                          <JFXButton layoutX="388.0" layoutY="405.0" onAction="#onSaveReprocessing" prefHeight="30.0" prefWidth="90.0" styleClass="button-success" text="Guardar" />
+                                          <JFXButton fx:id="btnSaveReprocessing" layoutX="388.0" layoutY="405.0" onAction="#onSaveReprocessing" prefHeight="30.0" prefWidth="90.0" styleClass="button-success" text="Guardar" />
+                                          <JFXComboBox fx:id="productReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="303.0" layoutY="82.0" onAction="#selectProductReprocessing" prefHeight="25.0" prefWidth="170.0" promptText="Producto" styleClass="itemForm" />
+                                          <JFXTextField fx:id="weightReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="303.0" layoutY="170.0" prefHeight="25.0" prefWidth="171.0" promptText="Peso" styleClass="itemForm" />
+                                          <Label fx:id="weightError" layoutX="303.0" layoutY="205.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" visible="false" wrapText="true" />
+                                          <Label fx:id="errorReproProduct" layoutX="302.0" layoutY="115.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" visible="false" wrapText="true" />
+                                          <Label fx:id="errorReproAllergen" layoutX="51.0" layoutY="288.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" visible="false" wrapText="true" />
+                                          <Label fx:id="errorReproArea" layoutX="302.0" layoutY="288.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" visible="false" wrapText="true" />
+                                          <JFXSpinner fx:id="spinnerReprocessing" layoutX="221.0" layoutY="322.0" prefHeight="33.0" prefWidth="55.0" visible="false" />
                                        </children>
                                     </Pane>
                                     <Label layoutX="14.0" layoutY="43.0" text="Reproceso" />
@@ -77,11 +105,11 @@
                                  </BorderPane.margin>
                                  <children>
                                     <Label layoutX="20.0" layoutY="30.0" text="Peticiones" />
-                                    <TableView layoutX="15.0" layoutY="60.0" prefHeight="500.0" prefWidth="450.0">
+                                    <TableView fx:id="tableOrders" layoutX="15.0" layoutY="60.0" prefHeight="500.0" prefWidth="450.0">
                                       <columns>
-                                        <TableColumn prefWidth="132.0" text="No. de Orden" />
-                                        <TableColumn prefWidth="131.0" text="Vendedor" />
-                                          <TableColumn prefWidth="127.0" text="Opciones" />
+                                        <TableColumn fx:id="columnNoOrder" prefWidth="116.0" text="No. de Orden" />
+                                        <TableColumn fx:id="columnVendedor" prefWidth="205.0" text="Vendedor" />
+                                          <TableColumn fx:id="columnOptions" prefWidth="128.0" text="Opciones" />
                                       </columns>
                                     </TableView>
                                  </children>
@@ -94,11 +122,11 @@
                                  </BorderPane.margin>
                                  <children>
                                     <Label layoutX="20.0" layoutY="30.0" text="Productos de la petición" />
-                                    <TableView layoutX="15.0" layoutY="60.0" prefHeight="500.0" prefWidth="430.0">
+                                    <TableView fx:id="productsRequest" layoutX="15.0" layoutY="60.0" prefHeight="500.0" prefWidth="430.0">
                                       <columns>
-                                        <TableColumn prefWidth="111.0" text="No." />
-                                        <TableColumn prefWidth="178.0" text="Producto" />
-                                          <TableColumn prefWidth="131.0" text="Cantidad KG." />
+                                        <TableColumn fx:id="columnRequestId" prefWidth="111.0" text="No." />
+                                        <TableColumn fx:id="columnRequestProduct" prefWidth="178.0" text="Producto" />
+                                          <TableColumn fx:id="columnRequestQuantity" prefWidth="131.0" text="Cantidad KG." />
                                       </columns>
                                     </TableView>
                                  </children>
@@ -114,7 +142,7 @@
                                  <children>
                                     <Label layoutX="176.0" layoutY="30.0" text="Reproceso sin registrar " />
                                     <JFXButton layoutX="371.0" layoutY="21.0" onAction="#onReprocessing" prefHeight="38.0" prefWidth="101.0" styleClass="gold" text="Reproceso" />
-                                    <JFXButton layoutX="645.0" layoutY="21.0" onAction="#onSave" prefHeight="38.0" prefWidth="101.0" styleClass="gray" text="Guardar" />
+                                    <JFXButton fx:id="btnSaveProduct" disable="true" layoutX="645.0" layoutY="21.0" onAction="#onSave" prefHeight="38.0" prefWidth="101.0" styleClass="gray" text="Guardar" />
                                     <JFXButton layoutX="829.0" layoutY="21.0" onAction="#onPrintReport" prefHeight="38.0" prefWidth="116.0" styleClass="gray" text="Imprimir reporte" />
                                  </children>
                               </Pane>
@@ -122,32 +150,37 @@
                            <top>
                               <BorderPane prefHeight="269.0" prefWidth="700.0" BorderPane.alignment="CENTER">
                                  <left>
-                                    <Pane prefHeight="239.0" prefWidth="461.0" styleClass="form" BorderPane.alignment="CENTER">
+                                    <Pane prefHeight="250.0" prefWidth="435.0" styleClass="form" BorderPane.alignment="CENTER">
                                        <BorderPane.margin>
                                           <Insets bottom="15.0" left="15.0" right="8.0" top="15.0" />
                                        </BorderPane.margin>
                                        <children>
-                                          <Label layoutX="14.0" layoutY="20.0" styleClass="title" text="Datos del producto" />
-                                          <JFXComboBox fx:id="productId" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="241.0" layoutY="85.0" onAction="#selectProduct" prefHeight="25.0" prefWidth="176.0" promptText="Producto" styleClass="itemForm" />
-                                          <DatePicker fx:id="currentDate" disable="true" editable="false" focusTraversable="false" layoutX="34.0" layoutY="85.0" />
-                                          <DatePicker fx:id="expirationDate" editable="false" focusTraversable="false" layoutX="241.0" layoutY="161.0" styleClass="itemForm" />
-                                          <Label layoutX="34.0" layoutY="60.0" styleClass="itemForm" text="Fecha" />
-                                          <Label layoutX="242.0" layoutY="136.0" styleClass="itemForm" text="Caducidad" />
-                                          <JFXTextField fx:id="lotId" disable="true" focusColor="#e1bc5c" labelFloat="true" layoutX="34.0" layoutY="164.0" prefHeight="25.0" prefWidth="187.0" promptText="Lote" />
+                                          <Label layoutX="14.0" layoutY="14.0" styleClass="title" text="Datos del producto" />
+                                          <JFXComboBox fx:id="productId" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="229.0" layoutY="66.0" onAction="#selectProduct" prefHeight="25.0" prefWidth="176.0" promptText="Producto" styleClass="itemForm" />
+                                          <DatePicker fx:id="currentDate" disable="true" editable="false" focusTraversable="false" layoutX="24.0" layoutY="68.0" prefHeight="25.0" prefWidth="149.0" />
+                                          <DatePicker fx:id="expirationDate" editable="false" focusTraversable="false" layoutX="231.0" layoutY="162.0" prefHeight="30.0" prefWidth="172.0" styleClass="itemForm" />
+                                          <Label layoutX="24.0" layoutY="42.0" styleClass="itemForm" text="Fecha" />
+                                          <Label layoutX="231.0" layoutY="134.0" styleClass="itemForm" text="Caducidad" />
+                                          <JFXTextField fx:id="lotId" disable="true" focusColor="#e1bc5c" labelFloat="true" layoutX="34.0" layoutY="164.0" prefHeight="25.0" prefWidth="150.0" promptText="Lote" />
+                                          <Label fx:id="errorProductId" layoutX="229.0" layoutY="103.0" prefHeight="20.0" prefWidth="175.0" styleClass="error-message" text="Label" visible="false" />
                                        </children>
                                     </Pane>
                                  </left>
                                  <right>
-                                    <Pane prefHeight="239.0" prefWidth="600.0" styleClass="form" BorderPane.alignment="CENTER">
+                                    <Pane prefHeight="250.0" prefWidth="556.0" styleClass="form" BorderPane.alignment="CENTER">
                                        <BorderPane.margin>
                                           <Insets bottom="15.0" left="8.0" right="15.0" top="15.0" />
                                        </BorderPane.margin>
                                        <children>
-                                          <JFXComboBox fx:id="presentation" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="24.0" layoutY="20.0" prefHeight="30.0" prefWidth="253.0" promptText="Presentación" styleClass="itemForm" />
-                                          <JFXComboBox fx:id="units" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="329.0" layoutY="20.0" prefHeight="30.0" prefWidth="230.0" promptText="Unidades" styleClass="itemForm" />
-                                          <JFXTextArea fx:id="observation" focusColor="#e1bc5c" labelFloat="true" layoutX="23.0" layoutY="130.0" prefHeight="56.0" prefWidth="555.0" promptText="Observaciones" styleClass="itemForm" />
-                                          <JFXButton layoutX="500.0" layoutY="202.0" onAction="#addRegister" prefHeight="30.0" prefWidth="78.0" styleClass="gold" text="Registrar" />
-                                          <JFXTextField fx:id="weight" focusColor="#e1bc5c" labelFloat="true" layoutX="24.0" layoutY="85.0" prefHeight="25.0" prefWidth="254.0" promptText="Peso/Unidades" />
+                                          <JFXComboBox fx:id="presentation" disable="true" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="23.0" layoutY="26.0" prefHeight="30.0" prefWidth="267.0" promptText="Presentación" styleClass="itemForm" />
+                                          <JFXTextArea fx:id="observation" focusColor="#e1bc5c" labelFloat="true" layoutX="26.0" layoutY="155.0" prefHeight="38.0" prefWidth="504.0" promptText="Observaciones" styleClass="itemForm" />
+                                          <JFXButton layoutX="451.0" layoutY="200.0" onAction="#addRegister" prefHeight="30.0" prefWidth="78.0" styleClass="gold" text="Registrar" />
+                                          <JFXTextField fx:id="weight" focusColor="#e1bc5c" labelFloat="true" layoutX="24.0" layoutY="91.0" prefHeight="25.0" prefWidth="227.0" promptText="Peso" />
+                                          <JFXTextField fx:id="units" focusColor="#e1bc5c" labelFloat="true" layoutX="322.0" layoutY="26.0" prefHeight="30.0" prefWidth="206.0" promptText="Unidades" styleClass="itemForm" />
+                                          <Label fx:id="errorPresentation" layoutX="24.0" layoutY="57.0" prefHeight="20.0" prefWidth="266.0" styleClass="error-message" text="Label" visible="false" />
+                                          <Label fx:id="errorUnits" layoutX="321.0" layoutY="57.0" prefHeight="20.0" prefWidth="208.0" styleClass="error-message" text="Label" visible="false" />
+                                          <Label fx:id="errorWeight" layoutX="23.0" layoutY="119.0" prefHeight="20.0" prefWidth="228.0" styleClass="error-message" text="Label" visible="false" />
+                                          <Label fx:id="errorObservations" layoutX="26.0" layoutY="197.0" prefHeight="20.0" prefWidth="267.0" styleClass="error-message" text="Label" visible="false" />
                                        </children>
                                     </Pane>
                                  </right>
@@ -157,16 +190,16 @@
                               </BorderPane>
                            </top>
                            <center>
-                              <TableView fx:id="tableRegister" prefHeight="349.0" prefWidth="1077.0" BorderPane.alignment="CENTER">
+                              <TableView fx:id="tableRegister" prefHeight="358.0" prefWidth="1007.0" BorderPane.alignment="CENTER">
                                  <columns>
-                                    <TableColumn fx:id="columnProduct" prefWidth="75.0" text="Producto" />
-                                    <TableColumn fx:id="columnLot" prefWidth="98.0" text="Lote" />
-                                    <TableColumn fx:id="columnExpiration" prefWidth="97.0" text="Caducidad" />
-                                    <TableColumn fx:id="columnPresentation" prefWidth="136.0" text="Presentación" />
-                                    <TableColumn fx:id="columnUnity" prefWidth="95.0" text="Unidades" />
-                                    <TableColumn fx:id="columnWeight" prefWidth="137.0" text="Peso" />
-                                    <TableColumn fx:id="columnUser" prefWidth="172.0" text="Usuario" />
-                                    <TableColumn fx:id="columnObservations" prefWidth="266.0" text="Observaciones" />
+                                    <TableColumn fx:id="columnProduct" prefWidth="128.0" text="Producto" />
+                                    <TableColumn fx:id="columnLot" prefWidth="75.0" text="Lote" />
+                                    <TableColumn fx:id="columnExpiration" prefWidth="100.0" text="Caducidad" />
+                                    <TableColumn fx:id="columnPresentation" prefWidth="132.0" text="Presentación" />
+                                    <TableColumn fx:id="columnUnity" prefWidth="66.0" text="Unidades" />
+                                    <TableColumn fx:id="columnWeight" prefWidth="128.0" text="Peso" />
+                                    <TableColumn fx:id="columnUser" prefWidth="135.0" text="Usuario" />
+                                    <TableColumn fx:id="columnObservations" prefWidth="312.0" text="Observaciones" />
                                  </columns>
                                  <BorderPane.margin>
                                     <Insets left="15.0" right="15.0" />

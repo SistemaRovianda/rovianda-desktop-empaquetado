@@ -1,10 +1,7 @@
 package com.rovianda.app.shared.provider;
 
 import com.jfoenix.controls.JFXComboBox;
-import com.rovianda.app.shared.models.OutputLots;
-import com.rovianda.app.shared.models.ProductCatalog;
-import com.rovianda.app.shared.models.ProductPresentation;
-import com.rovianda.app.shared.models.Unity;
+import com.rovianda.app.shared.models.*;
 import com.rovianda.app.shared.service.packaging.ServicePackaging;
 import com.rovianda.app.shared.service.productCatalog.ServiceProductCatalog;
 import javafx.collections.FXCollections;
@@ -29,8 +26,17 @@ public class DataComboBox {
         thread.setDaemon(true);
         thread.start();
         productsTask.setOnSucceeded(e->{
-            products.addAll(productsTask.getValue());
+            ToastProvider.showToastSuccess("Productos obtenidos",3000);
+            if(productsTask.getValue().size() >0)
+                products.addAll(productsTask.getValue());
+            else
+                ToastProvider.showToastInfo("No existen productos por el momento",3000);
         });
+
+        productsTask.setOnFailed(event -> {
+            ToastProvider.showToastError(event.getSource().getException().getMessage(),3000);
+        });
+
         comboBox.setItems(products);
         comboBox.setConverter(new StringConverter<ProductCatalog>() {
             @Override
@@ -45,52 +51,33 @@ public class DataComboBox {
         });
     }
 
-    public static void fillUnits(JFXComboBox <Unity> comboBox){
-        ObservableList<Unity> units = FXCollections.observableArrayList();
-        units.addAll(new Unity(false,"KG"),new Unity(true,"Pza"));
-        comboBox.setItems(units);
-        comboBox.setConverter(new StringConverter<Unity>() {
+    public static void fillAreas(JFXComboBox <Area> comboBox){
+        ObservableList<Area> areas = FXCollections.observableArrayList();
+        areas.addAll(new Area("MOLIENDA","Molienda"),
+                     new Area("INJECCIONTENDERIZADO","Inyeccion/tenderizado"),
+                     new Area("DESCONGELAMIENTO","Descongelamiento"),
+                     new Area("EMBUTIDO","Embutido"),
+                     new Area("ACONDICIONAMIENTO","Acondicionamiento")
+                );
+        comboBox.setItems(areas);
+        comboBox.setConverter(new StringConverter<Area>() {
             @Override
-            public String toString(Unity object) {
-                return object.getTag();
+            public String toString(Area object) {
+                return object.getAreaTag();
             }
 
             @Override
-            public Unity fromString(String string) {
+            public Area fromString(String string) {
                 return null;
             }
         });
+
     }
 
-    public static  void fillLotsById(JFXComboBox<OutputLots> comboBox, int productId){
-        ObservableList<OutputLots> lots = FXCollections.observableArrayList();
-        Task <List<OutputLots>> lotsTask = new Task<List<OutputLots>>() {
-            @Override
-            protected List<OutputLots> call() throws Exception {
-                return ServiceProductCatalog.getOutputLotsById(productId);
-            }
-        };
-        Thread thread = new Thread(lotsTask);
-        thread.setDaemon(true);
-        thread.start();
-        lotsTask.setOnSucceeded(e->{
-            lots.addAll(lotsTask.getValue());
-        });
-        comboBox.setItems(lots);
-        comboBox.setConverter(new StringConverter<OutputLots>() {
-            @Override
-            public String toString(OutputLots object) {
-                return object.getLotId();
-            }
 
-            @Override
-            public OutputLots fromString(String string) {
-                return null;
-            }
-        });
-    }
 
     public static void fillPresentationsById(JFXComboBox<ProductPresentation> comboBox, int productId){
+        ToastProvider.showToastInfo("Obteniendo presentaciones del producto",3000);
         ObservableList<ProductPresentation> presentations = FXCollections.observableArrayList();
         Task <List<ProductPresentation>> presentationsTask = new Task<List<ProductPresentation>>() {
             @Override
@@ -102,7 +89,16 @@ public class DataComboBox {
         thread.setDaemon(true);
         thread.start();
         presentationsTask.setOnSucceeded(e->{
-            presentations.addAll(presentationsTask.getValue());
+            ToastProvider.showToastInfo("Presentaciones obtenidas",3000);
+            if(presentationsTask.getValue().size() >0){
+                presentations.addAll(presentationsTask.getValue());
+                comboBox.setDisable(false);
+            }
+            else
+                ToastProvider.showToastInfo("El producto no cuenta con presentaciones",3000);
+        });
+        presentationsTask.setOnFailed(e->{
+            ToastProvider.showToastError(e.getSource().getException().getMessage(),3000);
         });
         comboBox.setItems(presentations);
         comboBox.setConverter(new StringConverter<ProductPresentation>() {

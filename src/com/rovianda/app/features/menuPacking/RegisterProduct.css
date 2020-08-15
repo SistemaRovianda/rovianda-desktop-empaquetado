@@ -64,8 +64,22 @@
     -fx-font-weight: 600;
     -fx-font-size: 10pt;
 }
+
+.message-modal{
+    -fx-font-weight: 600;
+    -fx-font-size: 11pt;
+}
+.title-modal{
+    -fx-font-weight: 800;
+    -fx-font-size: 13pt;
+}
 .container{
     -fx-background-color: #f4f4f4
+}
+.containerModal{
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 10, 0, 0, 0);
+    -fx-background-radius: 8px;
 }
 
 .form{
@@ -79,4 +93,34 @@
 }
 .table-view .column-header,.table-view .column-header-background .filler {
     -fx-background-color: white;
+}
+
+.error-message{
+    -fx-text-fill: tomato;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+}
+
+.success-message{
+    -fx-text-fill: #4BB543;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+}
+
+.jfx-snackbar-content {
+    -fx-background-color: #f7ba00;
+    -fx-padding: 5;
+    -fx-spacing: 5;
+    -fx-text-fill: white;
+}
+.jfx-snackbar-toast {
+    -fx-text-fill: WHITE;
+}
+
+.jfx-snackbar-content: toast-success{
+    -fx-background-color: #4BB543;
+}
+
+.jfx-snackbar-content: toast-error{
+    -fx-background-color: TOMATO;
 }

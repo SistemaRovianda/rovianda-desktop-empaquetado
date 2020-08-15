@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.*?>
 <?import javafx.scene.image.*?>
@@ -37,7 +38,7 @@
                         <Image url="@../../../assets/icons/lock.png" />
                      </image>
                   </ImageView>
-                  <JFXButton fx:id="buttonLogin" disable="true" layoutX="80.0" layoutY="394.0" onAction="#onClick" prefHeight="37.0" prefWidth="105.0" text="Iniciar Sesión" />
+                  <JFXButton fx:id="buttonLogin" disable="true" focusTraversable="false" layoutX="80.0" layoutY="394.0" onAction="#onClick" prefHeight="37.0" prefWidth="105.0" text="Iniciar Sesión" />
                   <Label fx:id="labelEmail" layoutX="81.0" layoutY="218.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" visible="false" />
                   <Label fx:id="labelPassword" layoutX="81.0" layoutY="344.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" visible="false" />
                   <Label fx:id="labelSpinner" layoutX="85.0" layoutY="516.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" textAlignment="CENTER" visible="false" />
@@ -45,6 +46,17 @@
                </children>
             </Pane>
          </right>
+         <left>
+            <Pane prefHeight="288.0" prefWidth="515.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="250.0" left="50.0" top="200.0" />
+               </BorderPane.margin>
+               <children>
+                  <Label layoutX="28.0" layoutY="22.0" prefHeight="60.0" prefWidth="459.0" styleClass="title-container" text="Bienvenido" />
+                  <Label layoutX="28.0" layoutY="91.0" prefHeight="172.0" prefWidth="459.0" styleClass="message-container" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." textAlignment="JUSTIFY" wrapText="true" />
+               </children>
+            </Pane>
+         </left>
       </BorderPane>
    </children>
 </AnchorPane>

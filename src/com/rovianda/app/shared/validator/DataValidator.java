@@ -3,6 +3,8 @@ package com.rovianda.app.shared.validator;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import com.rovianda.app.shared.models.Method;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -51,4 +53,39 @@ public class DataValidator {
             }
         });
     }
+
+    public static void decimalValidate(JFXTextField input,Label inputLabel){
+        input.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("^\\d+(\\.\\d{1,2})?$")) {
+                    input.setText(newValue.replaceAll("[^\\d+(\\.\\d{1,2})?$/g]", ""));
+
+                    inputLabel.setText("Formato Inválido");
+                    inputLabel.setVisible(true);
+
+                }else {
+                    inputLabel.setVisible(false);
+                }
+            }
+        });
+    }
+
+    public static void numberValidate(JFXTextField input,Label inputLabel){
+        input.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    input.setText(newValue.replaceAll("[^\\d]", ""));
+
+                    inputLabel.setText("Solo se aceptan números");
+                    inputLabel.setVisible(true);
+
+                }else {
+                    inputLabel.setVisible(false);
+                }
+            }
+        });
+    }
+
 }

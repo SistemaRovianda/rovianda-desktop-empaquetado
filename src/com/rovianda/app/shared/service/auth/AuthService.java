@@ -27,6 +27,7 @@ public class AuthService {
         }else{
             throw  new Exception("Error al iniciar sesión intente mas tarde");
         }
+        response.close();
      return true;
     }
 

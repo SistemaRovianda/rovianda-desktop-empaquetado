@@ -4,6 +4,7 @@ import com.fazecast.jSerialComm.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Scanner;
 import javax.xml.bind.*;
 
@@ -86,7 +87,6 @@ public class PortSerial {
         System.out.println("Seleccionar un metodo de lectura");
         System.out.println("(1) lectura de string");
         System.out.println("(2) lectura decimal");
-        System.out.println("(2) lectura hexadecimal");
         option = sc.nextInt();
         switch (option){
             case 1:

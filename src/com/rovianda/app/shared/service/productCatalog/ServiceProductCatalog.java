@@ -10,12 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceProductCatalog {
-    public static List<ProductCatalog>getProductsCatalog (){
+    public static List<ProductCatalog>getProductsCatalog () throws Exception {
         Response response = HttpClient.get("packaging/products/oven");
         List <ProductCatalog> products = new ArrayList<>();
         if(response.getStatus() == 200){
             products = response.readEntity(new GenericType<List<ProductCatalog>>(){});
-        }
+        }else if (response.getStatus() == 404)
+            throw  new Exception ("Error al obtener productos");
         response.close();
         return products;
     }

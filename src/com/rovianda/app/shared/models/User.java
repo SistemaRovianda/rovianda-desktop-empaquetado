@@ -1,7 +1,7 @@
 package com.rovianda.app.shared.models;
 
 public class User {
-    private String uiid;
+    private String uuid;
     private String name;
     private String firstSurname;
     private String lastSurname;
@@ -12,6 +12,8 @@ public class User {
     private static User instance;
 
     public static void initialInstance(User user){
+        if(user!= null)
+            System.out.println(user.toString());
             instance = user;
     }
 
@@ -19,12 +21,12 @@ public class User {
         return instance;
     }
 
-    public String getUiid() {
-        return uiid;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setUiid(String uiid) {
-        this.uiid = uiid;
+    public void setUuid(String uiid) {
+        this.uuid = uiid;
     }
 
     public String getName() {
@@ -77,5 +79,18 @@ public class User {
 
     public String getFullName(){
         return this.name+" "+this.firstSurname+" "+this.lastSurname;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uiid='" + uuid + '\'' +
+                ", name='" + name + '\'' +
+                ", firstSurname='" + firstSurname + '\'' +
+                ", lastSurname='" + lastSurname + '\'' +
+                ", email='" + email + '\'' +
+                ", rol='" + rol + '\'' +
+                ", job='" + job + '\'' +
+                '}';
     }
 }

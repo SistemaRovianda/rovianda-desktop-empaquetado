@@ -15,6 +15,17 @@
     -fx-font-size: 20pt;
     -fx-font-weight: 900;
 }
+
+.title-container{
+    -fx-text-fill: white ;
+    -fx-font-size: 30pt;
+    -fx-font-weight: 800;
+}
+.message-container{
+    -fx-text-fill: white ;
+    -fx-font-size: 15pt;
+    -fx-font-weight: 500;
+}
 .item-form {
     -fx-text-fill: #575552;
     -fx-font-weight: 500;
