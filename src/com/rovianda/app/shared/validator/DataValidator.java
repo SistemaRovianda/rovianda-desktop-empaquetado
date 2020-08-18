@@ -27,7 +27,8 @@ public class DataValidator {
                     inputLabel.setVisible(false);
                 }
                 method.method();
-            }
+            }if(newValue)
+                method.method();
         });
     }
     public static void passwordValidator(JFXPasswordField input, Label inputLabel, Method method){

@@ -40,3 +40,13 @@
     -fx-text-fill: tomato;
     -fx-font-size: 14px;
 }
+
+.exit{
+    -fx-background-color: tomato;
+    -fx-background-radius: 18px;
+}
+.minimize{
+    -fx-background-color: #e1bc5c;
+    -fx-background-radius: 18px;
+}
+

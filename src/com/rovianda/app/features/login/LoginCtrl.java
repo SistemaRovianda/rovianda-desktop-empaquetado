@@ -4,8 +4,10 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXSpinner;
 import com.jfoenix.controls.JFXTextField;
+import com.rovianda.app.shared.provider.EnvironmentActions;
 import com.rovianda.app.shared.service.auth.AuthService;
 import com.rovianda.app.shared.validator.DataValidator;
+import com.rovianda.app.shared.validator.ItemFormValidator;
 import com.rovianda.utility.animation.Fade;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -14,7 +16,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Stop;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -35,7 +39,9 @@ public class LoginCtrl implements Initializable {
     private Label labelEmail, labelPassword,labelSpinner;
 
     @FXML
-    private JFXButton buttonLogin;
+    private JFXButton buttonLogin,
+            exit,
+            minimize;
 
     @FXML
     private JFXSpinner spinner;
@@ -43,14 +49,24 @@ public class LoginCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        EnvironmentActions.exitAction(exit);
+        EnvironmentActions.minimizeAction(minimize);
         loginContainer.setOpacity(0);
         Fade.visibleElement(loginContainer,1000);
         DataValidator.emailValidator(inputEmail,labelEmail, ()-> updateButton() );
         DataValidator.passwordValidator(inputPassword,labelPassword,()-> updateButton());
+        inputPassword.setOnKeyPressed(e->{
+            if(e.getCode()== KeyCode.ENTER){
+                if(ItemFormValidator.isValidInput(inputEmail,labelEmail)
+                        && ItemFormValidator.isValidInput(inputPassword,labelPassword))
+                    this.onClick();
+            }
+        });
     }
 
     @FXML
     private void onClick(){
+
         buttonLogin.setDisable(true);
         labelSpinner.setVisible(false);
         labelSpinner.setText("");
@@ -93,7 +109,8 @@ public class LoginCtrl implements Initializable {
 
     @FXML
     private void  updateButton(){
-        buttonLogin.setDisable(labelEmail.isVisible() || labelPassword.isVisible());
+        buttonLogin.setDisable(labelEmail.isVisible() || labelPassword.isVisible()
+                || inputPassword.getText().equals("")|| inputEmail.getText().equals(""));
     }
 
     private void checkUser(){

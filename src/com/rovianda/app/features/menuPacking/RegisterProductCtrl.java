@@ -4,9 +4,11 @@ import com.jfoenix.controls.*;
 import com.rovianda.app.shared.models.*;
 import com.rovianda.app.shared.provider.*;
 import com.rovianda.app.shared.service.auth.AuthService;
+import com.rovianda.app.shared.service.weight.WeightService;
 import com.rovianda.app.shared.validator.DataValidator;
 import com.rovianda.app.shared.validator.ItemFormValidator;
 import com.rovianda.utility.animation.Fade;
+import com.rovianda.utility.portserial.PortSerial;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -119,42 +121,56 @@ public class RegisterProductCtrl implements Initializable {
 
     boolean activeProcess = false;
 
+    boolean tapRegister = true;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ResponsiveBorderPane.addSizeBorderPane(containerRegister);
         ResponsiveBorderPane.addSizeBorderPane(containerRequest);
         ResponsiveBorderPane.addSizeBorderPane(containerReprocessing);
         ResponsiveBorderPane.addSizeBorderPane(containerModal);
+        ReportProvider.currentContainer = register;
         buildTableRegister();
+        initializePaneRegister();
+        buttonRegister.getStyleClass().add("tap-selected");
         onRegister();
         Fade.visibleElement(container,1000);
         initModal();
-
+        try {
+            if(PortSerial.searchPort())
+                PortSerial.openPort();
+        }catch (Exception e){
+            ToastProvider.showToastError(e.getMessage(),1500);
+        }
     }
 
     @FXML
     private void onRegister(){
-        buttonRegister.getStyleClass().add("tap-selected");
-        buttonRequest.getStyleClass().remove("tap-selected");
         register.toFront();
-        initializePaneRegister();
+       if(!tapRegister){
+           buttonRegister.getStyleClass().add("tap-selected");
+           buttonRequest.getStyleClass().remove("tap-selected");
+           initializePaneRegister();
+           tapRegister = true;
+       }
     }
     @FXML
     private void onRequest(){
         if(activeProcess){
-            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?",()->{
-                changeTap();
-            });
+            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?",()-> changeTap());
         }else{
            changeTap();
         }
     }
 
     private void changeTap(){
-        buttonRequest.getStyleClass().add("tap-selected");
-        buttonRegister.getStyleClass().remove("tap-selected");
-        request.toFront();
-        initializePaneRequest();
+        if(tapRegister){
+            tapRegister = false;
+            buttonRequest.getStyleClass().add("tap-selected");
+            buttonRegister.getStyleClass().remove("tap-selected");
+            request.toFront();
+            initializePaneRequest();
+        }
     }
 
     @FXML
@@ -198,11 +214,8 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     void onReprocessing(){
-
         if(activeProcess)
-            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?",()-> {
-                changeToReprocessing();
-            });
+            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?",()-> changeToReprocessing());
         else
             changeToReprocessing();
 
@@ -218,7 +231,11 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     void onPrintReport(){
-        System.out.println("Impriminedo reporte");
+        if(TableViewRegister.packingId >0){
+            ReportProvider.buildReport();
+        }else {
+            ModalProvider.showModalInfo("Es necesario realizar un registro de paquetes para obtener el reporte");
+        }
     }
 
     @FXML
@@ -265,6 +282,7 @@ public class RegisterProductCtrl implements Initializable {
         products.add(product);
         presentation.setValue(null);
         weight.setText("");
+        errorWeight.setVisible(false);
         observation.setText("");
         units.setText("");
     }
@@ -272,6 +290,7 @@ public class RegisterProductCtrl implements Initializable {
     @FXML
     void onCancelReprocessing(){
         register.toFront();
+        initializePaneRegister();
         buttonRegister.setDisable(false);
         buttonRequest.setDisable(false);
         buttonRegister.getStyleClass().add("tap-selected");
@@ -299,17 +318,21 @@ public class RegisterProductCtrl implements Initializable {
             itemRegister.setWeight(0);
         }
         ReprocessingData.registerReprocessing(itemRegister, btnSaveReprocessing, spinnerReprocessing,()->{
-            allergenReprocessing.setText("");
-            areaReprocessing.setValue(null);
-            productReprocessing.setValue(null);
-            lotReprocessing.setText("");
-            weightReprocessing.setText("");
-            weightError.setVisible(false);
-            errorReproAllergen.setVisible(false);
-            errorReproProduct.setVisible(false);
-            errorReproArea.setVisible(false);
+            initValueReprocessing();
         });
 
+    }
+
+    private void initValueReprocessing(){
+        allergenReprocessing.setText("");
+        areaReprocessing.setValue(null);
+        productReprocessing.setValue(null);
+        lotReprocessing.setText("");
+        weightReprocessing.setText("");
+        weightError.setVisible(false);
+        errorReproAllergen.setVisible(false);
+        errorReproProduct.setVisible(false);
+        errorReproArea.setVisible(false);
     }
 
     private void initializePaneRegister(){
@@ -328,6 +351,8 @@ public class RegisterProductCtrl implements Initializable {
         DataValidator.minDate(expirationDate,LocalDate.now());
         DataComboBox.FillProductCatalog(productId);
         DataValidator.numberValidate(units,errorUnits);
+        DataValidator.decimalValidate(weight,errorWeight);
+        WeightService.assignWeight(weight);
         TableViewRegister.clearTable();
         presentation.setDisable(true);
         ItemFormValidator.isValidSelectorFocus(productId, errorProductId);
@@ -340,10 +365,8 @@ public class RegisterProductCtrl implements Initializable {
 
     private void initializePaneReprocessing(){
         ModalProvider.currentContainer = reprocessing;
-        weightError.setVisible(false);
-        errorReproAllergen.setVisible(false);
-        errorReproProduct.setVisible(false);
-        errorReproArea.setVisible(false);
+        initValueReprocessing();
+        WeightService.assignWeight(weightReprocessing);
         dateReprocessing.setValue(LocalDate.now());
         DataComboBox.FillProductCatalog(productReprocessing);
         DataValidator.decimalValidate(weightReprocessing,weightError);

@@ -19,6 +19,12 @@ public class ModalProvider {
             onBack();
         });
     }
+    public static void showModalInfo(String message){
+        cancel.setVisible(false);
+        messageLabel.setText(message);
+        container.toFront();
+        accept.setOnAction(event -> {onBack(); cancel.setVisible(true);});
+    }
 
     private static void onBack(){
         currentContainer.toFront();

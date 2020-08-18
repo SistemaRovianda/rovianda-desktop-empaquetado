@@ -20,7 +20,7 @@ public class AuthService {
 
     public static boolean getInfoUser () throws Exception {
         Response response = HttpClient.get("user/"+uiid);
-        if(response.getStatus() == 200){
+       if(response.getStatus() == 200){
             User.initialInstance(response.readEntity(User.class));
             if(!User.getInstance().getRol().equals("PACKAGING"))
                 throw new Exception("Usuario no válido");

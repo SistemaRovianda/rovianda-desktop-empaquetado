@@ -1,9 +1,12 @@
 package com.rovianda.utility.ConnectService;
 
+import jdk.nashorn.internal.objects.annotations.Getter;
+
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.FileInputStream;
 
 public class HttpClient {
     static String authorization = "";
@@ -31,7 +34,8 @@ public class HttpClient {
     public static Response post(String path, Object body){
         WebTarget post = webTarget.path(path);
         Invocation.Builder ib = post.request(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION,authorization);
-        Response response = ib.post(Entity.entity(body,MediaType.APPLICATION_JSON));
+        Response response = ib.post(Entity.json(body));
+        response.bufferEntity();
         return response;
     }
 

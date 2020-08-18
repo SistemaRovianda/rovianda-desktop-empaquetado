@@ -143,7 +143,7 @@
                                     <Label layoutX="176.0" layoutY="30.0" text="Reproceso sin registrar " />
                                     <JFXButton layoutX="371.0" layoutY="21.0" onAction="#onReprocessing" prefHeight="38.0" prefWidth="101.0" styleClass="gold" text="Reproceso" />
                                     <JFXButton fx:id="btnSaveProduct" disable="true" layoutX="645.0" layoutY="21.0" onAction="#onSave" prefHeight="38.0" prefWidth="101.0" styleClass="gray" text="Guardar" />
-                                    <JFXButton layoutX="829.0" layoutY="21.0" onAction="#onPrintReport" prefHeight="38.0" prefWidth="116.0" styleClass="gray" text="Imprimir reporte" />
+                                    <JFXButton layoutX="793.0" layoutY="21.0" onAction="#onPrintReport" prefHeight="38.0" prefWidth="128.0" styleClass="gray" text="Descargar reporte" />
                                  </children>
                               </Pane>
                            </bottom>

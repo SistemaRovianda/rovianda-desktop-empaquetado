@@ -14,35 +14,37 @@
          <right>
             <Pane prefHeight="588.0" prefWidth="449.0" styleClass="form" BorderPane.alignment="CENTER">
                <BorderPane.margin>
-                  <Insets bottom="130.0" top="120.0" />
+                  <Insets bottom="130.0" />
                </BorderPane.margin>
                <children>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="23.0" layoutY="167.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="36.0" layoutY="314.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../assets/icons/user.png" />
                      </image>
                   </ImageView>
-                  <Label layoutX="23.0" layoutY="61.0" styleClass="title" text="Login" />
-                  <JFXTextField fx:id="inputEmail" focusColor="#e1bc5c" labelFloat="true" layoutX="82.0" layoutY="164.0" onAction="#updateButton" prefHeight="30.0" prefWidth="320.0" promptText="Usuario" styleClass="item-form">
+                  <Label layoutX="36.0" layoutY="228.0" styleClass="title" text="Login" />
+                  <JFXTextField fx:id="inputEmail" focusColor="#e1bc5c" labelFloat="true" layoutX="85.0" layoutY="307.0" onAction="#updateButton" prefHeight="30.0" prefWidth="320.0" promptText="Usuario" styleClass="item-form">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </JFXTextField>
-                  <JFXPasswordField fx:id="inputPassword" focusColor="#e1bc5c" labelFloat="true" layoutX="80.0" layoutY="289.0" prefHeight="25.0" prefWidth="320.0" promptText="Contraseña" styleClass="item-form">
+                  <JFXPasswordField fx:id="inputPassword" focusColor="#e1bc5c" labelFloat="true" layoutX="85.0" layoutY="425.0" prefHeight="25.0" prefWidth="320.0" promptText="Contraseña" styleClass="item-form">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </JFXPasswordField>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="23.0" layoutY="287.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="36.0" layoutY="432.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../assets/icons/lock.png" />
                      </image>
                   </ImageView>
-                  <JFXButton fx:id="buttonLogin" disable="true" focusTraversable="false" layoutX="80.0" layoutY="394.0" onAction="#onClick" prefHeight="37.0" prefWidth="105.0" text="Iniciar Sesión" />
-                  <Label fx:id="labelEmail" layoutX="81.0" layoutY="218.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" visible="false" />
-                  <Label fx:id="labelPassword" layoutX="81.0" layoutY="344.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" visible="false" />
-                  <Label fx:id="labelSpinner" layoutX="85.0" layoutY="516.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" textAlignment="CENTER" visible="false" />
-                  <JFXSpinner fx:id="spinner" layoutX="206.0" layoutY="462.0" prefHeight="32.0" prefWidth="38.0" visible="false" />
+                  <JFXButton fx:id="buttonLogin" disable="true" focusTraversable="false" layoutX="85.0" layoutY="555.0" onAction="#onClick" prefHeight="37.0" prefWidth="105.0" text="Iniciar Sesión" />
+                  <Label fx:id="labelEmail" layoutX="85.0" layoutY="354.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" visible="false" />
+                  <Label fx:id="labelPassword" layoutX="86.0" layoutY="468.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" visible="false" />
+                  <Label fx:id="labelSpinner" layoutX="85.0" layoutY="501.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" textAlignment="CENTER" visible="false" />
+                  <JFXSpinner fx:id="spinner" layoutX="206.0" layoutY="505.0" prefHeight="32.0" prefWidth="38.0" visible="false" />
+                  <JFXButton fx:id="minimize" layoutX="367.0" layoutY="13.0" prefHeight="25.0" prefWidth="24.0" styleClass="minimize" />
+                  <JFXButton fx:id="exit" layoutX="404.0" layoutY="13.0" prefHeight="25.0" prefWidth="24.0" styleClass="exit" />
                </children>
             </Pane>
          </right>

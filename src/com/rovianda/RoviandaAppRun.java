@@ -5,14 +5,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class RoviandaAppRun extends Application {
-    Stage stage;
+    public static Stage stage;
 
 
     @Override
@@ -26,6 +26,8 @@ public class RoviandaAppRun extends Application {
     }
 
     public void window() throws IOException {
+        int height = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height;
+        int width = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width;
         String urlFXML = "app/features/login/Login.fxml";
         FXMLLoader loader = new FXMLLoader(getClass().getResource(urlFXML));
         AnchorPane root  = loader.load();
@@ -34,8 +36,8 @@ public class RoviandaAppRun extends Application {
         stage.setScene(scene);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.getIcons().add(new Image(RoviandaAppRun.class.getResourceAsStream("assets/icons/icon.png")));
-        stage.setHeight(Screen.getPrimary().getBounds().getHeight());
-        stage.setWidth(Screen.getPrimary().getBounds().getWidth());
+        stage.setHeight(height);
+        stage.setWidth(width);
         stage.show();
 
     }

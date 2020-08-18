@@ -1,11 +1,14 @@
 package com.rovianda.app.shared.provider;
 
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Screen;
+import java.awt.*;
 
 public class ResponsiveBorderPane {
+    private static int height = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height;
+    private static int width = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width;
     public static void addSizeBorderPane(BorderPane tap){
-        tap.setMinWidth(Screen.getPrimary().getBounds().getWidth()-220);
-        tap.setMinHeight(Screen.getPrimary().getBounds().getHeight());
+
+        tap.setMinWidth(width-220);
+        tap.setMinHeight(height);
     }
 }

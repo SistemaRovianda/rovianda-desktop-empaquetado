@@ -8,10 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.util.StringConverter;
-
 import java.util.List;
-import java.util.Observable;
-
 public class DataComboBox {
 
     public static void FillProductCatalog(JFXComboBox<ProductCatalog> comboBox){
@@ -26,15 +23,15 @@ public class DataComboBox {
         thread.setDaemon(true);
         thread.start();
         productsTask.setOnSucceeded(e->{
-            ToastProvider.showToastSuccess("Productos obtenidos",3000);
+            ToastProvider.showToastSuccess("Productos obtenidos",1500);
             if(productsTask.getValue().size() >0)
                 products.addAll(productsTask.getValue());
             else
-                ToastProvider.showToastInfo("No existen productos por el momento",3000);
+                ToastProvider.showToastInfo("No existen productos por el momento",1500);
         });
 
         productsTask.setOnFailed(event -> {
-            ToastProvider.showToastError(event.getSource().getException().getMessage(),3000);
+            ToastProvider.showToastError(event.getSource().getException().getMessage(),1500);
         });
 
         comboBox.setItems(products);
@@ -77,7 +74,7 @@ public class DataComboBox {
 
 
     public static void fillPresentationsById(JFXComboBox<ProductPresentation> comboBox, int productId){
-        ToastProvider.showToastInfo("Obteniendo presentaciones del producto",3000);
+        ToastProvider.showToastInfo("Obteniendo presentaciones del producto",1500);
         ObservableList<ProductPresentation> presentations = FXCollections.observableArrayList();
         Task <List<ProductPresentation>> presentationsTask = new Task<List<ProductPresentation>>() {
             @Override
@@ -89,16 +86,16 @@ public class DataComboBox {
         thread.setDaemon(true);
         thread.start();
         presentationsTask.setOnSucceeded(e->{
-            ToastProvider.showToastInfo("Presentaciones obtenidas",3000);
+            ToastProvider.showToastInfo("Presentaciones obtenidas",1500);
             if(presentationsTask.getValue().size() >0){
                 presentations.addAll(presentationsTask.getValue());
                 comboBox.setDisable(false);
             }
             else
-                ToastProvider.showToastInfo("El producto no cuenta con presentaciones",3000);
+                ToastProvider.showToastInfo("El producto no cuenta con presentaciones",1500);
         });
         presentationsTask.setOnFailed(e->{
-            ToastProvider.showToastError(e.getSource().getException().getMessage(),3000);
+            ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
         });
         comboBox.setItems(presentations);
         comboBox.setConverter(new StringConverter<ProductPresentation>() {
