@@ -1,7 +1,7 @@
 package com.rovianda.app.shared.service.packaging;
 
-import com.rovianda.app.shared.models.MessageError;
 import com.rovianda.app.shared.models.Order;
+import com.rovianda.app.shared.models.Presentation;
 import com.rovianda.app.shared.models.ProductPresentation;
 import com.rovianda.app.shared.models.ProductsRequest;
 import com.rovianda.utility.ConnectService.HttpClient;
@@ -24,10 +24,10 @@ public class ServicePackaging {
         return presentations;
     }
 
-    public static List<Order> getOrderVendedor() throws Exception{
-        Response response = HttpClient.get("/packaging");
+    public static List<Order> getOrderVendedor(boolean urgent) throws Exception{
+        Response response = HttpClient.get("/packaging/sellers/"+urgent);
         List<Order> orders = new ArrayList<>();
-        System.out.println(response.readEntity(String.class));
+        response.readEntity(String.class);
         if(response.getStatus() == 200)
             orders = response.readEntity(new GenericType<List<Order>>(){});
         else if (response.getStatus() == 404){
@@ -36,8 +36,9 @@ public class ServicePackaging {
         response.close();
         return orders;
     }
-    public static List<ProductsRequest> getOrderProducts(String userId) throws Exception{
-        Response response = HttpClient.get("/packaging/"+userId);
+    public static List<ProductsRequest> getOrderProducts(int orderId) throws Exception{
+        Response response = HttpClient.get("/seller/orders-products/"+orderId);
+        System.out.println(response.readEntity(String.class));
         List<ProductsRequest> products = new ArrayList<>();
         if(response.getStatus() == 200)
             products = response.readEntity(new GenericType<List<ProductsRequest>>(){});
@@ -47,6 +48,26 @@ public class ServicePackaging {
         }
         response.close();
         return products;
+    }
+
+    public static  List<Presentation> getPresentations(int orderId, int productId) throws Exception {
+        Response response = HttpClient.get("/seller/order/"+orderId+"/product/"+productId);
+        System.out.println(response.readEntity(String.class));
+        List<Presentation> presentations = new ArrayList<>();
+        if(response.getStatus() == 200)
+            presentations = response.readEntity(new GenericType<List<Presentation>>(){});
+        else if (response.getStatus() >= 400){
+            response.close();
+            throw new Exception("Servicio no disponible ");
+        }
+        response.close();
+        return presentations;
+    }
+
+    public static void getGuard(String sellerUid){
+        ///seller/guard/{sellerUid}
+        Response response = HttpClient.get("/seller/guard/"+sellerUid);
+        System.out.println(response.readEntity(String.class));
     }
 
     public static boolean closedOrder(Order order) throws Exception {

@@ -15,6 +15,7 @@ public class ActionButtonColumn<S> extends TableCell<S, JFXButton> {
 
     public ActionButtonColumn(Function <S,S> function){
         this.actionButton.getStyleClass().add( "gold");
+        this.actionButton.getStyleClass().add( "table-button");
         this.actionButton.setOnAction(e ->{
             function.apply(getCurrentItem());
         });

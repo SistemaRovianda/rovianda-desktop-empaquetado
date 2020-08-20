@@ -71,6 +71,23 @@ public class DataComboBox {
 
     }
 
+    public static void fillOptions(JFXComboBox <OptionOrder> comboBox){
+        ObservableList<OptionOrder> options = FXCollections.observableArrayList();
+        options.addAll( new OptionOrder("Si", true), new OptionOrder("No",false) );
+        comboBox.setItems(options);
+        comboBox.setConverter(new StringConverter<OptionOrder>() {
+            @Override
+            public String toString(OptionOrder object) {
+                return object.getTag();
+            }
+
+            @Override
+            public OptionOrder fromString(String string) {
+                return null;
+            }
+        });
+    }
+
 
 
     public static void fillPresentationsById(JFXComboBox<ProductPresentation> comboBox, int productId){

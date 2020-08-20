@@ -2,24 +2,28 @@ package com.rovianda.app.shared.models;
 
 public class ProductsRequest {
 
-    private String Product;
+    private int product_id;
+    private String name;
     private int quantity;
 
     public ProductsRequest(){
 
     }
 
-    public ProductsRequest(String Product, int quantity){
-        this.Product = Product;
-        this.quantity = quantity;
+    public int getProduct_id() {
+        return product_id;
     }
 
-    public String getProduct() {
-        return Product;
+    public void setProduct_id(int product_id) {
+        this.product_id = product_id;
     }
 
-    public void setProduct(String product) {
-        Product = product;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getQuantity() {
@@ -33,7 +37,8 @@ public class ProductsRequest {
     @Override
     public String toString() {
         return "ProductsRequest{" +
-                "Product='" + Product + '\'' +
+                "product_id=" + product_id +
+                ", name='" + name + '\'' +
                 ", quantity=" + quantity +
                 '}';
     }

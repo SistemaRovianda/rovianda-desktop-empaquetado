@@ -4,21 +4,31 @@ import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
+import java.util.Date;
+import java.util.logging.SimpleFormatter;
+
 public class Order {
 
+    private int orderId;
+    private String date;
     private String userId;
-    private int noOrder;
     private String vendedor;
+    private boolean status;
 
-    public Order(){
-
+    public int getOrderId() {
+        return orderId;
     }
 
-    public Order(String userId, String vendedor, int noOrder){
-        this.userId = userId;
-        this.vendedor = vendedor;
-        this.noOrder = noOrder;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getUserId() {
@@ -29,14 +39,6 @@ public class Order {
         this.userId = userId;
     }
 
-    public int getNoOrder() {
-        return noOrder;
-    }
-
-    public void setNoOrder(int noOrder) {
-        this.noOrder = noOrder;
-    }
-
     public String getVendedor() {
         return vendedor;
     }
@@ -45,12 +47,11 @@ public class Order {
         this.vendedor = vendedor;
     }
 
-    @Override
-    public String toString() {
-        return "Order{" +
-                "userId='" + userId + '\'' +
-                ", noOrder=" + noOrder +
-                ", vendedor='" + vendedor + '\'' +
-                '}';
+    public boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }

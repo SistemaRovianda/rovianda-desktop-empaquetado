@@ -1,88 +1,95 @@
-.icon{
-    -fx-background-color:#e1bc5c ;
+.icon {
+    -fx-background-color: #e1bc5c;
     -fx-background-image: url("../../../assets/icons/icon.png");
     -fx-background-repeat: stretch;
-    -fx-background-position:  center center;
+    -fx-background-position: center center;
     -fx-background-size: 65%;
 }
 
-.menu{
+.menu {
     -fx-background-color: white;
 }
-.tab-pane{
-    -fx-background-color:#f4f4f4
+
+.tab-pane {
+    -fx-background-color: #f4f4f4
 }
 
-.tap{
+.tap {
     -fx-font-size: 10pt;
     -fx-font-weight: 700;
 }
 
-.tap-selected{
+.tap-selected {
     -fx-text-fill: #e1bc5c;
 }
 
 
-.exit{
-    -fx-text-fill: #575552 ;
+.exit {
+    -fx-text-fill: #575552;
     -fx-font-size: 10pt;
     -fx-font-weight: 700;
 }
 
-.container{
- -fx-background-color:#f4f4f4 ;
+.container {
+    -fx-background-color: #f4f4f4;
 }
 
-.gold{
+.gold {
     -fx-background-color: #f7ba00;
-    -fx-text-fill: #575552 ;
+    -fx-text-fill: #575552;
     -fx-font-weight: 900;
 }
-.button-cancel{
+
+.button-cancel {
     -fx-background-color: #121212;
-    -fx-text-fill: white ;
-    -fx-font-weight: 900;
-}
-.button-success{
-    -fx-background-color: #f7ba00;
-    -fx-text-fill: #484848 ;
-    -fx-font-weight: 900;
-}
-.gray{
-    -fx-background-color: #575552;
-    -fx-text-fill: white ;
+    -fx-text-fill: white;
     -fx-font-weight: 900;
 }
 
-.label{
+.button-success {
+    -fx-background-color: #f7ba00;
+    -fx-text-fill: #484848;
+    -fx-font-weight: 900;
+}
+
+.gray {
+    -fx-background-color: #575552;
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+}
+
+.label {
     -fx-text-fill: #575552;
     -fx-font-size: 10pt;
     -fx-font-weight: 800;
 }
 
-.itemForm{
+.itemForm {
     -fx-font-weight: 600;
     -fx-font-size: 10pt;
 }
 
-.message-modal{
+.message-modal {
     -fx-font-weight: 600;
     -fx-font-size: 11pt;
 }
-.title-modal{
+
+.title-modal {
     -fx-font-weight: 800;
     -fx-font-size: 13pt;
 }
-.container{
+
+.container {
     -fx-background-color: #f4f4f4
 }
-.containerModal{
+
+.containerModal {
     -fx-background-color: white;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 10, 0, 0, 0);
     -fx-background-radius: 8px;
 }
 
-.form{
+.form {
     -fx-background-color: white;
 }
 
@@ -91,17 +98,18 @@
     -fx-font-weight: 700;
     -fx-background-color: white;
 }
-.table-view .column-header,.table-view .column-header-background .filler {
+
+.table-view .column-header, .table-view .column-header-background .filler {
     -fx-background-color: white;
 }
 
-.error-message{
+.error-message {
     -fx-text-fill: tomato;
     -fx-font-size: 14px;
     -fx-font-weight: 500;
 }
 
-.success-message{
+.success-message {
     -fx-text-fill: #4BB543;
     -fx-font-size: 14px;
     -fx-font-weight: 500;
@@ -113,14 +121,57 @@
     -fx-spacing: 5;
     -fx-text-fill: white;
 }
+
 .jfx-snackbar-toast {
     -fx-text-fill: WHITE;
 }
 
-.jfx-snackbar-content: toast-success{
+.jfx-snackbar-content: toast-success {
     -fx-background-color: #4BB543;
 }
 
-.jfx-snackbar-content: toast-error{
+.jfx-snackbar-content: toast-error {
     -fx-background-color: TOMATO;
+}
+
+.label-presentations {
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #e1bc5c;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+    -fx-font-weight: 600;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: -fx-table-cell-border-color, white;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em; /* 0 */
+}
+
+.table-view .table-cell {
+    -fx-text-fill: #575552;
+    -fx-alignment: center;
+    -fx-font-size: 15px;
+}
+
+.table-view:focused {
+    -fx-background-color: white;
+}
+
+.table-row-cell {
+    -fx-border-color: #575552;
+    -fx-border-width: 0 0 1 0;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-cell-border-width: 0 0 0 0;
+    -fx-cell-size: 50px;
+}
+
+.table-button {
+    -fx-text-fill: #575552;
+    -fx-font-weight: 600;
+    -fx-font-size: 0.9em;
 }

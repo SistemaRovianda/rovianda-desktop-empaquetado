@@ -36,7 +36,7 @@ public class RegisterProductCtrl implements Initializable {
     private TableView<TableRegisterProduct> tableRegister;
 
     @FXML
-    private TableColumn <TableRegisterProduct,String>
+    private TableColumn<TableRegisterProduct, String>
             columnProduct,
             columnLot,
             columnExpiration,
@@ -53,7 +53,7 @@ public class RegisterProductCtrl implements Initializable {
     private TableColumn<ProductsRequest, Integer> columnRequestId;
 
     @FXML
-    private TableColumn<ProductsRequest, String>  columnRequestProduct;
+    private TableColumn<ProductsRequest, String> columnRequestProduct;
 
     @FXML
     private TableColumn<ProductsRequest, Integer> columnRequestQuantity;
@@ -63,34 +63,51 @@ public class RegisterProductCtrl implements Initializable {
     private TableView<Order> tableOrders;
 
     @FXML
-    private TableColumn<Order,String>
-            columnVendedor;
+    private TableColumn<Order, String>
+            columnVendedor,columnDate;
     @FXML
-    private TableColumn<Order,JFXButton>
+    private TableColumn<Order, JFXButton>
             columnOptions;
     @FXML
-    private TableColumn<Order,Integer>
+    private TableColumn<Order, Integer>
             columnNoOrder;
+
+    @FXML
+    private TableView <Presentation> tablePresentations;
+
+    @FXML
+    private  TableColumn<Presentation, Integer>
+            columnPresentationsNo,columnPresentationUnits;
+
+    @FXML
+    private TableColumn<Presentation,String>
+            columnPresentationName;
 
     @FXML
     private AnchorPane container;
     @FXML
-    Pane register,request,
-            reprocessing,modal;
+    Pane register, request,
+            reprocessing, modal,
+            presentations;
 
     @FXML
-    private JFXComboBox <ProductCatalog>  productId,productReprocessing;
+    private JFXComboBox<ProductCatalog> productId, productReprocessing;
 
     @FXML
     private JFXComboBox<Area> areaReprocessing;
 
     @FXML
-    JFXTextField lotId,weight,lotReprocessing,weightReprocessing,allergenReprocessing,units;
-
-   @FXML JFXComboBox <ProductPresentation> presentation;
+    private JFXComboBox<OptionOrder> urgent;
 
     @FXML
-    BorderPane containerRegister,containerRequest,containerReprocessing,containerModal;
+    JFXTextField lotId, weight, lotReprocessing, weightReprocessing, allergenReprocessing, units;
+
+    @FXML
+    JFXComboBox<ProductPresentation> presentation;
+
+    @FXML
+    BorderPane containerRegister, containerRequest, containerReprocessing, containerModal,
+            containerPresentations;
 
     @FXML
     private JFXButton buttonRegister,
@@ -104,24 +121,24 @@ public class RegisterProductCtrl implements Initializable {
     private JFXSpinner spinnerReprocessing;
 
     @FXML
-    private DatePicker currentDate,expirationDate,dateReprocessing;
+    private DatePicker currentDate, expirationDate, dateReprocessing;
 
     @FXML
     private JFXTextArea observation;
 
-    private TableRegisterProduct item;
-
     private ProductPackaging productPackaging;
 
-    private List <Product> products = new ArrayList<>();
+    private final List<Product> products = new ArrayList<>();
 
     @FXML
-    private Label weightError,errorReproProduct,errorReproAllergen,errorReproArea,labelModal,
-            errorPresentation,errorUnits,errorWeight,errorObservations,errorProductId;
+    private Label weightError, errorReproProduct, errorReproAllergen, errorReproArea, labelModal,
+            errorPresentation, errorUnits, errorWeight, errorObservations, errorProductId;
 
     boolean activeProcess = false;
 
     boolean tapRegister = true;
+
+    public static boolean activePresentations = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -129,79 +146,84 @@ public class RegisterProductCtrl implements Initializable {
         ResponsiveBorderPane.addSizeBorderPane(containerRequest);
         ResponsiveBorderPane.addSizeBorderPane(containerReprocessing);
         ResponsiveBorderPane.addSizeBorderPane(containerModal);
+        ResponsiveBorderPane.addSizeBorderPane(containerPresentations);
+        TableViewOrders.presentations = presentations;
         ReportProvider.currentContainer = register;
         buildTableRegister();
+        buildTableRequest();
+        buildTablePresentations();
         initializePaneRegister();
         buttonRegister.getStyleClass().add("tap-selected");
         onRegister();
-        Fade.visibleElement(container,1000);
+        Fade.visibleElement(container, 1000);
         initModal();
         try {
-            if(PortSerial.searchPort())
+            if (PortSerial.searchPort())
                 PortSerial.openPort();
-        }catch (Exception e){
-            ToastProvider.showToastError(e.getMessage(),1500);
+        } catch (Exception e) {
+            ToastProvider.showToastError(e.getMessage(), 3000);
         }
     }
 
     @FXML
-    private void onRegister(){
+    private void onRegister() {
         register.toFront();
-       if(!tapRegister){
-           buttonRegister.getStyleClass().add("tap-selected");
-           buttonRequest.getStyleClass().remove("tap-selected");
-           initializePaneRegister();
-           tapRegister = true;
-       }
-    }
-    @FXML
-    private void onRequest(){
-        if(activeProcess){
-            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?",()-> changeTap());
-        }else{
-           changeTap();
+        if (!tapRegister) {
+            buttonRegister.getStyleClass().add("tap-selected");
+            buttonRequest.getStyleClass().remove("tap-selected");
+            initializePaneRegister();
+            tapRegister = true;
         }
     }
 
-    private void changeTap(){
-        if(tapRegister){
+    @FXML
+    private void onRequest() {
+        if (activeProcess) {
+            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?", this::changeTap);
+        } else {
+            changeTap();
+        }
+    }
+
+    private void changeTap() {
+        if ( activePresentations ||tapRegister) {
             tapRegister = false;
+            activePresentations= false;
             buttonRequest.getStyleClass().add("tap-selected");
             buttonRegister.getStyleClass().remove("tap-selected");
             request.toFront();
+            this.urgent.setValue(null);
             initializePaneRequest();
         }
     }
 
     @FXML
-    private void onExit(){
-        if(activeProcess)
-            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres salir?",()-> {
-                exit();
-            });
+    private void onExit() {
+        if (activeProcess)
+            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres salir?", this::exit);
         else
             exit();
     }
 
-    void exit(){
+    void exit() {
         AuthService.SignOutSession();
-        Fade.invisibleElement(container,500,()->{
+        Fade.invisibleElement(container, 500, () -> {
             try {
-                Parent loginScreen = (AnchorPane) FXMLLoader.load(getClass().getResource("/com/rovianda/app/features/login/Login.fxml"));
+                Parent loginScreen = FXMLLoader.load(getClass().getResource("/com/rovianda/app/features/login/Login.fxml"));
                 Scene newScene = new Scene(loginScreen);
                 Stage currentStage = (Stage) container.getScene().getWindow();
                 currentStage.setScene(newScene);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });
     }
 
     @FXML
-    void onSave(){
+    void onSave() {
         productPackaging.setProducts(products);
         TableViewRegister.currentProductPackaging = productPackaging;
-        TableViewRegister.registerItems(()->{
+        TableViewRegister.registerItems(() -> {
             productId.setDisable(false);
             expirationDate.setDisable(false);
             btnSaveProduct.setDisable(true);
@@ -213,14 +235,15 @@ public class RegisterProductCtrl implements Initializable {
     }
 
     @FXML
-    void onReprocessing(){
-        if(activeProcess)
-            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?",()-> changeToReprocessing());
+    void onReprocessing() {
+        if (activeProcess)
+            ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?", this::changeToReprocessing);
         else
             changeToReprocessing();
 
     }
-    private void changeToReprocessing(){
+
+    private void changeToReprocessing() {
         buttonRegister.setDisable(true);
         buttonRegister.getStyleClass().remove("tap-selected");
         buttonRequest.setDisable(true);
@@ -230,27 +253,27 @@ public class RegisterProductCtrl implements Initializable {
     }
 
     @FXML
-    void onPrintReport(){
-        if(TableViewRegister.packingId >0){
+    void onPrintReport() {
+        if (TableViewRegister.packingId > 0) {
             ReportProvider.buildReport();
-        }else {
+        } else {
             ModalProvider.showModalInfo("Es necesario realizar un registro de paquetes para obtener el reporte");
         }
     }
 
     @FXML
-    void addRegister(){
+    void addRegister() {
         activeProcess = true;
-        if(ItemFormValidator.isValidSelector(productId,errorProductId)
-                && ItemFormValidator.isValidSelector(presentation,errorPresentation)
+        if (ItemFormValidator.isValidSelector(productId, errorProductId)
+                && ItemFormValidator.isValidSelector(presentation, errorPresentation)
                 && ItemFormValidator.isValidInputNumber(units, errorUnits)
-                && ItemFormValidator.isValidInputDecimal(weight,errorWeight)
-                && ItemFormValidator.isValidInput(observation,errorObservations)
-                ){
+                && ItemFormValidator.isValidInputDecimal(weight, errorWeight)
+                && ItemFormValidator.isValidInput(observation, errorObservations)
+        ) {
             btnSaveProduct.setDisable(false);
             productId.setDisable(true);
             expirationDate.setDisable(true);
-            item = new TableRegisterProduct();
+            TableRegisterProduct item = new TableRegisterProduct();
             item.setProduct(productId.getValue().getName());
             item.setLot(lotId.getText());
             item.setExpiration(expirationDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -264,12 +287,11 @@ public class RegisterProductCtrl implements Initializable {
         }
 
 
-
     }
 
-    private void  createItemRegister(){
+    private void createItemRegister() {
         Product product = new Product();
-        if(TableViewRegister.items.size()<=1){
+        if (TableViewRegister.items.size() <= 1) {
             productPackaging.setRegisterDate(currentDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
             productPackaging.setProductId(productId.getValue().getProductId());
             productPackaging.setLotId(lotId.getText());
@@ -288,42 +310,41 @@ public class RegisterProductCtrl implements Initializable {
     }
 
     @FXML
-    void onCancelReprocessing(){
+    void onCancelReprocessing() {
         register.toFront();
         initializePaneRegister();
         buttonRegister.setDisable(false);
         buttonRequest.setDisable(false);
         buttonRegister.getStyleClass().add("tap-selected");
     }
+
     @FXML
-    void  onSaveReprocessing (){
-        if(
-        ItemFormValidator.isValidInputDecimal(weightReprocessing,weightError)&&
-        ItemFormValidator.isValidInput(allergenReprocessing,errorReproAllergen)&&
-        ItemFormValidator.isValidSelector(productReprocessing,errorReproProduct)&&
-        ItemFormValidator.isValidSelector(areaReprocessing,errorReproArea))
+    void onSaveReprocessing() {
+        if (
+                ItemFormValidator.isValidInputDecimal(weightReprocessing, weightError) &&
+                        ItemFormValidator.isValidInput(allergenReprocessing, errorReproAllergen) &&
+                        ItemFormValidator.isValidSelector(productReprocessing, errorReproProduct) &&
+                        ItemFormValidator.isValidSelector(areaReprocessing, errorReproArea))
             createItemRegisterReprocessing();
     }
 
-    private void createItemRegisterReprocessing(){
+    private void createItemRegisterReprocessing() {
         Reprocessing itemRegister = new Reprocessing();
         itemRegister.setAllergen(allergenReprocessing.getText());
-        itemRegister.setArea((areaReprocessing.getValue()==null)?"":areaReprocessing.getValue().getArea());
+        itemRegister.setArea((areaReprocessing.getValue() == null) ? "" : areaReprocessing.getValue().getArea());
         itemRegister.setDate(dateReprocessing.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        itemRegister.setProductId((productReprocessing.getValue()==null)?0:productReprocessing.getValue().getProductId());
+        itemRegister.setProductId((productReprocessing.getValue() == null) ? 0 : productReprocessing.getValue().getProductId());
         itemRegister.setLotId(lotReprocessing.getText());
-        try{
+        try {
             itemRegister.setWeight(Double.parseDouble(weightReprocessing.getText()));
-        }catch (Exception e){
+        } catch (Exception e) {
             itemRegister.setWeight(0);
         }
-        ReprocessingData.registerReprocessing(itemRegister, btnSaveReprocessing, spinnerReprocessing,()->{
-            initValueReprocessing();
-        });
+        ReprocessingData.registerReprocessing(itemRegister, btnSaveReprocessing, spinnerReprocessing, this::initValueReprocessing);
 
     }
 
-    private void initValueReprocessing(){
+    private void initValueReprocessing() {
         allergenReprocessing.setText("");
         areaReprocessing.setValue(null);
         productReprocessing.setValue(null);
@@ -335,7 +356,7 @@ public class RegisterProductCtrl implements Initializable {
         errorReproArea.setVisible(false);
     }
 
-    private void initializePaneRegister(){
+    private void initializePaneRegister() {
         ModalProvider.currentContainer = register;
         productPackaging = new ProductPackaging();
         errorPresentation.setVisible(false);
@@ -348,57 +369,63 @@ public class RegisterProductCtrl implements Initializable {
         productId.setDisable(false);
         expirationDate.setDisable(false);
         btnSaveProduct.setDisable(true);
-        DataValidator.minDate(expirationDate,LocalDate.now());
+        DataValidator.minDate(expirationDate, LocalDate.now());
         DataComboBox.FillProductCatalog(productId);
-        DataValidator.numberValidate(units,errorUnits);
-        DataValidator.decimalValidate(weight,errorWeight);
+        DataValidator.numberValidate(units, errorUnits);
+        DataValidator.decimalValidate(weight, errorWeight);
         WeightService.assignWeight(weight);
         TableViewRegister.clearTable();
         presentation.setDisable(true);
         ItemFormValidator.isValidSelectorFocus(productId, errorProductId);
         ItemFormValidator.isValidSelectorFocus(presentation, errorPresentation);
-        ItemFormValidator.isValidInputFocus(units,errorUnits);
-        ItemFormValidator.isValidInputFocus(weight,errorWeight);
+        ItemFormValidator.isValidInputFocus(units, errorUnits);
+        ItemFormValidator.isValidInputFocus(weight, errorWeight);
         ItemFormValidator.isValidInputFocus(observation, errorObservations);
 
     }
 
-    private void initializePaneReprocessing(){
+    private void initializePaneReprocessing() {
         ModalProvider.currentContainer = reprocessing;
         initValueReprocessing();
         WeightService.assignWeight(weightReprocessing);
         dateReprocessing.setValue(LocalDate.now());
         DataComboBox.FillProductCatalog(productReprocessing);
-        DataValidator.decimalValidate(weightReprocessing,weightError);
+        DataValidator.decimalValidate(weightReprocessing, weightError);
         DataComboBox.fillAreas(areaReprocessing);
-        ItemFormValidator.isValidInputFocus(weightReprocessing,weightError);
-        ItemFormValidator.isValidInputFocus(allergenReprocessing,errorReproAllergen);
-        ItemFormValidator.isValidSelectorFocus(productReprocessing,errorReproProduct);
-        ItemFormValidator.isValidSelectorFocus(areaReprocessing,errorReproArea);
+        ItemFormValidator.isValidInputFocus(weightReprocessing, weightError);
+        ItemFormValidator.isValidInputFocus(allergenReprocessing, errorReproAllergen);
+        ItemFormValidator.isValidSelectorFocus(productReprocessing, errorReproProduct);
+        ItemFormValidator.isValidSelectorFocus(areaReprocessing, errorReproArea);
 
     }
 
-    private void initializePaneRequest(){
-        ModalProvider.currentContainer =request;
-        buildTableRequest();
+    private void initializePaneRequest() {
+        ModalProvider.currentContainer = request;
+        this.urgent.getSelectionModel().selectFirst();
     }
 
     @FXML
-    void selectProduct(){
-        if(productId.getValue() != null){
-            DataComboBox.fillPresentationsById(presentation,productId.getValue().getProductId());
+    void selectProduct() {
+        if (productId.getValue() != null) {
+            DataComboBox.fillPresentationsById(presentation, productId.getValue().getProductId());
             lotId.setText(productId.getValue().getLot());
         }
 
     }
 
     @FXML
-    void selectProductReprocessing(){
-        if(productReprocessing.getValue()!= null)
+    void selectProductReprocessing() {
+        if (productReprocessing.getValue() != null)
             lotReprocessing.setText(productReprocessing.getValue().getLot());
     }
 
-    private void  buildTableRegister(){
+    @FXML
+    void changeOrder() {
+        if (this.urgent.getValue() != null)
+            TableViewOrders.fillTableOrders(this.urgent.getValue().isValue());
+    }
+
+    private void buildTableRegister() {
 
         TableViewRegister.currentTable = tableRegister;
         TableViewRegister.assignColumnProduct(columnProduct);
@@ -411,22 +438,30 @@ public class RegisterProductCtrl implements Initializable {
         TableViewRegister.assignColumnObservations(columnObservations);
     }
 
-    private void buildTableRequest(){
-        TableViewOrders.currentTableProducts = productsRequest;
+    private void buildTableRequest() {
+        DataComboBox.fillOptions(urgent);
+        TableViewOrders.assignTableProducts(productsRequest);
         TableViewOrders.assignTableOrder(tableOrders);
         TableViewOrders.assignColumnNoOrder(columnNoOrder);
         TableViewOrders.assignColumnVendedor(columnVendedor);
         TableViewOrders.assignColumnOptions(columnOptions);
-        TableViewOrders.columnId =columnRequestId;
+        TableViewOrders.assignColumnDate(columnDate);
+        TableViewOrders.columnId = columnRequestId;
         TableViewOrders.assignColumnProductsProduct(columnRequestProduct);
         TableViewOrders.assignColumnProductsQuantity(columnRequestQuantity);
-        TableViewOrders.fillTableOrders();
     }
 
-    void initModal(){
+    private void buildTablePresentations(){
+        TableViewOrders.assignTablePresentations(tablePresentations);
+        TableViewOrders.columnIdPresentation = columnPresentationsNo;
+        TableViewOrders.assignColumnPresentations(columnPresentationName);
+        TableViewOrders.assignColumnUnits(columnPresentationUnits);
+    }
+
+    void initModal() {
         ModalProvider.cancel = btnModalCancel;
         ModalProvider.accept = btnModalAccept;
-        ModalProvider.container= modal;
+        ModalProvider.container = modal;
         ModalProvider.messageLabel = labelModal;
     }
 

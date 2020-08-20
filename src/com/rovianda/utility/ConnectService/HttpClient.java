@@ -21,6 +21,7 @@ public class HttpClient {
     public static Response get(String path){
         Response response = client.target(URL+path).request().
                 header(HttpHeaders.AUTHORIZATION,authorization).get();
+        response.bufferEntity();
         return  response;
     }
 
