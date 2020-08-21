@@ -1,9 +1,6 @@
 package com.rovianda.app.shared.service.packaging;
 
-import com.rovianda.app.shared.models.Order;
-import com.rovianda.app.shared.models.Presentation;
-import com.rovianda.app.shared.models.ProductPresentation;
-import com.rovianda.app.shared.models.ProductsRequest;
+import com.rovianda.app.shared.models.*;
 import com.rovianda.utility.ConnectService.HttpClient;
 
 import javax.ws.rs.core.GenericType;
@@ -65,9 +62,21 @@ public class ServicePackaging {
     }
 
     public static void getGuard(String sellerUid){
-        ///seller/guard/{sellerUid}
         Response response = HttpClient.get("/seller/guard/"+sellerUid);
         System.out.println(response.readEntity(String.class));
+    }
+
+    public static List<PackagingLots> getLotsByProduct(int product_id) throws Exception {
+        Response response = HttpClient.get("/packaging-lots/inventory/product/"+product_id);
+        System.out.println(response.readEntity(String.class));
+        List<PackagingLots> lots = new ArrayList<>();
+        if(response.getStatus() == 200){
+            lots = response.readEntity(new GenericType<List<PackagingLots>>(){});
+        }else if (response.getStatus() == 404){
+            throw new Exception("Error al obtener lotes del producto");
+        }
+        response.close();
+        return lots;
     }
 
     public static boolean closedOrder(Order order) throws Exception {

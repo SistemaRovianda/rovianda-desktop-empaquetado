@@ -174,37 +174,36 @@
                      <children>
                         <BorderPane fx:id="containerRequest" prefHeight="792.0" prefWidth="1106.0" styleClass="container">
                            <left>
-                              <Pane prefHeight="632.0" prefWidth="479.0" BorderPane.alignment="CENTER">
+                              <Pane prefHeight="632.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                                  <BorderPane.margin>
                                     <Insets bottom="120.0" left="40.0" top="100.0" />
                                  </BorderPane.margin>
                                  <children>
                                     <Label layoutX="18.0" layoutY="30.0" text="Peticiones" />
-                                    <TableView fx:id="tableOrders" layoutX="15.0" layoutY="60.0" prefHeight="500.0" prefWidth="450.0">
+                                    <TableView fx:id="tableOrders" layoutX="15.0" layoutY="58.0" prefHeight="500.0" prefWidth="570.0">
                                       <columns>
-                                        <TableColumn fx:id="columnNoOrder" prefWidth="78.0" text="No. Orden" />
-                                          <TableColumn fx:id="columnDate" prefWidth="94.0" text="Fecha" />
-                                        <TableColumn fx:id="columnVendedor" prefWidth="150.0" text="Vendedor" />
-                                          <TableColumn fx:id="columnOptions" prefWidth="126.0" text="Opciones" />
+                                        <TableColumn fx:id="columnNoOrder" prefWidth="98.0" text="No. Orden" />
+                                          <TableColumn fx:id="columnDate" prefWidth="138.0" text="Fecha" />
+                                        <TableColumn fx:id="columnVendedor" prefWidth="212.0" text="Vendedor" />
+                                          <TableColumn fx:id="columnOptions" prefWidth="120.0" text="Opciones" />
                                       </columns>
                                     </TableView>
-                                    <JFXComboBox fx:id="urgent" focusColor="#e1bc5c" labelFloat="true" layoutX="396.0" layoutY="23.0" onAction="#changeOrder" prefHeight="25.0" prefWidth="69.0" />
-                                    <Label layoutX="261.0" layoutY="25.0" styleClass="itemForm" text="Ordenes urgentes:" />
+                                    <JFXComboBox fx:id="urgent" focusColor="#e1bc5c" labelFloat="true" layoutX="516.0" layoutY="18.0" onAction="#changeOrder" prefHeight="25.0" prefWidth="69.0" />
+                                    <Label layoutX="399.0" layoutY="21.0" styleClass="itemForm" text="Ordenes urgentes:" />
                                  </children>
                               </Pane>
                            </left>
                            <right>
-                              <Pane prefHeight="632.0" prefWidth="456.0" BorderPane.alignment="CENTER">
+                              <Pane prefHeight="632.0" prefWidth="350.0" BorderPane.alignment="CENTER">
                                  <BorderPane.margin>
                                     <Insets bottom="120.0" right="40.0" top="100.0" />
                                  </BorderPane.margin>
                                  <children>
-                                    <Label layoutX="20.0" layoutY="30.0" text="Productos de la petición" />
-                                    <TableView fx:id="productsRequest" layoutX="15.0" layoutY="60.0" prefHeight="500.0" prefWidth="430.0">
+                                    <Label layoutX="25.0" layoutY="27.0" text="Productos de la petición" />
+                                    <TableView fx:id="productsRequest" layoutX="25.0" layoutY="58.0" prefHeight="500.0" prefWidth="300.0">
                                       <columns>
-                                        <TableColumn fx:id="columnRequestId" prefWidth="111.0" text="No." />
-                                        <TableColumn fx:id="columnRequestProduct" prefWidth="178.0" text="Producto" />
-                                          <TableColumn fx:id="columnRequestQuantity" prefWidth="131.0" text="Cantidad KG." />
+                                        <TableColumn fx:id="columnRequestId" prefWidth="62.0" text="No." />
+                                        <TableColumn fx:id="columnRequestProduct" prefWidth="236.0" text="Producto" />
                                       </columns>
                                     </TableView>
                                  </children>
@@ -238,22 +237,24 @@
                                     <Insets bottom="50.0" right="60.0" top="40.0" />
                                  </BorderPane.margin>
                                  <children>
-                                    <TableView layoutX="20.0" layoutY="226.0" prefHeight="360.0" prefWidth="440.0">
+                                    <TableView fx:id="OutputsProductTake" layoutX="20.0" layoutY="226.0" prefHeight="360.0" prefWidth="440.0">
                                        <columns>
-                                          <TableColumn prefWidth="190.0" text="Lote" />
-                                          <TableColumn prefWidth="246.0" text="Cantidad" />
+                                          <TableColumn fx:id="columnOutputProductLot" prefWidth="190.0" text="Lote" />
+                                          <TableColumn fx:id="columnOutputProductQuantity" prefWidth="246.0" text="Cantidad" />
                                        </columns>
                                     </TableView>
-                                    <JFXButton layoutX="20.0" layoutY="150.0" prefHeight="37.0" prefWidth="440.0" styleClass="gold" text="Tomar" />
+                                    <JFXButton fx:id="buttonPresentationsToTake" layoutX="20.0" layoutY="150.0" prefHeight="37.0" prefWidth="440.0" styleClass="gold" text="Tomar" />
                                     <Pane layoutY="617.0" prefHeight="87.0" prefWidth="480.0" styleClass="container">
                                        <children>
                                           <JFXButton layoutX="372.0" layoutY="11.0" prefHeight="35.0" prefWidth="94.0" styleClass="gold" text="Guardar" />
                                        </children>
                                     </Pane>
-                                    <Label layoutX="20.0" layoutY="21.0" prefHeight="20.0" prefWidth="440.0" styleClass="label-presentations" />
-                                    <JFXComboBox focusTraversable="false" labelFloat="true" layoutX="27.0" layoutY="79.0" prefWidth="150.0" promptText="Lote" styleClass="itemForm" />
-                                    <Label alignment="CENTER_RIGHT" layoutX="211.0" layoutY="81.0" prefHeight="28.0" prefWidth="59.0" text="0" />
-                                    <JFXTextField labelFloat="true" layoutX="340.0" layoutY="83.0" prefWidth="120.0" promptText="Cantidad a tomar" />
+                                    <Label fx:id="presentationProduct" layoutX="20.0" layoutY="21.0" prefHeight="20.0" prefWidth="440.0" styleClass="label-presentations" />
+                                    <JFXComboBox fx:id="lotsPresentations" focusTraversable="false" labelFloat="true" layoutX="27.0" layoutY="79.0" prefWidth="150.0" promptText="Lote" styleClass="itemForm" />
+                                    <Label fx:id="presentationsQuantity" alignment="CENTER_RIGHT" layoutX="211.0" layoutY="81.0" prefHeight="28.0" prefWidth="59.0" text="0" />
+                                    <JFXTextField fx:id="unitsToTake" labelFloat="true" layoutX="340.0" layoutY="83.0" prefWidth="120.0" promptText="Cantidad a tomar" />
+                                    <Label fx:id="errorPresentationLot" layoutX="27.0" layoutY="117.0" styleClass="error-message" text="Label" visible="false" />
+                                    <Label fx:id="errorPresentationQuantity" layoutX="340.0" layoutY="117.0" styleClass="error-message" text="Label" visible="false" />
                                  </children>
                               </Pane>
                            </right>

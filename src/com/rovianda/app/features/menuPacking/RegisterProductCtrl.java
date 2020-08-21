@@ -56,11 +56,15 @@ public class RegisterProductCtrl implements Initializable {
     private TableColumn<ProductsRequest, String> columnRequestProduct;
 
     @FXML
-    private TableColumn<ProductsRequest, Integer> columnRequestQuantity;
-
+    private TableView<Order> tableOrders;
 
     @FXML
-    private TableView<Order> tableOrders;
+    private TableView<OutputsProduct> OutputsProductTake;
+
+    @FXML
+    private TableColumn<OutputsProduct, String> columnOutputProductLot;
+    @FXML
+    private TableColumn<OutputsProduct, Integer> columnOutputProductQuantity;
 
     @FXML
     private TableColumn<Order, String>
@@ -100,7 +104,10 @@ public class RegisterProductCtrl implements Initializable {
     private JFXComboBox<OptionOrder> urgent;
 
     @FXML
-    JFXTextField lotId, weight, lotReprocessing, weightReprocessing, allergenReprocessing, units;
+    private JFXComboBox<PackagingLots> lotsPresentations;
+
+    @FXML
+    JFXTextField lotId, weight, lotReprocessing, weightReprocessing, allergenReprocessing, units,unitsToTake;
 
     @FXML
     JFXComboBox<ProductPresentation> presentation;
@@ -115,7 +122,8 @@ public class RegisterProductCtrl implements Initializable {
             btnSaveProduct,
             btnSaveReprocessing,
             btnModalCancel,
-            btnModalAccept;
+            btnModalAccept,
+            buttonPresentationsToTake;
 
     @FXML
     private JFXSpinner spinnerReprocessing;
@@ -132,7 +140,11 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     private Label weightError, errorReproProduct, errorReproAllergen, errorReproArea, labelModal,
-            errorPresentation, errorUnits, errorWeight, errorObservations, errorProductId;
+            errorPresentation, errorUnits, errorWeight, errorObservations, errorProductId,
+            presentationProduct,
+            presentationsQuantity,
+            errorPresentationLot,
+            errorPresentationQuantity;
 
     boolean activeProcess = false;
 
@@ -173,6 +185,7 @@ public class RegisterProductCtrl implements Initializable {
             buttonRequest.getStyleClass().remove("tap-selected");
             initializePaneRegister();
             tapRegister = true;
+            activePresentations= false;
         }
     }
 
@@ -186,11 +199,14 @@ public class RegisterProductCtrl implements Initializable {
     }
 
     private void changeTap() {
-        if ( activePresentations ||tapRegister) {
+        if (tapRegister ||activePresentations) {
+            if(!activePresentations){
+                buttonRequest.getStyleClass().add("tap-selected");
+                buttonRegister.getStyleClass().remove("tap-selected");
+            }
             tapRegister = false;
             activePresentations= false;
-            buttonRequest.getStyleClass().add("tap-selected");
-            buttonRegister.getStyleClass().remove("tap-selected");
+            activeProcess = false;
             request.toFront();
             this.urgent.setValue(null);
             initializePaneRequest();
@@ -448,7 +464,6 @@ public class RegisterProductCtrl implements Initializable {
         TableViewOrders.assignColumnDate(columnDate);
         TableViewOrders.columnId = columnRequestId;
         TableViewOrders.assignColumnProductsProduct(columnRequestProduct);
-        TableViewOrders.assignColumnProductsQuantity(columnRequestQuantity);
     }
 
     private void buildTablePresentations(){
@@ -456,6 +471,14 @@ public class RegisterProductCtrl implements Initializable {
         TableViewOrders.columnIdPresentation = columnPresentationsNo;
         TableViewOrders.assignColumnPresentations(columnPresentationName);
         TableViewOrders.assignColumnUnits(columnPresentationUnits);
+        TableViewOrders.lots= lotsPresentations;
+        TableViewOrders.tagName = presentationProduct;
+        TableViewOrders.tagUnits = presentationsQuantity;
+        TableViewOrders.errorLots = errorPresentationLot;
+        TableViewOrders.errorQuantity=errorPresentationQuantity;
+        TableViewOrders.buttonAddUnitsToTake = buttonPresentationsToTake;
+        TableViewOrders.buildTableOutputProduct(OutputsProductTake,columnOutputProductLot,columnOutputProductQuantity);
+        TableViewOrders.assignUnitsTextField(unitsToTake);
     }
 
     void initModal() {

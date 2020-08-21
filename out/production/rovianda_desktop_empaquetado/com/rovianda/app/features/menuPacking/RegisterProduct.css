@@ -140,16 +140,10 @@
 }
 
 .table-row-cell:selected {
-    -fx-background-color: #e1bc5c;
+    -fx-background-color: #ededed;
     -fx-background-insets: 0;
     -fx-background-radius: 1;
     -fx-font-weight: 600;
-}
-
-.table-row-cell:odd {
-    -fx-background-color: -fx-table-cell-border-color, white;
-    -fx-background-insets: 0, 0 0 1 0;
-    -fx-padding: 0.0em; /* 0 */
 }
 
 .table-view .table-cell {
