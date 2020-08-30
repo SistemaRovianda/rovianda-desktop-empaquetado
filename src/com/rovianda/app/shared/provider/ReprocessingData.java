@@ -49,7 +49,6 @@ public class ReprocessingData {
                    button.setDisable(false);
                    spinner.setVisible(false);
                    if(registerReprocessingTask.getValue().equals("success")){
-                      ToastProvider.showToastSuccess("Reproceso registrado exitosamente",2000);
                        method.method();
                    }else {
                        ToastProvider.showToastError(registerReprocessingTask.getValue(),3000);

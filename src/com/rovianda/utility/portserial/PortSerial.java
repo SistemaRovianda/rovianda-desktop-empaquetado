@@ -27,7 +27,7 @@ public class PortSerial {
         ports = SerialPort.getCommPorts();
         for (int i =0; i < ports.length;i++){
             System.out.println(ports[i].getDescriptivePortName());
-            if(ports[i].getDescriptivePortName().indexOf("VSPE_SERIAL1")!=-1){
+            if(ports[i].getDescriptivePortName().indexOf("Prolific USB-to-Serial Comm Port")!=-1){
                port= i;
                comPort = ports[i];
             }

@@ -164,6 +164,7 @@ public class RegisterProductCtrl implements Initializable {
         buildTableRegister();
         buildTableRequest();
         buildTablePresentations();
+        buildPaneRegister();
         initializePaneRegister();
         buttonRegister.getStyleClass().add("tap-selected");
         onRegister();
@@ -181,9 +182,9 @@ public class RegisterProductCtrl implements Initializable {
     private void onRegister() {
         register.toFront();
         if (!tapRegister) {
+            initializePaneRegister();
             buttonRegister.getStyleClass().add("tap-selected");
             buttonRequest.getStyleClass().remove("tap-selected");
-            initializePaneRegister();
             tapRegister = true;
             activePresentations= false;
         }
@@ -356,7 +357,11 @@ public class RegisterProductCtrl implements Initializable {
         } catch (Exception e) {
             itemRegister.setWeight(0);
         }
-        ReprocessingData.registerReprocessing(itemRegister, btnSaveReprocessing, spinnerReprocessing, this::initValueReprocessing);
+        ReprocessingData.registerReprocessing(itemRegister, btnSaveReprocessing, spinnerReprocessing,  ()->{
+            this.onCancelReprocessing();
+            this.initValueReprocessing();
+            ToastProvider.showToastSuccess("Reproceso registrado exitosamente",2000);
+        });
 
     }
 
@@ -370,6 +375,16 @@ public class RegisterProductCtrl implements Initializable {
         errorReproAllergen.setVisible(false);
         errorReproProduct.setVisible(false);
         errorReproArea.setVisible(false);
+    }
+
+    private void buildPaneRegister(){
+        DataValidator.numberValidate(units, errorUnits);
+        DataValidator.decimalValidate(weight, errorWeight);
+        ItemFormValidator.isValidSelectorFocus(productId, errorProductId);
+        ItemFormValidator.isValidSelectorFocus(presentation, errorPresentation);
+        ItemFormValidator.isValidInputFocus(units, errorUnits);
+        ItemFormValidator.isValidInputFocus(weight, errorWeight);
+        ItemFormValidator.isValidInputFocus(observation, errorObservations);
     }
 
     private void initializePaneRegister() {
@@ -387,17 +402,9 @@ public class RegisterProductCtrl implements Initializable {
         btnSaveProduct.setDisable(true);
         DataValidator.minDate(expirationDate, LocalDate.now());
         DataComboBox.FillProductCatalog(productId);
-        DataValidator.numberValidate(units, errorUnits);
-        DataValidator.decimalValidate(weight, errorWeight);
         WeightService.assignWeight(weight);
         TableViewRegister.clearTable();
         presentation.setDisable(true);
-        ItemFormValidator.isValidSelectorFocus(productId, errorProductId);
-        ItemFormValidator.isValidSelectorFocus(presentation, errorPresentation);
-        ItemFormValidator.isValidInputFocus(units, errorUnits);
-        ItemFormValidator.isValidInputFocus(weight, errorWeight);
-        ItemFormValidator.isValidInputFocus(observation, errorObservations);
-
     }
 
     private void initializePaneReprocessing() {
