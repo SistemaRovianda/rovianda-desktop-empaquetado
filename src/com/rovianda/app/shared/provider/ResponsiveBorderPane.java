@@ -4,8 +4,8 @@ import javafx.scene.layout.BorderPane;
 import java.awt.*;
 
 public class ResponsiveBorderPane {
-    private static int height = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height;
-    private static int width = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width;
+    private static int height = ResponsiveDimensions.getHeight();
+    private static int width = ResponsiveDimensions.getWidth();
     public static void addSizeBorderPane(BorderPane tap){
 
         tap.setMinWidth(width-220);

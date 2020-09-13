@@ -42,11 +42,9 @@
 }
 
 .exit{
-    -fx-background-color: tomato;
-    -fx-background-radius: 18px;
+    -fx-background-color: #EE4949;
 }
 .minimize{
     -fx-background-color: #e1bc5c;
-    -fx-background-radius: 18px;
 }
 

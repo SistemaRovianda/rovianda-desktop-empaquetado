@@ -22,10 +22,12 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TableViewOrders {
 
-    static ObservableList<OutputsProduct> itemsOutputs = FXCollections.observableArrayList();;
+    static ObservableList<OutputsProduct> itemsOutputs = FXCollections.observableArrayList();
+    ;
     public static TableView<Order> currentTable;
     public static TableView<ProductsRequest> currentTableProducts;
     public static TableView<Presentation> currentTablePresentation;
@@ -37,8 +39,8 @@ public class TableViewOrders {
     public static Pane presentations;
     public static JFXComboBox<PackagingLots> lots;
     static JFXTextField unitsToTake;
-    public static  JFXButton buttonAddUnitsToTake;
-    public static  Label tagName, tagUnits, errorQuantity, errorLots;
+    public static JFXButton buttonAddUnitsToTake, buttonSaveOutput;
+    public static Label tagName, tagUnits, errorQuantity, errorLots;
     static TableView<OutputsProduct> currentTableOutput;
 
     public static void assignColumnNoOrder(TableColumn<Order, Integer> column) {
@@ -123,10 +125,11 @@ public class TableViewOrders {
         currentTablePresentation.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 currentPresentation = newValue;
-                tagUnits.setText(""+currentPresentation.getUnits());
-                tagName.setText(currentProduct.getName()+" "
-                        +currentPresentation.getPresentation()+" "
-                        +currentPresentation.getTypePresentation());
+                tagUnits.setText("" + currentPresentation.getUnits());
+                tagName.setText(currentProduct.getName() + " "
+                        + currentPresentation.getTypePresentation());
+                unitsToTake.setText("");
+                lots.setValue(null);
             }
         });
     }
@@ -148,19 +151,19 @@ public class TableViewOrders {
         column.setCellValueFactory(new PropertyValueFactory<Presentation, Integer>("units"));
     }
 
-    public static void assignUnitsTextField (JFXTextField units){
+    public static void assignUnitsTextField(JFXTextField units) {
         unitsToTake = units;
-        DataValidator.numberValidate(unitsToTake,errorQuantity);
-        ItemFormValidator.isValidSelectorFocus(lots,errorLots);
-        buttonAddUnitsToTake.setOnAction(e->{
+        DataValidator.numberValidate(unitsToTake, errorQuantity);
+        ItemFormValidator.isValidSelectorFocus(lots, errorLots);
+        buttonAddUnitsToTake.setOnAction(e -> {
             addItemOutputTable();
         });
     }
 
-    public static void buildTableOutputProduct(TableView <OutputsProduct> table, TableColumn<OutputsProduct,String> columnLot, TableColumn<OutputsProduct,Integer> columnQuantity){
+    public static void buildTableOutputProduct(TableView<OutputsProduct> table, TableColumn<OutputsProduct, String> columnLot, TableColumn<OutputsProduct, Integer> columnQuantity) {
         currentTableOutput = table;
-        columnLot.setCellValueFactory(new PropertyValueFactory<OutputsProduct,String>("loteId"));
-        columnQuantity.setCellValueFactory( new PropertyValueFactory<OutputsProduct,Integer>("quantity"));
+        columnLot.setCellValueFactory(new PropertyValueFactory<OutputsProduct, String>("loteId"));
+        columnQuantity.setCellValueFactory(new PropertyValueFactory<OutputsProduct, Integer>("quantity"));
     }
 
     public static void fillTableOrders(boolean urgent) {
@@ -184,6 +187,8 @@ public class TableViewOrders {
         ordersTask.setOnSucceeded(e -> {
             if (ordersTask.getValue().size() == 0) {
                 ToastProvider.showToastInfo("No existen ordenes por el momento", 3000);
+                //currentTable.getItems().setAll(new Order(1, "04-09-2020", "256eienusn", "Panchito Fake", true));
+
             } else {
                 currentTable.getItems().setAll(ordersTask.getValue());
             }
@@ -191,6 +196,7 @@ public class TableViewOrders {
 
         ordersTask.setOnFailed(e -> {
             ToastProvider.showToastError(e.getSource().getException().getMessage(), 3000);
+            System.out.println(e.getSource().getException().getMessage());
         });
 
     }
@@ -210,10 +216,11 @@ public class TableViewOrders {
         thread.start();
         productsTask.setOnSucceeded(e -> {
             currentTableProducts.getItems().setAll(productsTask.getValue());
+            //currentTableProducts.getItems().setAll(new ProductsRequest(1, "producto fake", 5));
         });
 
         productsTask.setOnFailed(e -> {
-            ToastProvider.showToastError(e.getSource().getException().getMessage(), 3000);
+            ToastProvider.showToastError(e.getSource().getException().getMessage(), 1000);
         });
         assignColumnProductsId();
     }
@@ -233,6 +240,8 @@ public class TableViewOrders {
         thread.start();
         presentationsTask.setOnSucceeded(e -> {
             currentTablePresentation.getItems().setAll(presentationsTask.getValue());
+            //currentTablePresentation.getItems().setAll(new Presentation(1, 1, 50, 1, "gramos", "3.00"),
+                   // new Presentation(1, 1, 65, 2, "kilos", "3.00"));
         });
 
         presentationsTask.setOnFailed(e -> {
@@ -241,9 +250,9 @@ public class TableViewOrders {
         assignColumnPresentationsId();
     }
 
-    static void fillLots(){
+    static void fillLots() {
         ObservableList<PackagingLots> lotsProducts = FXCollections.observableArrayList();
-        Task <List<PackagingLots>> taskLots = new Task<List<PackagingLots>>() {
+        Task<List<PackagingLots>> taskLots = new Task<List<PackagingLots>>() {
             @Override
             protected List<PackagingLots> call() throws Exception {
                 return ServicePackaging.getLotsByProduct(currentProduct.getProduct_id());
@@ -252,41 +261,97 @@ public class TableViewOrders {
         Thread thread = new Thread(taskLots);
         thread.setDaemon(true);
         thread.start();
-        taskLots.setOnSucceeded(e->{
-            ToastProvider.showToastSuccess("Lotes obtenidos",1500);
-            if(taskLots.getValue().size() >0){
+        taskLots.setOnSucceeded(e -> {
+            ToastProvider.showToastSuccess("Lotes obtenidos", 1500);
+            if (taskLots.getValue().size() > 0) {
                 lots.setDisable(false);
                 lotsProducts.addAll(taskLots.getValue());
-            }
-            else{
-                ToastProvider.showToastInfo("No existen lotes para el producto",1500);
-                lots.setDisable(true);
+            } else {
+                ToastProvider.showToastInfo("No existen lotes para el producto", 1500);
+                lots.setDisable(false);
+               // lotsProducts.addAll(new PackagingLots(1, "lote1", 1, 1, "gramos", "super", 2.3),
+                       // new PackagingLots(1, "lote2", 1, 1, "kilos", "super2", 2.3));
             }
 
         });
 
         taskLots.setOnFailed(event -> {
-            ToastProvider.showToastError(event.getSource().getException().getMessage(),1500);
+            ToastProvider.showToastError(event.getSource().getException().getMessage(), 1500);
             lots.setDisable(true);
         });
 
         lots.setItems(lotsProducts);
         lots.setConverter(new StringConverter<PackagingLots>() {
-           @Override
-           public String toString(PackagingLots object) {
-               return object.getLoteId();
-           }
+            @Override
+            public String toString(PackagingLots object) {
+                return object.getLoteId();
+            }
 
-           @Override
-           public PackagingLots fromString(String string) {
-               return null;
-           }
-       });
+            @Override
+            public PackagingLots fromString(String string) {
+                return null;
+            }
+        });
     }
 
-    static void addItemOutputTable(){
-        OutputsProduct item = new OutputsProduct("lot fake",currentPresentation.getSubOrderId(),Integer.parseInt(unitsToTake.getText()));
-        currentTableOutput.getItems().add(item);
-        System.out.println( currentTableOutput.getItems().toString());
+    static void addItemOutputTable() {
+
+        if (ItemFormValidator.isValidSelector(lots, errorLots) && ItemFormValidator.isValidInputNumber(unitsToTake, errorQuantity)) {
+            int units = Integer.parseInt(unitsToTake.getText());
+            OutputsProduct currentItem = currentTableOutput.getItems().stream().filter(item -> item.getPresentationId() == currentPresentation.getPresentation()).findAny().orElse(null);
+            tagUnits.setText("" + (Integer.parseInt(tagUnits.getText()) - units));
+            List presentations  = currentTablePresentation.getItems().stream().map(presentation -> {
+                if(presentation.getPresentation() == currentPresentation.getPresentation()){
+                    presentation.setUnits(presentation.getUnits()- units );
+                }
+                return  presentation;
+            }).collect(Collectors.toList());
+            currentTablePresentation.getItems().clear();
+            currentTablePresentation.getItems().addAll(presentations);
+
+            if (currentItem == null) {
+                OutputsProduct item = new OutputsProduct(lots.getValue().getLoteId(), currentPresentation.getSubOrderId(), units, currentPresentation.getPresentation());
+                currentTableOutput.getItems().add(item);
+            } else {
+                List<OutputsProduct> newItems = currentTableOutput.getItems().stream().map(output -> {
+                    if (output.getPresentationId() == currentPresentation.getPresentation()) {
+                        output.setQuantity(output.getQuantity() + units);
+                    }
+                    return output;
+                }).collect(
+                        Collectors.toList()
+                );
+                currentTableOutput.getItems().clear();
+                currentTableOutput.getItems().addAll(newItems);
+            }
+            unitsToTake.setText("");
+        }
+
+    }
+
+    public static void saveOutputLots(Method method) {
+       if(currentTableOutput.getItems().size() >0){
+           ToastProvider.showToastInfo("Registrando salidas de lotes", 1500);
+           Task<Boolean> taskOutputs = new Task<Boolean>() {
+               @Override
+               protected Boolean call() throws Exception {
+                   return ServicePackaging.registerOutputsLots(currentTableOutput.getItems());
+               }
+           } ;
+           Thread thread = new Thread(taskOutputs);
+           thread.setDaemon(true);
+           thread.start();
+
+           taskOutputs.setOnSucceeded(e->{
+               currentTableOutput.getItems().clear();
+               method.method();
+           });
+
+           taskOutputs.setOnFailed(e->{
+               ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
+           });
+       }else {
+           ModalProvider.showModalInfo("Es necesario agregar lotes para realizar el registro");
+       }
     }
 }

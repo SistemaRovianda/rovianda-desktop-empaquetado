@@ -90,4 +90,15 @@ public class ServicePackaging {
         response.close();
         return result;
     }
+
+    public static boolean registerOutputsLots(List<OutputsProduct> outputsProduct) throws Exception {
+        Response response = HttpClient.post("",outputsProduct);
+        boolean result = false;
+        if (response.getStatus() == 201){
+            result= true;
+        }else {
+            throw new Exception("Error al registrar salidas");
+        }
+        return  result;
+    }
 }

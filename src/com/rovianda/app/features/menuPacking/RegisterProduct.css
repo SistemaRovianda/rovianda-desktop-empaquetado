@@ -169,3 +169,8 @@
     -fx-font-weight: 600;
     -fx-font-size: 0.9em;
 }
+.minimize{
+    -fx-background-color: #e1bc5c;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 10, 0, 0, 0);
+}
+

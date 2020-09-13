@@ -9,6 +9,19 @@ public class PackagingLots {
     private String typePresentation;
     private Double pricePresentation;
 
+
+    public PackagingLots(){}
+
+    public  PackagingLots(int productId, String loteId, int quantity, int presentationId, String presentation, String typePresentation, Double pricePresentation){
+        this.productId = productId;
+        this.loteId = loteId;
+        this.quantity = quantity;
+        this.presentationId = presentationId;
+        this.presentation = presentation;
+        this.typePresentation = typePresentation;
+        this.pricePresentation = pricePresentation;
+    }
+
     public int getProductId() {
         return productId;
     }

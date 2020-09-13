@@ -13,9 +13,13 @@ public class HttpClient {
 
     private static String URL = "https://us-central1-rovianda-88249.cloudfunctions.net/app/rovianda/";
 
+    private static String URLFake ="https://b60885fe-bfd1-44cb-b324-dda60656ed34.mock.pstmn.io";
+
     private static Client client = ClientBuilder.newClient();
 
     private static WebTarget webTarget = client.target(URL);
+
+    private static  WebTarget webTargetFake = client.target(URLFake);
 
 
     public static Response get(String path){
@@ -39,5 +43,7 @@ public class HttpClient {
         response.bufferEntity();
         return response;
     }
+
+
 
 }

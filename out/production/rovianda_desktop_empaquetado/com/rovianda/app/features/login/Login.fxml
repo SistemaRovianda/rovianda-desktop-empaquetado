@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="loginContainer" prefHeight="838.0" prefWidth="1199.0" styleClass="container" stylesheets="@Login.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rovianda.app.features.login.LoginCtrl">
+<AnchorPane fx:id="loginContainer" prefHeight="840.0" prefWidth="1200.0" styleClass="container" stylesheets="@Login.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rovianda.app.features.login.LoginCtrl">
    <children>
       <BorderPane layoutX="274.0" layoutY="83.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <right>
@@ -43,8 +43,22 @@
                   <Label fx:id="labelPassword" layoutX="86.0" layoutY="468.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" visible="false" />
                   <Label fx:id="labelSpinner" layoutX="85.0" layoutY="501.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" textAlignment="CENTER" visible="false" />
                   <JFXSpinner fx:id="spinner" layoutX="206.0" layoutY="505.0" prefHeight="32.0" prefWidth="38.0" visible="false" />
-                  <JFXButton fx:id="minimize" layoutX="367.0" layoutY="13.0" prefHeight="25.0" prefWidth="24.0" styleClass="minimize" />
-                  <JFXButton fx:id="exit" layoutX="404.0" layoutY="13.0" prefHeight="25.0" prefWidth="24.0" styleClass="exit" />
+                  <JFXButton fx:id="minimize" contentDisplay="CENTER" focusTraversable="false" layoutX="363.0" layoutY="8.0" onAction="#minimizeScreen" prefHeight="31.0" prefWidth="31.0" styleClass="minimize">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../assets/icons/minimize.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
+                  <JFXButton fx:id="exit" contentDisplay="CENTER" focusTraversable="false" layoutX="411.0" layoutY="8.0" prefHeight="31.0" prefWidth="31.0" styleClass="exit" textAlignment="CENTER">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../assets/icons/close.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
                </children>
             </Pane>
          </right>

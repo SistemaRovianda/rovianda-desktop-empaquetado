@@ -8,6 +8,18 @@ public class Presentation {
     private String typePresentation;
     private String pricePresentation;
 
+    public Presentation(){}
+
+    public Presentation(int subOrderId, int productId, int units,
+                        int presentation, String typePresentation,String pricePresentation){
+        this.subOrderId = subOrderId;
+        this.productId = productId;
+        this.units = units;
+        this.presentation = presentation;
+        this.typePresentation = typePresentation;
+        this.pricePresentation = pricePresentation;
+    }
+
     public int getSubOrderId() {
         return subOrderId;
     }

@@ -15,6 +15,16 @@ public class Order {
     private String vendedor;
     private boolean status;
 
+    public Order(){}
+
+    public Order(int orderId, String date, String userId, String vendedor, boolean status){
+        this.orderId = orderId;
+        this.date = date;
+        this.userId = userId;
+        this.vendedor = vendedor;
+        this.status = status;
+    }
+
     public int getOrderId() {
         return orderId;
     }

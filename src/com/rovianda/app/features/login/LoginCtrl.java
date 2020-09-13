@@ -50,7 +50,6 @@ public class LoginCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         EnvironmentActions.exitAction(exit);
-        EnvironmentActions.minimizeAction(minimize);
         loginContainer.setOpacity(0);
         Fade.visibleElement(loginContainer,1000);
         DataValidator.emailValidator(inputEmail,labelEmail, ()-> updateButton() );
@@ -62,6 +61,11 @@ public class LoginCtrl implements Initializable {
                     this.onClick();
             }
         });
+    }
+
+    @FXML
+    void minimizeScreen(){
+        EnvironmentActions.minimizeAction();
     }
 
     @FXML

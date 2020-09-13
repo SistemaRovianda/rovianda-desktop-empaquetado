@@ -4,11 +4,13 @@ public class OutputsProduct {
      private String loteId;
      private int subOrderId;
      private int quantity;
+     private int presentationId;
 
-     public OutputsProduct(String loteId, int subOrderId, int quantity){
+     public OutputsProduct(String loteId, int subOrderId, int quantity,int presentationId){
          this.loteId =  loteId;
          this.subOrderId = subOrderId;
          this.quantity = quantity;
+         this.presentationId  = presentationId;
      }
 
     public String getLoteId() {
@@ -35,12 +37,21 @@ public class OutputsProduct {
         this.quantity = quantity;
     }
 
+    public int getPresentationId() {
+        return presentationId;
+    }
+
+    public void setPresentationId(int presentationId) {
+        this.presentationId = presentationId;
+    }
+
     @Override
     public String toString() {
         return "OutputsProduct{" +
                 "loteId='" + loteId + '\'' +
                 ", subOrderId=" + subOrderId +
                 ", quantity=" + quantity +
+                ", presentationId=" + presentationId +
                 '}';
     }
 }

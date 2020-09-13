@@ -6,8 +6,14 @@ public class ProductsRequest {
     private String name;
     private int quantity;
 
-    public ProductsRequest(){
+    public ProductsRequest() {
 
+    }
+
+    public ProductsRequest(int product_id, String name, int quantity) {
+        this.product_id = product_id;
+        this.name = name;
+        this.quantity = quantity;
     }
 
     public int getProduct_id() {

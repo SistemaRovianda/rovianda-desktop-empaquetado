@@ -118,7 +118,7 @@ public class DataComboBox {
         comboBox.setConverter(new StringConverter<ProductPresentation>() {
             @Override
             public String toString(ProductPresentation object) {
-                return object.getTypePresentation();
+                return ""+object.getPresentation()+" "+object.getTypePresentation();
             }
 
             @Override

@@ -68,7 +68,7 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     private TableColumn<Order, String>
-            columnVendedor,columnDate;
+            columnVendedor, columnDate;
     @FXML
     private TableColumn<Order, JFXButton>
             columnOptions;
@@ -77,14 +77,14 @@ public class RegisterProductCtrl implements Initializable {
             columnNoOrder;
 
     @FXML
-    private TableView <Presentation> tablePresentations;
+    private TableView<Presentation> tablePresentations;
 
     @FXML
-    private  TableColumn<Presentation, Integer>
-            columnPresentationsNo,columnPresentationUnits;
+    private TableColumn<Presentation, Integer>
+            columnPresentationsNo, columnPresentationUnits;
 
     @FXML
-    private TableColumn<Presentation,String>
+    private TableColumn<Presentation, String>
             columnPresentationName;
 
     @FXML
@@ -95,10 +95,8 @@ public class RegisterProductCtrl implements Initializable {
             presentations;
 
     @FXML
-    private JFXComboBox<ProductCatalog> productId, productReprocessing;
+    private JFXComboBox<ProductCatalog> productId;
 
-    @FXML
-    private JFXComboBox<Area> areaReprocessing;
 
     @FXML
     private JFXComboBox<OptionOrder> urgent;
@@ -107,7 +105,7 @@ public class RegisterProductCtrl implements Initializable {
     private JFXComboBox<PackagingLots> lotsPresentations;
 
     @FXML
-    JFXTextField lotId, weight, lotReprocessing, weightReprocessing, allergenReprocessing, units,unitsToTake;
+    JFXTextField lotId, weight, lotReprocessing, weightReprocessing, allergenReprocessing, units, unitsToTake;
 
     @FXML
     JFXComboBox<ProductPresentation> presentation;
@@ -119,11 +117,13 @@ public class RegisterProductCtrl implements Initializable {
     @FXML
     private JFXButton buttonRegister,
             buttonRequest,
+            buttonReprocessing,
             btnSaveProduct,
             btnSaveReprocessing,
             btnModalCancel,
             btnModalAccept,
-            buttonPresentationsToTake;
+            buttonPresentationsToTake,
+            btnOutput;
 
     @FXML
     private JFXSpinner spinnerReprocessing;
@@ -139,7 +139,7 @@ public class RegisterProductCtrl implements Initializable {
     private final List<Product> products = new ArrayList<>();
 
     @FXML
-    private Label weightError, errorReproProduct, errorReproAllergen, errorReproArea, labelModal,
+    private Label weightError, errorReproAllergen, errorReproLot, labelModal,
             errorPresentation, errorUnits, errorWeight, errorObservations, errorProductId,
             presentationProduct,
             presentationsQuantity,
@@ -149,6 +149,7 @@ public class RegisterProductCtrl implements Initializable {
     boolean activeProcess = false;
 
     boolean tapRegister = true;
+    boolean tapReprocessing = false;
 
     public static boolean activePresentations = false;
 
@@ -185,8 +186,10 @@ public class RegisterProductCtrl implements Initializable {
             initializePaneRegister();
             buttonRegister.getStyleClass().add("tap-selected");
             buttonRequest.getStyleClass().remove("tap-selected");
+            buttonReprocessing.getStyleClass().remove("tap-selected");
             tapRegister = true;
-            activePresentations= false;
+            tapReprocessing = false;
+            activePresentations = false;
         }
     }
 
@@ -200,13 +203,15 @@ public class RegisterProductCtrl implements Initializable {
     }
 
     private void changeTap() {
-        if (tapRegister ||activePresentations) {
-            if(!activePresentations){
+        if (tapRegister || activePresentations || tapReprocessing) {
+            if (!activePresentations) {
                 buttonRequest.getStyleClass().add("tap-selected");
                 buttonRegister.getStyleClass().remove("tap-selected");
+                buttonReprocessing.getStyleClass().remove("tap-selected");
             }
             tapRegister = false;
-            activePresentations= false;
+            tapReprocessing = false;
+            activePresentations = false;
             activeProcess = false;
             request.toFront();
             this.urgent.setValue(null);
@@ -261,12 +266,15 @@ public class RegisterProductCtrl implements Initializable {
     }
 
     private void changeToReprocessing() {
-        buttonRegister.setDisable(true);
-        buttonRegister.getStyleClass().remove("tap-selected");
-        buttonRequest.setDisable(true);
-        buttonRequest.getStyleClass().remove("tap-selected");
-        reprocessing.toFront();
-        initializePaneReprocessing();
+        if (!tapReprocessing) {
+            buttonRegister.getStyleClass().remove("tap-selected");
+            buttonRequest.getStyleClass().remove("tap-selected");
+            buttonReprocessing.getStyleClass().add("tap-selected");
+            tapReprocessing = true;
+            tapRegister = false;
+            reprocessing.toFront();
+            initializePaneReprocessing();
+        }
     }
 
     @FXML
@@ -285,7 +293,7 @@ public class RegisterProductCtrl implements Initializable {
                 && ItemFormValidator.isValidSelector(presentation, errorPresentation)
                 && ItemFormValidator.isValidInputNumber(units, errorUnits)
                 && ItemFormValidator.isValidInputDecimal(weight, errorWeight)
-                && ItemFormValidator.isValidInput(observation, errorObservations)
+            //&& ItemFormValidator.isValidInput(observation, errorObservations)
         ) {
             btnSaveProduct.setDisable(false);
             productId.setDisable(true);
@@ -326,65 +334,50 @@ public class RegisterProductCtrl implements Initializable {
         units.setText("");
     }
 
-    @FXML
-    void onCancelReprocessing() {
-        register.toFront();
-        initializePaneRegister();
-        buttonRegister.setDisable(false);
-        buttonRequest.setDisable(false);
-        buttonRegister.getStyleClass().add("tap-selected");
-    }
 
     @FXML
     void onSaveReprocessing() {
         if (
                 ItemFormValidator.isValidInputDecimal(weightReprocessing, weightError) &&
-                        ItemFormValidator.isValidInput(allergenReprocessing, errorReproAllergen) &&
-                        ItemFormValidator.isValidSelector(productReprocessing, errorReproProduct) &&
-                        ItemFormValidator.isValidSelector(areaReprocessing, errorReproArea))
+                        ItemFormValidator.isValidInput(lotReprocessing,errorReproLot)&&
+                        ItemFormValidator.isValidInput(allergenReprocessing, errorReproAllergen))
             createItemRegisterReprocessing();
     }
 
     private void createItemRegisterReprocessing() {
         Reprocessing itemRegister = new Reprocessing();
         itemRegister.setAllergen(allergenReprocessing.getText());
-        itemRegister.setArea((areaReprocessing.getValue() == null) ? "" : areaReprocessing.getValue().getArea());
         itemRegister.setDate(dateReprocessing.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        itemRegister.setProductId((productReprocessing.getValue() == null) ? 0 : productReprocessing.getValue().getProductId());
         itemRegister.setLotId(lotReprocessing.getText());
         try {
             itemRegister.setWeight(Double.parseDouble(weightReprocessing.getText()));
         } catch (Exception e) {
             itemRegister.setWeight(0);
         }
-        ReprocessingData.registerReprocessing(itemRegister, btnSaveReprocessing, spinnerReprocessing,  ()->{
-            this.onCancelReprocessing();
+        ReprocessingData.registerReprocessing(itemRegister, btnSaveReprocessing, spinnerReprocessing, () -> {
             this.initValueReprocessing();
-            ToastProvider.showToastSuccess("Reproceso registrado exitosamente",2000);
+            ToastProvider.showToastSuccess("Reproceso registrado exitosamente", 2000);
         });
 
     }
 
     private void initValueReprocessing() {
         allergenReprocessing.setText("");
-        areaReprocessing.setValue(null);
-        productReprocessing.setValue(null);
         lotReprocessing.setText("");
         weightReprocessing.setText("");
         weightError.setVisible(false);
         errorReproAllergen.setVisible(false);
-        errorReproProduct.setVisible(false);
-        errorReproArea.setVisible(false);
+        errorReproLot.setVisible(false);
     }
 
-    private void buildPaneRegister(){
+    private void buildPaneRegister() {
         DataValidator.numberValidate(units, errorUnits);
         DataValidator.decimalValidate(weight, errorWeight);
         ItemFormValidator.isValidSelectorFocus(productId, errorProductId);
         ItemFormValidator.isValidSelectorFocus(presentation, errorPresentation);
         ItemFormValidator.isValidInputFocus(units, errorUnits);
         ItemFormValidator.isValidInputFocus(weight, errorWeight);
-        ItemFormValidator.isValidInputFocus(observation, errorObservations);
+        //ItemFormValidator.isValidInputFocus(observation, errorObservations);
     }
 
     private void initializePaneRegister() {
@@ -412,14 +405,10 @@ public class RegisterProductCtrl implements Initializable {
         initValueReprocessing();
         WeightService.assignWeight(weightReprocessing);
         dateReprocessing.setValue(LocalDate.now());
-        DataComboBox.FillProductCatalog(productReprocessing);
         DataValidator.decimalValidate(weightReprocessing, weightError);
-        DataComboBox.fillAreas(areaReprocessing);
         ItemFormValidator.isValidInputFocus(weightReprocessing, weightError);
         ItemFormValidator.isValidInputFocus(allergenReprocessing, errorReproAllergen);
-        ItemFormValidator.isValidSelectorFocus(productReprocessing, errorReproProduct);
-        ItemFormValidator.isValidSelectorFocus(areaReprocessing, errorReproArea);
-
+        ItemFormValidator.isValidInputFocus(lotReprocessing,errorReproLot);
     }
 
     private void initializePaneRequest() {
@@ -436,11 +425,6 @@ public class RegisterProductCtrl implements Initializable {
 
     }
 
-    @FXML
-    void selectProductReprocessing() {
-        if (productReprocessing.getValue() != null)
-            lotReprocessing.setText(productReprocessing.getValue().getLot());
-    }
 
     @FXML
     void changeOrder() {
@@ -473,18 +457,19 @@ public class RegisterProductCtrl implements Initializable {
         TableViewOrders.assignColumnProductsProduct(columnRequestProduct);
     }
 
-    private void buildTablePresentations(){
+    private void buildTablePresentations() {
         TableViewOrders.assignTablePresentations(tablePresentations);
         TableViewOrders.columnIdPresentation = columnPresentationsNo;
         TableViewOrders.assignColumnPresentations(columnPresentationName);
         TableViewOrders.assignColumnUnits(columnPresentationUnits);
-        TableViewOrders.lots= lotsPresentations;
+        TableViewOrders.lots = lotsPresentations;
         TableViewOrders.tagName = presentationProduct;
         TableViewOrders.tagUnits = presentationsQuantity;
         TableViewOrders.errorLots = errorPresentationLot;
-        TableViewOrders.errorQuantity=errorPresentationQuantity;
+        TableViewOrders.errorQuantity = errorPresentationQuantity;
         TableViewOrders.buttonAddUnitsToTake = buttonPresentationsToTake;
-        TableViewOrders.buildTableOutputProduct(OutputsProductTake,columnOutputProductLot,columnOutputProductQuantity);
+        TableViewOrders.buttonSaveOutput = btnOutput;
+        TableViewOrders.buildTableOutputProduct(OutputsProductTake, columnOutputProductLot, columnOutputProductQuantity);
         TableViewOrders.assignUnitsTextField(unitsToTake);
     }
 
@@ -495,4 +480,14 @@ public class RegisterProductCtrl implements Initializable {
         ModalProvider.messageLabel = labelModal;
     }
 
+    @FXML
+    void saveOutputLots() {
+        TableViewOrders.saveOutputLots(() -> {
+            onRequest();
+        });
+    }
+    @FXML
+    void minimizeScreen(){
+        EnvironmentActions.minimizeAction();
+    }
 }

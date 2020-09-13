@@ -12,9 +12,7 @@ public class EnvironmentActions {
             System.exit(0);
         });
     }
-    public  static void minimizeAction(JFXButton button){
-        button.setOnAction(event -> {
-            RoviandaAppRun.stage.setIconified(true);
-        });
+    public  static void minimizeAction(){
+        RoviandaAppRun.stage.setIconified(true);
     }
 }

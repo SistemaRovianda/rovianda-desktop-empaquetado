@@ -1,5 +1,6 @@
 package com.rovianda;
 
+import com.rovianda.app.shared.provider.ResponsiveDimensions;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -26,8 +27,6 @@ public class RoviandaAppRun extends Application {
     }
 
     public void window() throws IOException {
-        int height = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height;
-        int width = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().width;
         String urlFXML = "app/features/login/Login.fxml";
         FXMLLoader loader = new FXMLLoader(getClass().getResource(urlFXML));
         AnchorPane root  = loader.load();
@@ -36,8 +35,8 @@ public class RoviandaAppRun extends Application {
         stage.setScene(scene);
         stage.initStyle(StageStyle.UNDECORATED);
         stage.getIcons().add(new Image(RoviandaAppRun.class.getResourceAsStream("assets/icons/icon.png")));
-        stage.setHeight(height);
-        stage.setWidth(width);
+        stage.setHeight(ResponsiveDimensions.getHeight());
+        stage.setWidth(ResponsiveDimensions.getWidth());
         stage.show();
 
     }
