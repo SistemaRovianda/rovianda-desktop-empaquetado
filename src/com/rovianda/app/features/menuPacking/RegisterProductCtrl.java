@@ -153,6 +153,8 @@ public class RegisterProductCtrl implements Initializable {
 
     public static boolean activePresentations = false;
 
+    boolean start= false;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ResponsiveBorderPane.addSizeBorderPane(containerRegister);
@@ -395,7 +397,6 @@ public class RegisterProductCtrl implements Initializable {
         btnSaveProduct.setDisable(true);
         DataValidator.minDate(expirationDate, LocalDate.now());
         DataComboBox.FillProductCatalog(productId);
-        WeightService.assignWeight(weight);
         TableViewRegister.clearTable();
         presentation.setDisable(true);
     }
@@ -403,7 +404,6 @@ public class RegisterProductCtrl implements Initializable {
     private void initializePaneReprocessing() {
         ModalProvider.currentContainer = reprocessing;
         initValueReprocessing();
-        WeightService.assignWeight(weightReprocessing);
         dateReprocessing.setValue(LocalDate.now());
         DataValidator.decimalValidate(weightReprocessing, weightError);
         ItemFormValidator.isValidInputFocus(weightReprocessing, weightError);
@@ -489,5 +489,30 @@ public class RegisterProductCtrl implements Initializable {
     @FXML
     void minimizeScreen(){
         EnvironmentActions.minimizeAction();
+    }
+
+    @FXML
+    void getPesoReproceso() {
+        if(!start) {
+            WeightService.localInput = weightReprocessing;
+            WeightService.start();
+            start = true;
+        }
+        else{
+            start = false;
+            WeightService.stop();
+        }
+    }
+    @FXML
+    void getPesoRegistro(){
+        if(!start) {
+            WeightService.localInput = weight;
+            WeightService.start();
+            start = true;
+        }
+        else{
+            start = false;
+            WeightService.stop();
+        }
     }
 }

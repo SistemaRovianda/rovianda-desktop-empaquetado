@@ -12,41 +12,39 @@ import javax.print.attribute.standard.Finishings;
 
 public class WeightService {
 
-    private static Timeline timeline;
-
-    private static JFXTextField localInput;
+    public  static JFXTextField localInput;
 
     private static Thread t;
 
-    public static void assignWeight (JFXTextField input){
-
-        localInput = input;
-        localInput.focusedProperty().addListener(new ChangeListener<Boolean>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                Task<Void> task = new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        while(true){
-                            updateField();
-                        }
-                    }
-                };
-                if(newValue){
-                    PortSerial.openPort();
-                    t= new Thread(task);
-                    t.setDaemon(true);
-                    t.start();
-                }
-                if(oldValue){
-                    task.cancel();
-                    PortSerial.closePort();
-                    t = null;
-                }
-
+    private static Task<Void> task = new Task<Void>() {
+        @Override
+        protected Void call() throws Exception {
+            while(true){
+                updateField();
             }
-        });
+        }
+    };
+
+
+    public static void start() {
+        try {
+            PortSerial.openPort();
+            t = new Thread(task);
+            t.setDaemon(true);
+            t.start();
+        }catch (Exception e){
+            ToastProvider.showToastError("Error al abrir el puerto",1500);
+        }
+    }
+
+    public static void stop(){
+        try{
+            task.cancel();
+            PortSerial.closePort();
+            t = null;
+        }catch (Exception e){
+            ToastProvider.showToastError("Error al cerrar el puerto",1500);
+        }
 
     }
 

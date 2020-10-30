@@ -45,6 +45,62 @@
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
+                  <Pane fx:id="reprocessing" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <BorderPane fx:id="containerReprocessing" prefHeight="792.0" prefWidth="1085.0" styleClass="container">
+                           <center>
+                              <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <BorderPane.margin>
+                                    <Insets bottom="120.0" left="300.0" right="300.0" top="60.0" />
+                                 </BorderPane.margin>
+                                 <children>
+                                    <Pane layoutX="8.0" layoutY="76.0" prefHeight="437.0" prefWidth="473.0" style="-fx-background-color: white;">
+                                       <children>
+                                          <JFXTextField fx:id="lotReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="268.0" layoutY="81.0" prefHeight="30.0" prefWidth="172.0" promptText="Lote" styleClass="itemForm" />
+                                          <JFXTextField fx:id="allergenReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="269.0" layoutY="188.0" prefHeight="30.0" prefWidth="171.0" promptText="Alérgeno" styleClass="itemForm" />
+                                          <DatePicker fx:id="dateReprocessing" editable="false" layoutX="34.0" layoutY="83.0" />
+                                          <JFXButton fx:id="btnSaveReprocessing" layoutX="339.0" layoutY="307.0" onAction="#onSaveReprocessing" prefHeight="30.0" prefWidth="90.0" styleClass="button-success" text="Guardar" />
+                                          <JFXTextField fx:id="weightReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="34.0" layoutY="188.0" prefHeight="30.0" prefWidth="143.0" promptText="Peso" styleClass="itemForm" />
+                                          <Label fx:id="weightError" layoutX="36.0" layoutY="224.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" wrapText="true" />
+                                          <Label fx:id="errorReproAllergen" layoutX="269.0" layoutY="224.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" wrapText="true" />
+                                          <Label fx:id="errorReproLot" layoutX="268.0" layoutY="119.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" wrapText="true" />
+                                          <JFXSpinner fx:id="spinnerReprocessing" layoutX="221.0" layoutY="322.0" prefHeight="33.0" prefWidth="55.0" visible="false" />
+                                          <JFXButton contentDisplay="CENTER" focusTraversable="false" layoutX="185.0" layoutY="188.0" onAction="#getPesoReproceso" prefHeight="31.0" styleClass="minimize" text=" ">
+                                             <graphic>
+                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../assets/icons/weight.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </JFXButton>
+                                       </children>
+                                    </Pane>
+                                    <Label layoutX="14.0" layoutY="43.0" text="Reproceso" />
+                                 </children>
+                              </Pane>
+                           </center>
+                           <top>
+                              <BorderPane prefHeight="35.0" prefWidth="1085.0" BorderPane.alignment="CENTER">
+                                 <right>
+                                    <JFXButton fx:id="minimize1" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" onAction="#minimizeScreen" prefHeight="31.0" prefWidth="31.0" styleClass="minimize" BorderPane.alignment="CENTER">
+                                       <graphic>
+                                          <ImageView fitHeight="15.0" fitWidth="15.0" onDragDetected="#minimizeScreen" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../../assets/icons/minimize.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </JFXButton>
+                                 </right>
+                                 <BorderPane.margin>
+                                    <Insets right="15.0" top="5.0" />
+                                 </BorderPane.margin>
+                              </BorderPane>
+                           </top>
+                        </BorderPane>
+                     </children>
+                  </Pane>
                   <Pane fx:id="modal" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <BorderPane fx:id="containerModal" prefHeight="792.0" prefWidth="1106.0">
@@ -242,7 +298,7 @@
                                           <Label fx:id="errorUnits" layoutX="316.0" layoutY="60.0" prefHeight="20.0" prefWidth="191.0" styleClass="error-message" text="Label" visible="false" />
                                           <Label fx:id="errorWeight" layoutX="25.0" layoutY="123.0" prefHeight="20.0" prefWidth="228.0" styleClass="error-message" text="Label" visible="false" />
                                           <Label fx:id="errorObservations" layoutX="27.0" layoutY="212.0" prefHeight="20.0" prefWidth="267.0" styleClass="error-message" text="Label" visible="false" />
-                                          <JFXButton alignment="CENTER" contentDisplay="CENTER" layoutX="267.0" layoutY="88.0" prefHeight="31.0" prefWidth="31.0" styleClass="minimize" text=" ">
+                                          <JFXButton alignment="CENTER" contentDisplay="CENTER" layoutX="267.0" layoutY="88.0" onAction="#getPesoRegistro" prefHeight="31.0" prefWidth="31.0" styleClass="minimize" text=" ">
                                              <graphic>
                                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
@@ -297,62 +353,6 @@
                            <padding>
                               <Insets right="15.0" />
                            </padding>
-                        </BorderPane>
-                     </children>
-                  </Pane>
-                  <Pane fx:id="reprocessing" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <BorderPane fx:id="containerReprocessing" prefHeight="792.0" prefWidth="1085.0" styleClass="container">
-                           <center>
-                              <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                                 <BorderPane.margin>
-                                    <Insets bottom="120.0" left="300.0" right="300.0" top="60.0" />
-                                 </BorderPane.margin>
-                                 <children>
-                                    <Pane layoutX="8.0" layoutY="76.0" prefHeight="437.0" prefWidth="473.0" style="-fx-background-color: white;">
-                                       <children>
-                                          <JFXTextField fx:id="lotReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="268.0" layoutY="81.0" prefHeight="30.0" prefWidth="172.0" promptText="Lote" styleClass="itemForm" />
-                                          <JFXTextField fx:id="allergenReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="269.0" layoutY="188.0" prefHeight="30.0" prefWidth="171.0" promptText="Alérgeno" styleClass="itemForm" />
-                                          <DatePicker fx:id="dateReprocessing" editable="false" layoutX="34.0" layoutY="83.0" />
-                                          <JFXButton fx:id="btnSaveReprocessing" layoutX="339.0" layoutY="307.0" onAction="#onSaveReprocessing" prefHeight="30.0" prefWidth="90.0" styleClass="button-success" text="Guardar" />
-                                          <JFXTextField fx:id="weightReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="34.0" layoutY="188.0" prefHeight="30.0" prefWidth="143.0" promptText="Peso" styleClass="itemForm" />
-                                          <Label fx:id="weightError" layoutX="36.0" layoutY="224.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" wrapText="true" />
-                                          <Label fx:id="errorReproAllergen" layoutX="269.0" layoutY="224.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" wrapText="true" />
-                                          <Label fx:id="errorReproLot" layoutX="268.0" layoutY="119.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" wrapText="true" />
-                                          <JFXSpinner fx:id="spinnerReprocessing" layoutX="221.0" layoutY="322.0" prefHeight="33.0" prefWidth="55.0" visible="false" />
-                                          <JFXButton contentDisplay="CENTER" focusTraversable="false" layoutX="185.0" layoutY="188.0" prefHeight="31.0" styleClass="minimize" text=" ">
-                                             <graphic>
-                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@../../../assets/icons/weight.png" />
-                                                   </image>
-                                                </ImageView>
-                                             </graphic>
-                                          </JFXButton>
-                                       </children>
-                                    </Pane>
-                                    <Label layoutX="14.0" layoutY="43.0" text="Reproceso" />
-                                 </children>
-                              </Pane>
-                           </center>
-                           <top>
-                              <BorderPane prefHeight="35.0" prefWidth="1085.0" BorderPane.alignment="CENTER">
-                                 <right>
-                                    <JFXButton fx:id="minimize1" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" onAction="#minimizeScreen" prefHeight="31.0" prefWidth="31.0" styleClass="minimize" BorderPane.alignment="CENTER">
-                                       <graphic>
-                                          <ImageView fitHeight="15.0" fitWidth="15.0" onDragDetected="#minimizeScreen" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../../assets/icons/minimize.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </JFXButton>
-                                 </right>
-                                 <BorderPane.margin>
-                                    <Insets right="15.0" top="5.0" />
-                                 </BorderPane.margin>
-                              </BorderPane>
-                           </top>
                         </BorderPane>
                      </children>
                   </Pane>

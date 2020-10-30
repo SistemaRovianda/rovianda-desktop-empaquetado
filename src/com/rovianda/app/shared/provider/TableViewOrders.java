@@ -187,7 +187,7 @@ public class TableViewOrders {
         ordersTask.setOnSucceeded(e -> {
             if (ordersTask.getValue().size() == 0) {
                 ToastProvider.showToastInfo("No existen ordenes por el momento", 3000);
-                //currentTable.getItems().setAll(new Order(1, "04-09-2020", "256eienusn", "Panchito Fake", true));
+                currentTable.getItems().setAll(new Order(1, "04-09-2020", "256eienusn", "Panchito Fake", true));
 
             } else {
                 currentTable.getItems().setAll(ordersTask.getValue());
@@ -216,7 +216,7 @@ public class TableViewOrders {
         thread.start();
         productsTask.setOnSucceeded(e -> {
             currentTableProducts.getItems().setAll(productsTask.getValue());
-            //currentTableProducts.getItems().setAll(new ProductsRequest(1, "producto fake", 5));
+            currentTableProducts.getItems().setAll(new ProductsRequest(1, "producto fake", 5));
         });
 
         productsTask.setOnFailed(e -> {
@@ -240,8 +240,8 @@ public class TableViewOrders {
         thread.start();
         presentationsTask.setOnSucceeded(e -> {
             currentTablePresentation.getItems().setAll(presentationsTask.getValue());
-            //currentTablePresentation.getItems().setAll(new Presentation(1, 1, 50, 1, "gramos", "3.00"),
-                   // new Presentation(1, 1, 65, 2, "kilos", "3.00"));
+            currentTablePresentation.getItems().setAll(new Presentation(1, 1, 50, 1, "gramos", "3.00"),
+                   new Presentation(1, 1, 65, 2, "kilos", "3.00"));
         });
 
         presentationsTask.setOnFailed(e -> {
@@ -269,8 +269,8 @@ public class TableViewOrders {
             } else {
                 ToastProvider.showToastInfo("No existen lotes para el producto", 1500);
                 lots.setDisable(false);
-               // lotsProducts.addAll(new PackagingLots(1, "lote1", 1, 1, "gramos", "super", 2.3),
-                       // new PackagingLots(1, "lote2", 1, 1, "kilos", "super2", 2.3));
+               lotsProducts.addAll(new PackagingLots(1, "lote1", 1, 1, "gramos", "super", 2.3),
+                       new PackagingLots(1, "lote2", 1, 1, "kilos", "super2", 2.3));
             }
 
         });
