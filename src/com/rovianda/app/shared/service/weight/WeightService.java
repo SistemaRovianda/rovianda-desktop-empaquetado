@@ -26,7 +26,11 @@ public class WeightService {
     };
 
 
-    public static void start() {
+
+
+    public static void start(JFXTextField input) {
+        localInput = input;
+        
         try {
             PortSerial.openPort();
             t = new Thread(task);

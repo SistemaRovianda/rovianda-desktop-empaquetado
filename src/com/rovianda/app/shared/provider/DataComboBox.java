@@ -48,6 +48,44 @@ public class DataComboBox {
         });
     }
 
+    public static void fillProductsCatalogReturn (JFXComboBox<ProductCatalogReturn> comboBox){
+        ObservableList<ProductCatalogReturn> products = FXCollections.observableArrayList();
+        Task <List<ProductCatalogReturn>> productsTask = new Task<List<ProductCatalogReturn>>() {
+            @Override
+            protected List<ProductCatalogReturn> call() throws Exception {
+                return ServiceProductCatalog.getProductsCatalogReturns();
+            }
+        };
+        Thread thread = new Thread(productsTask);
+        thread.setDaemon(true);
+        thread.start();
+        productsTask.setOnSucceeded(e->{
+            ToastProvider.showToastSuccess("Productos obtenidos",1500);
+            if(productsTask.getValue().size() >0)
+                products.addAll(productsTask.getValue());
+            else
+                ToastProvider.showToastInfo("No existen productos por el momento",1500);
+        });
+
+        productsTask.setOnFailed(event -> {
+            ToastProvider.showToastError(event.getSource().getException().getMessage(),1500);
+        });
+
+        comboBox.setItems(products);
+        comboBox.setConverter(new StringConverter<ProductCatalogReturn>() {
+            @Override
+            public String toString(ProductCatalogReturn object) {
+                return object.getName();
+            }
+
+            @Override
+            public ProductCatalogReturn fromString(String string) {
+                return null;
+            }
+        });
+
+    }
+
     public static void fillAreas(JFXComboBox <Area> comboBox){
         ObservableList<Area> areas = FXCollections.observableArrayList();
         areas.addAll(new Area("MOLIENDA","Molienda"),
@@ -126,5 +164,44 @@ public class DataComboBox {
                 return null;
             }
         });
+    }
+
+    public static void fillPresentationsReturnsById(JFXComboBox<PresentationReturn> comboBox, int productId){
+        ToastProvider.showToastInfo("Obteniendo presentaciones del producto",1500);
+        ObservableList<PresentationReturn> presentations = FXCollections.observableArrayList();
+        Task <List<PresentationReturn>> presentationsTask = new Task<List<PresentationReturn>>() {
+            @Override
+            protected List<PresentationReturn> call() throws Exception {
+                return ServicePackaging.getPresentationsReturnById(productId);
+            }
+        };
+        Thread thread = new Thread(presentationsTask);
+        thread.setDaemon(true);
+        thread.start();
+        presentationsTask.setOnSucceeded(e->{
+            ToastProvider.showToastInfo("Presentaciones obtenidas",1500);
+            if(presentationsTask.getValue().size() >0){
+                presentations.addAll(presentationsTask.getValue());
+                comboBox.setDisable(false);
+            }
+            else
+                ToastProvider.showToastInfo("El producto no cuenta con presentaciones",1500);
+        });
+        presentationsTask.setOnFailed(e->{
+            ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
+        });
+        comboBox.setItems(presentations);
+        comboBox.setConverter(new StringConverter<PresentationReturn>() {
+            @Override
+            public String toString(PresentationReturn object) {
+                return ""+object.getPresentation()+" "+object.getPresentationType();
+            }
+
+            @Override
+            public PresentationReturn fromString(String string) {
+                return null;
+            }
+        });
+
     }
 }

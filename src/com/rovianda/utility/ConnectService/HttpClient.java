@@ -1,12 +1,9 @@
 package com.rovianda.utility.ConnectService;
 
-import jdk.nashorn.internal.objects.annotations.Getter;
-
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.FileInputStream;
 
 public class HttpClient {
     static String authorization = "";
@@ -18,8 +15,6 @@ public class HttpClient {
     private static Client client = ClientBuilder.newClient();
 
     private static WebTarget webTarget = client.target(URL);
-
-    private static  WebTarget webTargetFake = client.target(URLFake);
 
 
     public static Response get(String path){
@@ -33,6 +28,11 @@ public class HttpClient {
         WebTarget patch = webTarget.path(path);
         Invocation.Builder ib = patch.request(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION,authorization);
         Response response = ib.put(Entity.entity(body,MediaType.APPLICATION_JSON));
+        return response;
+    }
+
+    public static Response putWithoutBody(String path){
+        Response response = client.target(URL+path).request().put(Entity.json(""));
         return response;
     }
 
