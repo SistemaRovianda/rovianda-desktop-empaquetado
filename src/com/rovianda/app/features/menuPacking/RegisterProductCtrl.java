@@ -8,7 +8,6 @@ import com.rovianda.app.shared.service.weight.WeightService;
 import com.rovianda.app.shared.validator.DataValidator;
 import com.rovianda.app.shared.validator.ItemFormValidator;
 import com.rovianda.utility.animation.Fade;
-import com.rovianda.utility.portserial.PortSerial;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -456,6 +455,8 @@ public class RegisterProductCtrl implements Initializable {
         presentation.setDisable(true);
         btnCloseLotRegister.setDisable(true);
         lotId.setText("");
+        WeightService.start(weight,errorWeight);
+
     }
 
     private void initializePaneReprocessing() {
@@ -466,6 +467,7 @@ public class RegisterProductCtrl implements Initializable {
         ItemFormValidator.isValidInputFocus(weightReprocessing, weightError);
         ItemFormValidator.isValidInputFocus(allergenReprocessing, errorReproAllergen);
         ItemFormValidator.isValidInputFocus(lotReprocessing,errorReproLot);
+        WeightService.start(weightReprocessing,weightError);
     }
 
     private void initializePaneRequest() {
@@ -559,27 +561,11 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     void getPesoReproceso() {
-        if(!start) {
-            WeightService.localInput = weightReprocessing;
-            WeightService.start();
-            start = true;
-        }
-        else{
-            start = false;
-            WeightService.stop();
-        }
+       WeightService.stop();
     }
     @FXML
     void getPesoRegistro(){
-        if(!start) {
-            WeightService.localInput = weight;
-            WeightService.start();
-            start = true;
-        }
-        else{
-            start = false;
-            WeightService.stop();
-        }
+       WeightService.stop();
     }
 
     @FXML
