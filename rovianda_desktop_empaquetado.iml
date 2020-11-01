@@ -151,5 +151,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="org.openjfx:javafx-fxml:11.0.2" level="project" />
   </component>
 </module>
