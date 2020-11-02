@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 public class NewPackaging {
 
     public static int registerNewProductPackaging(ProductPackaging productPackaging) throws Exception {
-        System.out.println("registrando");
+
         Response response = HttpClient.post("/packaging", productPackaging);
         System.out.println(response.getStatus());
         System.out.println(response.readEntity(String.class));

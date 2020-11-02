@@ -17,10 +17,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,6 +74,7 @@ public class TableViewOrders {
                 closeOrderTask.setOnSucceeded(event -> {
                     if (closeOrderTask.getValue())
                         currentTable.getItems().remove(o);
+                    ReportProvider.buildReportDelivered(o.getOrderId());
                 });
 
                 closeOrderTask.setOnFailed(e -> {
@@ -125,8 +128,9 @@ public class TableViewOrders {
         currentTablePresentation.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 currentPresentation = newValue;
-                tagUnits.setText("" + currentPresentation.getUnits());
-                tagName.setText(currentProduct.getName() + " "
+                System.out.println("Nuevo valor: "+currentPresentation.getPresentationId());
+                //tagUnits.setText("" + currentPresentation.getQuantity());
+                tagName.setText(currentProduct.getName() + " " + currentPresentation.getPresentation()
                         + currentPresentation.getTypePresentation());
                 unitsToTake.setText("");
                 lots.setValue(null);
@@ -144,7 +148,7 @@ public class TableViewOrders {
     }
 
     public static void assignColumnPresentations(TableColumn<Presentation, String> column) {
-        column.setCellValueFactory(new PropertyValueFactory<Presentation, String>("typePresentation"));
+        column.setCellValueFactory(new PropertyValueFactory<Presentation, String>("presentation"));
     }
 
     public static void assignColumnUnits(TableColumn<Presentation, Integer> column) {
@@ -164,6 +168,31 @@ public class TableViewOrders {
         currentTableOutput = table;
         columnLot.setCellValueFactory(new PropertyValueFactory<OutputsProduct, String>("loteId"));
         columnQuantity.setCellValueFactory(new PropertyValueFactory<OutputsProduct, Integer>("quantity"));
+        currentTableOutput.setOnMouseClicked( event->{
+            if(event.getButton()==MouseButton.PRIMARY && event.getClickCount()==2) {
+                System.out.println("se clico 2 veces");
+                OutputsProduct output = table.getSelectionModel().getSelectedItem();
+                List<OutputsProduct> outputs= currentTableOutput.getItems().stream().filter(e->
+                        e.getQuantity()!=output.getQuantity() && e.getLoteId()!=output.getLoteId()
+                                && e.getPresentationId()!=output.getPresentationId()).collect(Collectors.toList());
+
+                List<Presentation> presentations = currentTablePresentation.getItems().stream().map(e-> {
+                     if(e.getSubOrderId() == output.getSubOrderId()){
+                         System.out.println("Se encontro: "+e.getSubOrderId()+" : "+e.getUnits());
+                         e.setUnits(e.getUnits()+output.getQuantity());
+                     }
+                            return e;
+                }).collect(Collectors.toList());
+                currentTablePresentation.getItems().clear();
+                currentTablePresentation.getItems().addAll(presentations);
+                currentTableOutput.getItems().clear();
+                currentTableOutput.getItems().addAll(outputs);
+            }
+        });
+    }
+
+    public static List<OutputsProduct> getLotsUsed(int presentationId){
+        return currentTableOutput.getItems().stream().filter(item->item.getPresentationId()==presentationId).collect(Collectors.toList());
     }
 
     public static void fillTableOrders(boolean urgent) {
@@ -187,7 +216,7 @@ public class TableViewOrders {
         ordersTask.setOnSucceeded(e -> {
             if (ordersTask.getValue().size() == 0) {
                 ToastProvider.showToastInfo("No existen ordenes por el momento", 3000);
-                currentTable.getItems().setAll(new Order(1, "04-09-2020", "256eienusn", "Panchito Fake", true));
+
 
             } else {
                 currentTable.getItems().setAll(ordersTask.getValue());
@@ -215,8 +244,11 @@ public class TableViewOrders {
         thread.setDaemon(true);
         thread.start();
         productsTask.setOnSucceeded(e -> {
+
             currentTableProducts.getItems().setAll(productsTask.getValue());
-            currentTableProducts.getItems().setAll(new ProductsRequest(1, "producto fake", 5));
+            currentTableProducts.getItems().setAll(productsTask.getValue());
+
+
         });
 
         productsTask.setOnFailed(e -> {
@@ -240,8 +272,7 @@ public class TableViewOrders {
         thread.start();
         presentationsTask.setOnSucceeded(e -> {
             currentTablePresentation.getItems().setAll(presentationsTask.getValue());
-            currentTablePresentation.getItems().setAll(new Presentation(1, 1, 50, 1, "gramos", "3.00"),
-                   new Presentation(1, 1, 65, 2, "kilos", "3.00"));
+            currentTablePresentation.getItems().setAll(presentationsTask.getValue());
         });
 
         presentationsTask.setOnFailed(e -> {
@@ -297,24 +328,35 @@ public class TableViewOrders {
     static void addItemOutputTable() {
 
         if (ItemFormValidator.isValidSelector(lots, errorLots) && ItemFormValidator.isValidInputNumber(unitsToTake, errorQuantity)) {
-            int units = Integer.parseInt(unitsToTake.getText());
-            OutputsProduct currentItem = currentTableOutput.getItems().stream().filter(item -> item.getPresentationId() == currentPresentation.getPresentation()).findAny().orElse(null);
-            tagUnits.setText("" + (Integer.parseInt(tagUnits.getText()) - units));
+
             List presentations  = currentTablePresentation.getItems().stream().map(presentation -> {
                 if(presentation.getPresentation() == currentPresentation.getPresentation()){
-                    presentation.setUnits(presentation.getUnits()- units );
+                    if(presentation.getUnits()>0) {
+                        int units=Integer.parseInt(unitsToTake.getText());
+                         if((presentation.getUnits()-units)>=0) {
+
+                             tagUnits.setText("");
+                             presentation.setUnits(presentation.getUnits() - units);
+                             OutputsProduct item = new OutputsProduct(lots.getValue().getLoteId(), currentPresentation.getSubOrderId(), units, currentPresentation.getPresentationId());
+                             currentTableOutput.getItems().add(item);
+                         }else{
+                             ModalProvider.showModalInfo("No puedes asignar mas de los que se piden");
+                         }
+                    }else{
+                        ModalProvider.showModalInfo("El registro de la suborden ya esta completo");
+                    }
                 }
                 return  presentation;
             }).collect(Collectors.toList());
             currentTablePresentation.getItems().clear();
             currentTablePresentation.getItems().addAll(presentations);
 
-            if (currentItem == null) {
-                OutputsProduct item = new OutputsProduct(lots.getValue().getLoteId(), currentPresentation.getSubOrderId(), units, currentPresentation.getPresentation());
+            /*if (currentItem == null) {
+                OutputsProduct item = new OutputsProduct(lots.getValue().getLoteId(), currentPresentation.getSubOrderId(), units, currentPresentation.getPresentationId());
                 currentTableOutput.getItems().add(item);
             } else {
                 List<OutputsProduct> newItems = currentTableOutput.getItems().stream().map(output -> {
-                    if (output.getPresentationId() == currentPresentation.getPresentation()) {
+                    if (output.getPresentationId() == currentPresentation.getPresentationId()) {
                         output.setQuantity(output.getQuantity() + units);
                     }
                     return output;
@@ -323,7 +365,7 @@ public class TableViewOrders {
                 );
                 currentTableOutput.getItems().clear();
                 currentTableOutput.getItems().addAll(newItems);
-            }
+            }*/
             unitsToTake.setText("");
         }
 
@@ -331,25 +373,30 @@ public class TableViewOrders {
 
     public static void saveOutputLots(Method method) {
        if(currentTableOutput.getItems().size() >0){
-           ToastProvider.showToastInfo("Registrando salidas de lotes", 1500);
-           Task<Boolean> taskOutputs = new Task<Boolean>() {
-               @Override
-               protected Boolean call() throws Exception {
-                   return ServicePackaging.registerOutputsLots(currentTableOutput.getItems());
-               }
-           } ;
-           Thread thread = new Thread(taskOutputs);
-           thread.setDaemon(true);
-           thread.start();
+           List<Presentation> presentations = currentTablePresentation.getItems().stream().filter(e->e.getUnits()>0).collect(Collectors.toList());
+           if(presentations.size()==0) {
+               ToastProvider.showToastInfo("Registrando salidas de lotes", 1500);
+               Task<Boolean> taskOutputs = new Task<Boolean>() {
+                   @Override
+                   protected Boolean call() throws Exception {
+                       return ServicePackaging.registerOutputsLots(currentTableOutput.getItems());
+                   }
+               };
+               Thread thread = new Thread(taskOutputs);
+               thread.setDaemon(true);
+               thread.start();
 
-           taskOutputs.setOnSucceeded(e->{
-               currentTableOutput.getItems().clear();
-               method.method();
-           });
+               taskOutputs.setOnSucceeded(e -> {
+                   currentTableOutput.getItems().clear();
+                   method.method();
+               });
 
-           taskOutputs.setOnFailed(e->{
-               ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
-           });
+               taskOutputs.setOnFailed(e -> {
+                   ToastProvider.showToastError(e.getSource().getException().getMessage(), 1500);
+               });
+           }else{
+               ModalProvider.showModalInfo("Debes completar los registros de entrega");
+           }
        }else {
            ModalProvider.showModalInfo("Es necesario agregar lotes para realizar el registro");
        }

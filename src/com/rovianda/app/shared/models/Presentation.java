@@ -4,10 +4,11 @@ public class Presentation {
     private int subOrderId;
     private int productId;
     private int units;
+    private String quantity;
     private int presentation;
     private String typePresentation;
     private String pricePresentation;
-
+    private int presentationId;
     public Presentation(){}
 
     public Presentation(int subOrderId, int productId, int units,
@@ -18,6 +19,14 @@ public class Presentation {
         this.presentation = presentation;
         this.typePresentation = typePresentation;
         this.pricePresentation = pricePresentation;
+    }
+
+    public int getPresentationId() {
+        return presentationId;
+    }
+
+    public void setPresentationId(int presentationId) {
+        this.presentationId = presentationId;
     }
 
     public int getSubOrderId() {
@@ -46,6 +55,18 @@ public class Presentation {
 
     public int getPresentation() {
         return presentation;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getPresentationString(){
+        return String.valueOf(presentation)+" "+typePresentation;
     }
 
     public void setPresentation(int presentation) {

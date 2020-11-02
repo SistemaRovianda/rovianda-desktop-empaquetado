@@ -21,6 +21,18 @@ public class ServicePackaging {
         return presentations;
     }
 
+    public static List<PresentationReturn> getPresentationsReturnById(int productId) throws Exception {
+        Response response = HttpClient.get("products-rovianda/catalog/"+productId);
+        List<PresentationReturn> presentations = new ArrayList<>();
+        if(response.getStatus() == 200){
+            presentations = response.readEntity(new GenericType<List<PresentationReturn>>(){});
+        }else if (response.getStatus() == 404){
+            throw new Exception("Error al obtener presentaciones del producto");
+        }
+        response.close();
+        return presentations;
+    }
+
     public static List<Order> getOrderVendedor(boolean urgent) throws Exception{
         Response response = HttpClient.get("/packaging/sellers/"+urgent);
         List<Order> orders = new ArrayList<>();
@@ -80,10 +92,11 @@ public class ServicePackaging {
     }
 
     public static boolean closedOrder(Order order) throws Exception {
-        Response response = HttpClient.patch("/packaging/"+order.getUserId(), order);
+        Response response = HttpClient.putWithoutBody("/packaging/"+order.getOrderId());
         boolean result = false;
         if (response.getStatus() == 204){
             result = true;
+
         }else {
             throw new Exception("Error al atender orden");
         }
@@ -92,13 +105,18 @@ public class ServicePackaging {
     }
 
     public static boolean registerOutputsLots(List<OutputsProduct> outputsProduct) throws Exception {
-        Response response = HttpClient.post("",outputsProduct);
+        Response response = HttpClient.post("packaging-lots/inventory/product/outputs",outputsProduct);
+        outputsProduct.forEach(item->{
+            System.out.println(item.toString());
+        });
         boolean result = false;
         if (response.getStatus() == 201){
             result= true;
         }else {
+            System.out.println(response.getStatus());
             throw new Exception("Error al registrar salidas");
         }
+
         return  result;
     }
 }

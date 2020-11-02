@@ -2,6 +2,7 @@ package com.rovianda.app.shared.service.productCatalog;
 
 import com.rovianda.app.shared.models.OutputLots;
 import com.rovianda.app.shared.models.ProductCatalog;
+import com.rovianda.app.shared.models.ProductCatalogReturn;
 import com.rovianda.utility.ConnectService.HttpClient;
 
 import javax.ws.rs.core.GenericType;
@@ -17,6 +18,18 @@ public class ServiceProductCatalog {
             products = response.readEntity(new GenericType<List<ProductCatalog>>(){});
         }else if (response.getStatus() == 404)
             throw  new Exception ("Error al obtener productos");
+        response.close();
+        return products;
+    }
+
+    public static List<ProductCatalogReturn> getProductsCatalogReturns() throws Exception {
+        Response response = HttpClient.get("/products-rovianda/catalog");
+        List<ProductCatalogReturn> products = new ArrayList<>();
+        System.out.println(response.readEntity(String.class));
+        if(response.getStatus() == 200 || response.getStatus() == 201 ){
+            products = response.readEntity(new GenericType<List<ProductCatalogReturn>>(){});
+        }else if (response.getStatus() == 404)
+            throw  new Exception ("Error al obtener productos del catalogo");
         response.close();
         return products;
     }
