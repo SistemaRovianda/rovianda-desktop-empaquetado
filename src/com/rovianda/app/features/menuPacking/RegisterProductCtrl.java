@@ -149,7 +149,7 @@ public class RegisterProductCtrl implements Initializable {
 
     private ProductPackaging productPackaging;
 
-    private final List<Product> products = new ArrayList<>();
+    private  List<Product> products = new ArrayList<>();
 
     @FXML
     private Label weightError, errorReproAllergen, errorReproLot, labelModal,
@@ -307,6 +307,7 @@ public class RegisterProductCtrl implements Initializable {
             expirationDate.setDisable(false);
             btnSaveProduct.setDisable(true);
             lotId.setText("");
+            products=new ArrayList<>();
             productId.setValue(null);
             activeProcess = false;
         });

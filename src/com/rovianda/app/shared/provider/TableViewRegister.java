@@ -65,12 +65,7 @@ public class TableViewRegister {
 
     public static void registerItems(Method callBack){
         System.out.println(currentProductPackaging.toString());
-        Executor executor = new Executor() {
-            @Override
-            public void execute(Runnable command) {
 
-            }
-        };
         ModalProvider.showModal("Una vez guardada la información no se podrá editar, ¿Estás seguro que deseas guardar el proceso?", ()->{
             ToastProvider.showToastInfo("Registrando productos ", 1500);
             Task<Integer> taskRegister = new Task<Integer>() {
@@ -87,7 +82,9 @@ public class TableViewRegister {
                 ToastProvider.showToastSuccess("Proceso registrado exitosamente",1500);
                 packingId = taskRegister.getValue();
                 items = new ArrayList<>();
+                currentTable.getItems().clear();
                 currentTable.getItems().setAll(items);
+                currentProductPackaging=new ProductPackaging();
                 callBack.method();
             });
             taskRegister.setOnFailed(e->{
