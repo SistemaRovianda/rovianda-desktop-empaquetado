@@ -151,5 +151,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="org.openjfx:javafx-fxml:11.0.2" level="project" />
+    <orderEntry type="library" name="org.apache.pdfbox:pdfbox:2.0.0" level="project" />
   </component>
 </module>

@@ -8,6 +8,9 @@ import com.rovianda.app.shared.service.weight.WeightService;
 import com.rovianda.app.shared.validator.DataValidator;
 import com.rovianda.app.shared.validator.ItemFormValidator;
 import com.rovianda.utility.animation.Fade;
+import com.sun.tools.internal.ws.wsdl.document.Output;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -146,7 +149,7 @@ public class RegisterProductCtrl implements Initializable {
 
     private ProductPackaging productPackaging;
 
-    private final List<Product> products = new ArrayList<>();
+    private  List<Product> products = new ArrayList<>();
 
     @FXML
     private Label weightError, errorReproAllergen, errorReproLot, labelModal,
@@ -304,6 +307,7 @@ public class RegisterProductCtrl implements Initializable {
             expirationDate.setDisable(false);
             btnSaveProduct.setDisable(true);
             lotId.setText("");
+            products=new ArrayList<>();
             productId.setValue(null);
             activeProcess = false;
         });
@@ -531,6 +535,19 @@ public class RegisterProductCtrl implements Initializable {
         TableViewOrders.assignColumnPresentations(columnPresentationName);
         TableViewOrders.assignColumnUnits(columnPresentationUnits);
         TableViewOrders.lots = lotsPresentations;
+        lotsPresentations.valueProperty().addListener(new ChangeListener<PackagingLots>() {
+            @Override
+            public void changed(ObservableValue<? extends PackagingLots> observable, PackagingLots oldValue, PackagingLots newValue) {
+                if(newValue!=null) {
+                    List<OutputsProduct> outputs=TableViewOrders.getLotsUsed(newValue.getPresentationId());
+                    int totalUseds=0;
+                    for(OutputsProduct output : outputs){
+                        totalUseds+=output.getQuantity();
+                    }
+                    presentationsQuantity.setText(String.valueOf(newValue.getQuantity()-totalUseds));
+                }
+            }
+        });
         TableViewOrders.tagName = presentationProduct;
         TableViewOrders.tagUnits = presentationsQuantity;
         TableViewOrders.errorLots = errorPresentationLot;

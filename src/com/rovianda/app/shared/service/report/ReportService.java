@@ -30,4 +30,16 @@ public class ReportService {
         }
         return null;
     }
+
+    public static InputStream getReportDelivery(int deliveredId) throws Exception {
+        Response response = HttpClient.get("/report/packaging-delivered/"+deliveredId);
+        if(response.getStatus() == 200){
+            return response.readEntity(InputStream.class);
+        }else if(response.getStatus()==400){
+            throw new Exception("Reporte no encontrado con el id");
+        }else if(response.getStatus()==404 || response.getStatus()==500){
+            throw  new Exception("Servicio no disponible");
+        }
+        return null;
+    }
 }

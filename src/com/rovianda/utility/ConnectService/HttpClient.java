@@ -27,7 +27,10 @@ public class HttpClient {
     public static Response patch(String path, Object body){
         WebTarget patch = webTarget.path(path);
         Invocation.Builder ib = patch.request(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION,authorization);
-        Response response = ib.put(Entity.entity(body,MediaType.APPLICATION_JSON));
+        Response response;
+
+            response = ib.put(Entity.entity(body, MediaType.APPLICATION_JSON));
+
         return response;
     }
 
