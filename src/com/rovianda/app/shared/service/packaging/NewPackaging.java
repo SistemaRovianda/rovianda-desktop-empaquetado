@@ -1,17 +1,14 @@
 package com.rovianda.app.shared.service.packaging;
 
 import com.rovianda.app.shared.models.*;
-import com.rovianda.app.shared.provider.ToastProvider;
 import com.rovianda.utility.ConnectService.HttpClient;
 
 import javax.ws.rs.core.Response;
 public class NewPackaging {
 
     public static int registerNewProductPackaging(ProductPackaging productPackaging) throws Exception {
-        System.out.println("registrando");
+
         Response response = HttpClient.post("/packaging", productPackaging);
-        System.out.println(response.getStatus());
-        System.out.println(response.readEntity(String.class));
         PackagingId packagingId = null;
         if(response.getStatus()==201){
             packagingId = response.readEntity(PackagingId.class);
@@ -23,7 +20,7 @@ public class NewPackaging {
         }else if (response.getStatus()==500){
             throw new Exception("Servicio no disponible");
         }
-        //response.close();
+        response.close();
         return (packagingId != null)?packagingId.getPackaging():0 ;
     }
 

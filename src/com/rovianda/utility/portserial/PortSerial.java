@@ -1,8 +1,7 @@
 package com.rovianda.utility.portserial;
 
 import com.fazecast.jSerialComm.*;
-import java.io.IOException;
-import java.io.InputStream;
+
 
 public class PortSerial {
 

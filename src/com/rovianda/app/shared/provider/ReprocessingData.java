@@ -6,7 +6,6 @@ import com.rovianda.app.shared.models.Method;
 import com.rovianda.app.shared.models.Reprocessing;
 import com.rovianda.app.shared.service.reprocessing.ServiceReprocessing;
 import javafx.concurrent.Task;
-import javafx.scene.control.Label;
 
 public class ReprocessingData {
 
