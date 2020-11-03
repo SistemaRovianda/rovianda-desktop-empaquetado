@@ -1,12 +1,5 @@
 package com.rovianda.app.shared.models;
 
-import com.jfoenix.controls.JFXButton;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-
-import java.util.Date;
-import java.util.logging.SimpleFormatter;
-
 public class Order {
 
     private int orderId;

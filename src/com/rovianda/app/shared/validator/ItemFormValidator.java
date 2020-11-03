@@ -1,8 +1,6 @@
 package com.rovianda.app.shared.validator;
 
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXTextField;
-import com.rovianda.app.shared.models.ProductCatalog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextInputControl;
 

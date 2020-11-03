@@ -1,8 +1,6 @@
 package com.rovianda.app.shared.provider;
 
 import com.jfoenix.controls.JFXButton;
-import com.rovianda.app.shared.models.Order;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;

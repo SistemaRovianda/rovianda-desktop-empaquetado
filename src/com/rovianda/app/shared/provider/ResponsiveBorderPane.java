@@ -1,7 +1,7 @@
 package com.rovianda.app.shared.provider;
 
 import javafx.scene.layout.BorderPane;
-import java.awt.*;
+
 
 public class ResponsiveBorderPane {
     private static int height = ResponsiveDimensions.getHeight();
