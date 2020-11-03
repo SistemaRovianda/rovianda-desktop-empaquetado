@@ -296,7 +296,18 @@ public class TableViewOrders {
             ToastProvider.showToastSuccess("Lotes obtenidos", 1500);
             if (taskLots.getValue().size() > 0) {
                 lots.setDisable(false);
-                lotsProducts.addAll(taskLots.getValue());
+                 List<OutputsProduct> currentOutputs=currentTableOutput.getItems().stream().collect(Collectors.toList());
+                 List<PackagingLots> packagingLots = taskLots.getValue().stream().map((packaging)->{
+                     int total=packaging.getQuantity();
+                     for(OutputsProduct outputProduct : currentOutputs){
+                         if(outputProduct.getLoteId().equals(packaging.getLoteId())){
+                             total-=outputProduct.getQuantity();
+                         }
+                     }
+                     packaging.setQuantity(total);
+                     return packaging;
+                }).collect(Collectors.toList());
+                lotsProducts.addAll(packagingLots);
             } else {
                 ToastProvider.showToastInfo("No existen lotes para el producto", 1500);
                 lots.setDisable(false);
