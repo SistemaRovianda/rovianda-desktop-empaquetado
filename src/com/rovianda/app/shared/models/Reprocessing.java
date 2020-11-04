@@ -7,7 +7,7 @@ public class Reprocessing {
     private String lotId;
     private double weight;
     private String allergen;
-    private String area;
+    private String comment;
 
     public String getDate() {
         return date;
@@ -49,12 +49,13 @@ public class Reprocessing {
         this.allergen = allergen;
     }
 
-    public String getArea() {
-        return area;
+
+    public String getComment() {
+        return comment;
     }
 
-    public void setArea(String area) {
-        this.area = area;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     @Override
@@ -65,7 +66,7 @@ public class Reprocessing {
                 ", lotId='" + lotId + '\'' +
                 ", weight=" + weight +
                 ", allergen='" + allergen + '\'' +
-                ", area='" + area + '\'' +
+                ", comment='" + comment + '\'' +
                 '}';
     }
 }

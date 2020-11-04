@@ -5,12 +5,14 @@ public class OutputsProduct {
      private int subOrderId;
      private int quantity;
      private int presentationId;
+     private double weight;
 
-     public OutputsProduct(String loteId, int subOrderId, int quantity,int presentationId){
+     public OutputsProduct(String loteId, int subOrderId, int quantity,int presentationId, double weight){
          this.loteId =  loteId;
          this.subOrderId = subOrderId;
          this.quantity = quantity;
          this.presentationId  = presentationId;
+         this.weight = weight;
      }
 
     public String getLoteId() {
@@ -45,6 +47,14 @@ public class OutputsProduct {
         this.presentationId = presentationId;
     }
 
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
     @Override
     public String toString() {
         return "OutputsProduct{" +
@@ -52,6 +62,7 @@ public class OutputsProduct {
                 ", subOrderId=" + subOrderId +
                 ", quantity=" + quantity +
                 ", presentationId=" + presentationId +
+                ", weight=" + weight +
                 '}';
     }
 }

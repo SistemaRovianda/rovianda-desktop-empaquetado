@@ -174,6 +174,51 @@ public class ReportProvider {
 
     }
 
+    public static void  buildReportReprocessing(Method method){
+
+        String filename = "reporte_reproceso_"+ReprocessingData.idReport+"_"+ LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extension = new FileChooser.ExtensionFilter("Solo PDF","*.pdf");
+        fileChooser.setInitialFileName(filename);
+        fileChooser.getExtensionFilters().add(extension);
+        fileChooser.setTitle("Guardar reporte de reproceso "+filename);
+        file = fileChooser.showSaveDialog(currentContainer.getScene().getWindow());
+        ToastProvider.showToastInfo("Guardando reporte de reproceso",1000);
+        Task <InputStream> getReport = new Task<InputStream>() {
+            @Override
+            protected InputStream call() throws Exception {
+                return ReportService.getReportReprocessing(ReprocessingData.idReport);
+            }
+        };
+        Thread thread = new Thread(getReport);
+        thread.setDaemon(true);
+        thread.start();
+        getReport.setOnSucceeded(e->{
+            method.method();
+            ToastProvider.showToastInfo("Espere guardando reporte", 1000);
+            ReturnProductProvider.id = new Long(0);
+            try {
+                InputStream in = getReport.getValue();
+                OutputStream out = new FileOutputStream(file);
+                byte[] buff = new byte[in.available()];  // how much of the blob to read/write at a time
+                int len = 0;
+                while ((len = in.read(buff)) != -1) {
+                    out.write(buff, 0, len);
+                }
+                out.close();
+                ToastProvider.showToastSuccess("Reporte descargado exitosamente",1500);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        getReport.setOnFailed(e->{
+            ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
+            System.out.println(e.getSource().getException().getMessage());
+        });
+
+    }
+
     private static PrintService findPrintService(String printerName) {
         PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
         for (PrintService printService : printServices) {

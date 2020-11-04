@@ -8,7 +8,6 @@ import com.rovianda.app.shared.service.weight.WeightService;
 import com.rovianda.app.shared.validator.DataValidator;
 import com.rovianda.app.shared.validator.ItemFormValidator;
 import com.rovianda.utility.animation.Fade;
-import com.sun.tools.internal.ws.wsdl.document.Output;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -69,6 +68,9 @@ public class RegisterProductCtrl implements Initializable {
     private TableColumn<OutputsProduct, Integer> columnOutputProductQuantity;
 
     @FXML
+    private TableColumn<OutputsProduct,Double> columnOutputProductWeight;
+
+    @FXML
     private TableColumn<Order, String>
             columnVendedor, columnDate;
     @FXML
@@ -114,7 +116,7 @@ public class RegisterProductCtrl implements Initializable {
     @FXML
     JFXTextField lotId, weight, lotReprocessing, weightReprocessing,
             allergenReprocessing, units, unitsToTake,
-            lotReturn,quantityReturn;
+            lotReturn,quantityReturn,weightPresentations;
 
     @FXML
     JFXComboBox<ProductPresentation> presentation;
@@ -136,7 +138,8 @@ public class RegisterProductCtrl implements Initializable {
             btnOutput,
             btnSaveReturn,
             btnReturnProduct,
-            btnCloseLotRegister;
+            btnCloseLotRegister,
+            btnSaveReportReprocessing;
 
     @FXML
     private JFXSpinner spinnerReprocessing;
@@ -145,7 +148,7 @@ public class RegisterProductCtrl implements Initializable {
     private DatePicker currentDate, expirationDate, dateReprocessing,dateReturn;
 
     @FXML
-    private JFXTextArea observation;
+    private JFXTextArea observation,commentsReprocesing;
 
     private ProductPackaging productPackaging;
 
@@ -158,7 +161,8 @@ public class RegisterProductCtrl implements Initializable {
             presentationsQuantity,
             errorPresentationLot,
             errorPresentationQuantity,
-            errorProductReturn,errorPresentationReturn,errorReturnLot,errorQuantityReturn;
+            errorProductReturn,errorPresentationReturn,errorReturnLot,errorQuantityReturn,
+            errorPresentationWeight;
 
     boolean activeProcess = false;
     boolean tapRegister = true;
@@ -409,6 +413,7 @@ public class RegisterProductCtrl implements Initializable {
         itemRegister.setAllergen(allergenReprocessing.getText());
         itemRegister.setDate(dateReprocessing.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         itemRegister.setLotId(lotReprocessing.getText());
+        itemRegister.setComment(commentsReprocesing.getText());
         try {
             itemRegister.setWeight(Double.parseDouble(weightReprocessing.getText()));
         } catch (Exception e) {
@@ -416,6 +421,7 @@ public class RegisterProductCtrl implements Initializable {
         }
         ReprocessingData.registerReprocessing(itemRegister, btnSaveReprocessing, spinnerReprocessing, () -> {
             this.initValueReprocessing();
+            btnSaveReportReprocessing.setVisible(true);
             ToastProvider.showToastSuccess("Reproceso registrado exitosamente", 2000);
         });
 
@@ -428,6 +434,9 @@ public class RegisterProductCtrl implements Initializable {
         weightError.setVisible(false);
         errorReproAllergen.setVisible(false);
         errorReproLot.setVisible(false);
+        commentsReprocesing.setText("");
+        btnSaveReportReprocessing.setVisible(false);
+
     }
 
     private void buildPaneRegister() {
@@ -554,7 +563,9 @@ public class RegisterProductCtrl implements Initializable {
         TableViewOrders.errorQuantity = errorPresentationQuantity;
         TableViewOrders.buttonAddUnitsToTake = buttonPresentationsToTake;
         TableViewOrders.buttonSaveOutput = btnOutput;
-        TableViewOrders.buildTableOutputProduct(OutputsProductTake, columnOutputProductLot, columnOutputProductQuantity);
+        TableViewOrders.errorPresentationWeight = errorPresentationWeight;
+        TableViewOrders.weightPresentations = weightPresentations;
+        TableViewOrders.buildTableOutputProduct(OutputsProductTake, columnOutputProductLot, columnOutputProductQuantity,columnOutputProductWeight);
         TableViewOrders.assignUnitsTextField(unitsToTake);
     }
 
@@ -616,9 +627,18 @@ public class RegisterProductCtrl implements Initializable {
     }
 
     @FXML
+    void onSaveReportReprocessing(){
+        ModalProvider.showModal("Al descargar el reporte, se perdera la informacion,¿Deseas continuar?", () -> {
+            ReportProvider.buildReportReprocessing(() -> {
+                initializePaneReprocessing();
+            });
+        });
+    }
+
+    @FXML
     void closeLotProductRegister(){
         System.out.println(productId.getValue().getLot());
-        ModalProvider.showModal("Esta apunto de cerrar un lote, ¿Desea continuar?", () -> {
+        ModalProvider.showModal("Al cerrar el lote ya no se mostrará en el sistema, por lo cual asegúrese de que ya lleno los datos antes de cerrar el lote.", () -> {
             ReturnProductProvider.closeLotProduct(productId.getValue().getLot(),() -> {
                 initializePaneRegister();
             });

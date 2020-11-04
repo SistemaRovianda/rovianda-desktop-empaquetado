@@ -42,4 +42,16 @@ public class ReportService {
         }
         return null;
     }
+
+    public static InputStream getReportReprocessing(String reprocessingId) throws Exception {
+        Response response = HttpClient.get("/packaging/reprocessing-report/"+reprocessingId);
+        if(response.getStatus() == 200){
+            return response.readEntity(InputStream.class);
+        }else if(response.getStatus()==400){
+            throw new Exception("Reporte no encontrado con el id");
+        }else if(response.getStatus()==404 || response.getStatus()==500){
+            throw  new Exception("Servicio no disponible");
+        }
+        return null;
+    }
 }

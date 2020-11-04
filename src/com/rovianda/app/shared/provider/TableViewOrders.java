@@ -6,6 +6,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.rovianda.app.features.menuPacking.RegisterProductCtrl;
 import com.rovianda.app.shared.models.*;
 import com.rovianda.app.shared.service.packaging.ServicePackaging;
+import com.rovianda.app.shared.service.weight.WeightService;
 import com.rovianda.app.shared.validator.DataValidator;
 import com.rovianda.app.shared.validator.ItemFormValidator;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -21,15 +22,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-
-import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TableViewOrders {
 
     static ObservableList<OutputsProduct> itemsOutputs = FXCollections.observableArrayList();
-    ;
     public static TableView<Order> currentTable;
     public static TableView<ProductsRequest> currentTableProducts;
     public static TableView<Presentation> currentTablePresentation;
@@ -40,9 +38,9 @@ public class TableViewOrders {
     public static TableColumn<Presentation, Integer> columnIdPresentation;
     public static Pane presentations;
     public static JFXComboBox<PackagingLots> lots;
-    static JFXTextField unitsToTake;
+    public static JFXTextField unitsToTake, weightPresentations ;
     public static JFXButton buttonAddUnitsToTake, buttonSaveOutput;
-    public static Label tagName, tagUnits, errorQuantity, errorLots;
+    public static Label tagName, tagUnits, errorQuantity, errorLots,errorPresentationWeight;
     static TableView<OutputsProduct> currentTableOutput;
 
     public static void assignColumnNoOrder(TableColumn<Order, Integer> column) {
@@ -60,7 +58,6 @@ public class TableViewOrders {
     public static void assignColumnOptions(TableColumn<Order, JFXButton> column) {
         column.setCellFactory(ActionButtonColumn.<Order>forTableColumn((Order o) -> {
             ModalProvider.showModal("Al atender la orden no se volverá a mostrar, ¿Deseas cerrar la orden?", () -> {
-                System.out.println(o.toString());
                 ToastProvider.showToastInfo("Atendiendo pedido", 3000);
                 Task<Boolean> closeOrderTask = new Task<Boolean>() {
                     @Override
@@ -119,6 +116,9 @@ public class TableViewOrders {
                 fillTablePresentations();
                 presentations.toFront();
                 fillLots();
+                DataValidator.decimalValidate(weightPresentations,errorPresentationWeight);
+                weightPresentations.setText("");
+                WeightService.start(weightPresentations,errorPresentationWeight);
             }
         });
     }
@@ -129,7 +129,6 @@ public class TableViewOrders {
             if (newValue != null) {
                 currentPresentation = newValue;
                 System.out.println("Nuevo valor: "+currentPresentation.getPresentationId());
-                //tagUnits.setText("" + currentPresentation.getQuantity());
                 tagName.setText(currentProduct.getName() + " " + currentPresentation.getPresentation()
                         + currentPresentation.getTypePresentation());
                 unitsToTake.setText("");
@@ -164,13 +163,17 @@ public class TableViewOrders {
         });
     }
 
-    public static void buildTableOutputProduct(TableView<OutputsProduct> table, TableColumn<OutputsProduct, String> columnLot, TableColumn<OutputsProduct, Integer> columnQuantity) {
+    public static void buildTableOutputProduct(TableView<OutputsProduct> table, TableColumn<OutputsProduct, String> columnLot, TableColumn<OutputsProduct, Integer> columnQuantity,
+                                               TableColumn<OutputsProduct, Double> columnWeight) {
         currentTableOutput = table;
         columnLot.setCellValueFactory(new PropertyValueFactory<OutputsProduct, String>("loteId"));
         columnQuantity.setCellValueFactory(new PropertyValueFactory<OutputsProduct, Integer>("quantity"));
+        columnWeight.setCellValueFactory( new PropertyValueFactory<OutputsProduct,Double>("weight"));
         currentTableOutput.setOnMouseClicked( event->{
             if(event.getButton()==MouseButton.PRIMARY && event.getClickCount()==2) {
                 System.out.println("se clico 2 veces");
+                weightPresentations.setText("");
+                lots.setValue(null);
                 OutputsProduct output = table.getSelectionModel().getSelectedItem();
                 List<OutputsProduct> outputs= currentTableOutput.getItems().stream().filter(e->
                         e.getQuantity()!=output.getQuantity() && e.getLoteId()!=output.getLoteId()
@@ -311,8 +314,6 @@ public class TableViewOrders {
             } else {
                 ToastProvider.showToastInfo("No existen lotes para el producto", 1500);
                 lots.setDisable(false);
-               lotsProducts.addAll(new PackagingLots(1, "lote1", 1, 1, "gramos", "super", 2.3),
-                       new PackagingLots(1, "lote2", 1, 1, "kilos", "super2", 2.3));
             }
 
         });
@@ -338,29 +339,39 @@ public class TableViewOrders {
 
     static void addItemOutputTable() {
 
-        if (ItemFormValidator.isValidSelector(lots, errorLots) && ItemFormValidator.isValidInputNumber(unitsToTake, errorQuantity)) {
+        if (ItemFormValidator.isValidSelector(lots, errorLots) && ItemFormValidator.isValidInputNumber(unitsToTake, errorQuantity)&&
+                ItemFormValidator.isValidInputDecimal(weightPresentations,errorPresentationWeight) ) {
+                List presentations  = currentTablePresentation.getItems().stream().map(presentation -> {
+                    if(presentation.getPresentation() == currentPresentation.getPresentation()){
+                        if(presentation.getUnits()>0) {
+                            int units=Integer.parseInt(unitsToTake.getText());
+                            if(lots.getValue().getQuantity() >= units){
+                                if((presentation.getUnits()-units)>=0) {
 
-            List presentations  = currentTablePresentation.getItems().stream().map(presentation -> {
-                if(presentation.getPresentation() == currentPresentation.getPresentation()){
-                    if(presentation.getUnits()>0) {
-                        int units=Integer.parseInt(unitsToTake.getText());
-                         if((presentation.getUnits()-units)>=0) {
+                                    tagUnits.setText("");
+                                    presentation.setUnits(presentation.getUnits() - units);
+                                    OutputsProduct item = new OutputsProduct(lots.getValue().getLoteId(), currentPresentation.getSubOrderId(), units,
+                                            currentPresentation.getPresentationId(),
+                                            Double.parseDouble(weightPresentations.getText()));
+                                    currentTableOutput.getItems().add(item);
+                                }else{
+                                    ModalProvider.showModalInfo("No puedes asignar mas de los que se piden");
+                                }
+                            }else{
+                                ModalProvider.showModalInfo("Las unidades a tomar deben ser menores a las dispobibles por lote");
+                            }
 
-                             tagUnits.setText("");
-                             presentation.setUnits(presentation.getUnits() - units);
-                             OutputsProduct item = new OutputsProduct(lots.getValue().getLoteId(), currentPresentation.getSubOrderId(), units, currentPresentation.getPresentationId());
-                             currentTableOutput.getItems().add(item);
-                         }else{
-                             ModalProvider.showModalInfo("No puedes asignar mas de los que se piden");
-                         }
-                    }else{
-                        ModalProvider.showModalInfo("El registro de la suborden ya esta completo");
+                        }else{
+                            ModalProvider.showModalInfo("El registro de la suborden ya esta completo");
+                        }
                     }
-                }
-                return  presentation;
-            }).collect(Collectors.toList());
-            currentTablePresentation.getItems().clear();
-            currentTablePresentation.getItems().addAll(presentations);
+                    return  presentation;
+                }).collect(Collectors.toList());
+                currentTablePresentation.getItems().clear();
+                currentTablePresentation.getItems().addAll(presentations);
+            }
+
+
 
             /*if (currentItem == null) {
                 OutputsProduct item = new OutputsProduct(lots.getValue().getLoteId(), currentPresentation.getSubOrderId(), units, currentPresentation.getPresentationId());
@@ -380,7 +391,7 @@ public class TableViewOrders {
             unitsToTake.setText("");
         }
 
-    }
+
 
     public static void saveOutputLots(Method method) {
        if(currentTableOutput.getItems().size() >0){

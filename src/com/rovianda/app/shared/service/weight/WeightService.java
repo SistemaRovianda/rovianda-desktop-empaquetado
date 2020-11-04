@@ -60,7 +60,7 @@ public class WeightService {
 
     public static void stop(){
         try{
-            if(localLabel.isVisible() && !localLabel.getText().equals("")) {
+            if(!localLabel.getText().equals("")) {
                 ToastProvider.showToastSuccess("Se detuvo la captura del peso",2000);
                 localLabel.setVisible(false);
                 localLabel.setText("");

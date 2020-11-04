@@ -28,9 +28,7 @@ public class HttpClient {
         WebTarget patch = webTarget.path(path);
         Invocation.Builder ib = patch.request(MediaType.APPLICATION_JSON).header(HttpHeaders.AUTHORIZATION,authorization);
         Response response;
-
-            response = ib.put(Entity.entity(body, MediaType.APPLICATION_JSON));
-
+        response = ib.put(Entity.entity(body, MediaType.APPLICATION_JSON));
         return response;
     }
 
@@ -46,7 +44,4 @@ public class HttpClient {
         response.bufferEntity();
         return response;
     }
-
-
-
 }

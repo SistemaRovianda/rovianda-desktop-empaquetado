@@ -9,9 +9,9 @@ import javafx.concurrent.Task;
 
 public class ReprocessingData {
 
-    public static void registerReprocessing(Reprocessing reprocessing, JFXButton button, JFXSpinner spinner, Method method) {
+    public  static String idReport ="";
 
-        System.out.println(reprocessing.toString());
+    public static void registerReprocessing(Reprocessing reprocessing, JFXButton button, JFXSpinner spinner, Method method) {
         if (reprocessing.getAllergen().equals("")
                 || reprocessing.getDate().equals("")
                 || reprocessing.getLotId().equals("")
@@ -30,9 +30,7 @@ public class ReprocessingData {
                     @Override
                     protected String call() throws Exception {
                         try {
-                            if (ServiceReprocessing.registerReprocessing(reprocessing))
-
-                                message = "success";
+                            message = ServiceReprocessing.registerReprocessing(reprocessing);
                         } catch (Exception e) {
                             message = e.getMessage();
                         }
@@ -46,7 +44,8 @@ public class ReprocessingData {
                 registerReprocessingTask.setOnSucceeded(e -> {
                     button.setDisable(false);
                     spinner.setVisible(false);
-                    if (registerReprocessingTask.getValue().equals("success")) {
+                    if (!registerReprocessingTask.getValue().equals("")) {
+                        idReport = registerReprocessingTask.getValue();
                         method.method();
                     } else {
                         ToastProvider.showToastError(registerReprocessingTask.getValue(), 3000);
