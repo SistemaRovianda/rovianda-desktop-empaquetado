@@ -366,7 +366,7 @@ public class RegisterProductCtrl implements Initializable {
             item.setProduct(productId.getValue().getName());
             item.setLot(lotId.getText());
             item.setExpiration(expirationDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-            item.setPresentation(presentation.getValue().getTypePresentation());
+            item.setPresentation(presentation.getValue().getPresentation()+" "+presentation.getValue().getTypePresentation());
             item.setUnits(units.getText());
             item.setWeight(weight.getText());
             item.setUser(User.getInstance().getFullName());
