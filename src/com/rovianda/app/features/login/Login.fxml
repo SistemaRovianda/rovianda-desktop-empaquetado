@@ -69,7 +69,9 @@
                </BorderPane.margin>
                <children>
                   <Label layoutX="28.0" layoutY="22.0" prefHeight="60.0" prefWidth="459.0" styleClass="title-container" text="Bienvenido" />
-                  <Label layoutX="28.0" layoutY="91.0" prefHeight="172.0" prefWidth="459.0" styleClass="message-container" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." textAlignment="JUSTIFY" wrapText="true" />
+                  <Label layoutX="28.0" layoutY="91.0" prefHeight="172.0" prefWidth="459.0" styleClass="message-container"
+                         text="Aplicación de distribución de empaques carnicos y productos de linea de quesos de ROVIANDA S.A.P.I DE C.V."
+                         textAlignment="JUSTIFY" wrapText="true" />
                </children>
             </Pane>
          </left>
