@@ -112,7 +112,6 @@ public class ReportProvider {
     }
 
     public static void  buildReportDelivered(final int deliveredId){
-
         ToastProvider.showToastInfo("Obteniendo ticket",1000);
         Task <InputStream> getReport = new Task<InputStream>() {
             @Override
@@ -124,6 +123,44 @@ public class ReportProvider {
         thread.setDaemon(true);
         thread.start();
         getReport.setOnSucceeded(e->{
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        PDDocument document = PDDocument.load(getReport.getValue());
+                        PrintService myPrinterService = findPrintService("");
+                        PrinterJob job = PrinterJob.getPrinterJob();
+                        job.setPageable(new PDFPageable(document));
+                        job.setPrintService(myPrinterService);
+                        job.print();
+                        document.close();
+                    } catch (Exception exception) {
+                        ToastProvider.showToastError("No se encontro impresora", 1500);
+                    }
+                }});
+            ToastProvider.showToastInfo("Espere guardando reporte", 1000);
+            String filename = "reporte_entrega_a_vendedor" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extension = new FileChooser.ExtensionFilter("Solo PDF", "*.pdf");
+            fileChooser.setInitialFileName(filename);
+            fileChooser.getExtensionFilters().add(extension);
+            fileChooser.setTitle("Guardar reporte " + filename);
+            file = fileChooser.showSaveDialog(currentContainer.getScene().getWindow());
+            try {
+                InputStream in = getReport.getValue();
+                OutputStream out = new FileOutputStream(file);
+                byte[] buff = new byte[in.available()];  // how much of the blob to read/write at a time
+                int len = 0;
+                while ((len = in.read(buff)) != -1) {
+                    out.write(buff, 0, len);
+                }
+                out.close();
+                ToastProvider.showToastSuccess("Reporte descargado exitosamente",1500);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+        /*getReport.setOnSucceeded(e->{
 
                 Platform.runLater(new Runnable() {
                     @Override
@@ -135,9 +172,11 @@ public class ReportProvider {
                             job.setPageable(new PDFPageable(document));
                             job.setPrintService(myPrinterService);
                             job.print();
+                            document.close();
                         } catch (Exception exception) {
                             ToastProvider.showToastError("No se encontro impresora",1500);
                         }
+
                         if(getReport.getValue()!=null) {
                             String filename = "reporte_entrega_a_vendedor" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                             FileChooser fileChooser = new FileChooser();
@@ -146,7 +185,8 @@ public class ReportProvider {
                             fileChooser.getExtensionFilters().add(extension);
                             fileChooser.setTitle("Guardar reporte " + filename);
                             file = fileChooser.showSaveDialog(currentContainer.getScene().getWindow());
-                            try {
+                            try{
+                                System.out.println("Size bytes:"+getReport.getValue());
                                 InputStream in = getReport.getValue();
                                 OutputStream out = new FileOutputStream(file);
                                 byte[] buff = new byte[in.available()];  // how much of the blob to read/write at a time
@@ -164,7 +204,7 @@ public class ReportProvider {
                 });
 
 
-        });
+        });*/
 
         getReport.setOnFailed(e->{
             ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
