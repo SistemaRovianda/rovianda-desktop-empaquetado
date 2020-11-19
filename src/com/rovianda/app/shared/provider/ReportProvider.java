@@ -123,21 +123,7 @@ public class ReportProvider {
         thread.setDaemon(true);
         thread.start();
         getReport.setOnSucceeded(e->{
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        PDDocument document = PDDocument.load(getReport.getValue());
-                        PrintService myPrinterService = findPrintService("");
-                        PrinterJob job = PrinterJob.getPrinterJob();
-                        job.setPageable(new PDFPageable(document));
-                        job.setPrintService(myPrinterService);
-                        job.print();
-                        document.close();
-                    } catch (Exception exception) {
-                        ToastProvider.showToastError("No se encontro impresora", 1500);
-                    }
-                }});
+
             ToastProvider.showToastInfo("Espere guardando reporte", 1000);
             String filename = "reporte_entrega_a_vendedor" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             FileChooser fileChooser = new FileChooser();
