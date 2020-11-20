@@ -19,7 +19,7 @@
                   <JFXButton fx:id="buttonRequest" focusTraversable="false" layoutY="341.0" onAction="#onRequest" prefHeight="41.0" prefWidth="220.0" ripplerFill="#e1bc5c" styleClass="tap" text="Peticiones" />
                   <JFXButton fx:id="buttonExit" focusTraversable="false" layoutX="27.0" layoutY="620.0" onAction="#onExit" prefHeight="41.0" prefWidth="195.0" ripplerFill="#e1bc5c" styleClass="exit" text="Cerrar sesión" textAlignment="CENTER" />
                   <JFXButton fx:id="buttonReprocessing" alignment="CENTER" focusTraversable="false" layoutY="408.0" onAction="#onReprocessing" prefHeight="41.0" prefWidth="220.0" ripplerFill="#e1bc5c" styleClass="tap" text="Reproceso" />
-                  <JFXButton fx:id="buttonReturns" alignment="CENTER" focusTraversable="false" layoutY="472.0" onAction="#onReturns" prefHeight="41.0" prefWidth="220.0" ripplerFill="#e1bc5c" styleClass="tap" text="Devoluciones" />
+                  <JFXButton fx:id="buttonReturns" alignment="CENTER" focusTraversable="false" layoutY="472.0" onAction="#onReturns" prefHeight="41.0" prefWidth="220.0" ripplerFill="#e1bc5c" styleClass="tap" text="Presentación" />
                   <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="27.0" layoutY="276.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../assets/icons/edit-icon.png" />
