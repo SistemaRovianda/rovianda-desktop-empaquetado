@@ -22,6 +22,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -147,7 +149,7 @@ public class TableViewOrders {
     }
 
     public static void assignColumnPresentations(TableColumn<Presentation, String> column) {
-        column.setCellValueFactory(new PropertyValueFactory<Presentation, String>("presentation"));
+        column.setCellValueFactory(new PropertyValueFactory<Presentation, String>("typePresentation"));
     }
 
     public static void assignColumnUnits(TableColumn<Presentation, Integer> column) {
@@ -299,7 +301,17 @@ public class TableViewOrders {
             ToastProvider.showToastSuccess("Lotes obtenidos", 1500);
             if (taskLots.getValue().size() > 0) {
                 lots.setDisable(false);
-                 List<OutputsProduct> currentOutputs=currentTableOutput.getItems().stream().collect(Collectors.toList());
+                List<OutputsProduct> currentOutputs=currentTableOutput.getItems().stream().collect(Collectors.toList());
+
+                /*List<String> packagingLotsString = new ArrayList<String>();
+                List<PackagingLots> packagingLots1 = taskLots.getValue().stream().collect(Collectors.toList());
+                List<PackagingLots> packagingLots2 = new ArrayList<>();
+                for(PackagingLots item : packagingLots1){
+                    if(!packagingLotsString.contains(item.getLoteId())){
+                        packagingLotsString.add(item.getLoteId());
+                        packagingLots2.add(item);
+                    }
+                }*/
                  List<PackagingLots> packagingLots = taskLots.getValue().stream().map((packaging)->{
                      int total=packaging.getQuantity();
                      for(OutputsProduct outputProduct : currentOutputs){
@@ -322,12 +334,20 @@ public class TableViewOrders {
             ToastProvider.showToastError(event.getSource().getException().getMessage(), 1500);
             lots.setDisable(true);
         });
-
+        /*lotsProducts.clear();
+        List<String> packagingLots = new ArrayList<String>();
+        List<PackagingLots> packagingLots2 = lotsProducts.sorted().stream().collect(Collectors.toList());
+        for(PackagingLots item : packagingLots2){
+            if(!packagingLots.contains(item.getLoteId())){
+                packagingLots.add(item.getLoteId());
+                lotsProducts.add(item);
+            }
+        }*/
         lots.setItems(lotsProducts);
         lots.setConverter(new StringConverter<PackagingLots>() {
             @Override
             public String toString(PackagingLots object) {
-                return object.getLoteId();
+                return object.getLoteId()+'-'+object.getTypePresentation();
             }
 
             @Override
@@ -341,34 +361,43 @@ public class TableViewOrders {
 
         if (ItemFormValidator.isValidSelector(lots, errorLots) && ItemFormValidator.isValidInputNumber(unitsToTake, errorQuantity)&&
                 ItemFormValidator.isValidInputDecimal(weightPresentations,errorPresentationWeight) ) {
-                List presentations  = currentTablePresentation.getItems().stream().map(presentation -> {
-                    if(presentation.getPresentation() == currentPresentation.getPresentation()){
-                        if(presentation.getUnits()>0) {
-                            int units=Integer.parseInt(unitsToTake.getText());
-                            if(lots.getValue().getQuantity() >= units){
-                                if((presentation.getUnits()-units)>=0) {
+            if(currentTablePresentation!=null) {
+                if(lots.getValue().getPresentationId()==currentPresentation.getPresentationId()) {
+                    List presentations = currentTablePresentation.getItems().stream().map(presentation -> {
 
-                                    tagUnits.setText("");
-                                    presentation.setUnits(presentation.getUnits() - units);
-                                    OutputsProduct item = new OutputsProduct(lots.getValue().getLoteId(), currentPresentation.getSubOrderId(), units,
-                                            currentPresentation.getPresentationId(),
-                                            Double.parseDouble(weightPresentations.getText()));
-                                    currentTableOutput.getItems().add(item);
-                                }else{
-                                    ModalProvider.showModalInfo("No puedes asignar mas de los que se piden");
+                        if (presentation.getPresentationId() == currentPresentation.getPresentationId()) {
+                            if (presentation.getUnits() > 0) {
+                                int units = Integer.parseInt(unitsToTake.getText());
+                                if (lots.getValue().getQuantity() >= units) {
+                                    if ((presentation.getUnits() - units) >= 0) {
+
+                                        tagUnits.setText("");
+                                        presentation.setUnits(presentation.getUnits() - units);
+                                        OutputsProduct item = new OutputsProduct(lots.getValue().getLoteId(), currentPresentation.getSubOrderId(), units,
+                                                currentPresentation.getPresentationId(),
+                                                Double.parseDouble(weightPresentations.getText()));
+                                        currentTableOutput.getItems().add(item);
+                                    } else {
+                                        ModalProvider.showModalInfo("No puedes asignar mas de los que se piden");
+                                    }
+                                } else {
+                                    ModalProvider.showModalInfo("Las unidades a tomar deben ser menores a las dispobibles por lote");
                                 }
-                            }else{
-                                ModalProvider.showModalInfo("Las unidades a tomar deben ser menores a las dispobibles por lote");
-                            }
 
-                        }else{
-                            ModalProvider.showModalInfo("El registro de la suborden ya esta completo");
+                            } else {
+                                ModalProvider.showModalInfo("El registro de la suborden ya esta completo");
+                            }
                         }
-                    }
-                    return  presentation;
-                }).collect(Collectors.toList());
-                currentTablePresentation.getItems().clear();
-                currentTablePresentation.getItems().addAll(presentations);
+                        return presentation;
+                    }).collect(Collectors.toList());
+                    currentTablePresentation.getItems().clear();
+                    currentTablePresentation.getItems().addAll(presentations);
+                }else{
+                    ModalProvider.showModalInfo("No puedes asignar de una presentacion diferente");
+                }
+            }else {
+                ModalProvider.showModalInfo("Primero selecciona un registro");
+            }
             }
 
 
