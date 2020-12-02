@@ -2,6 +2,10 @@ package com.rovianda.utility.portserial;
 
 import com.fazecast.jSerialComm.*;
 
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Scanner;
+
 
 public class PortSerial {
 
@@ -17,16 +21,17 @@ public class PortSerial {
        byte[] readBuffer = new byte[comPort.bytesAvailable()];
        int bytesRead = comPort.readBytes(readBuffer,Math.min(readBuffer.length, comPort.bytesAvailable()));
        message = new String(readBuffer,0, bytesRead);
-       System.out.println(message.replaceAll(" ", ""));
+       System.out.println(message);
        return message.replaceAll(" ", "");
     }
 
     public static boolean searchPort () throws Exception {
         ports = null;
+        comPort = null;
         ports = SerialPort.getCommPorts();
         for (int i =0; i < ports.length;i++){
             System.out.println(ports[i].getDescriptivePortName());
-            if(ports[i].getDescriptivePortName().indexOf("Prolific USB-to-Serial Comm Port")!=-1){
+            if(ports[i].getDescriptivePortName().indexOf("VSPE_SERIAL1")!=-1){//Prolific USB-to-Serial Comm Port
                port= i;
                comPort = ports[i];
             }
@@ -43,12 +48,21 @@ public class PortSerial {
     }
 
     public static void  closePort(){
-        comPort.closePort();
+        Arrays.stream(ports).forEach(p ->{
+            p.removeDataListener();
+            p.closePort();
+        });
+        if(comPort.isOpen()){
+            System.out.println("sigue abierto");
+        }
     }
 
 
     public static double getWeight() throws Exception {
         String weight = PortSerial.readString().split("KG")[0];
+        System.out.println(weight);
         return Double.parseDouble(weight.replaceAll("KG",""));
     }
+
+
 }

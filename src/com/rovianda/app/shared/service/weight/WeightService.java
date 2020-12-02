@@ -1,12 +1,12 @@
 package com.rovianda.app.shared.service.weight;
 
+import com.fazecast.jSerialComm.SerialPort;
+import com.fazecast.jSerialComm.SerialPortDataListener;
+import com.fazecast.jSerialComm.SerialPortEvent;
 import com.jfoenix.controls.JFXTextField;
 import com.rovianda.app.shared.provider.ToastProvider;
-import com.rovianda.utility.portserial.PortSerial;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 
@@ -16,18 +16,32 @@ public class WeightService {
 
     private  static Label localLabel;
 
-    private static Thread t;
+    private static SerialPort weightPort;
 
-    private static Task<Void> task = new Task<Void>() {
-        @Override
-        protected Void call() throws Exception {
-            while(true){
-                updateField();
-            }
+    static {
+        weightPort = SerialPort.getCommPort("Prolific USB-to-Serial Comm Port");
+        if(weightPort!= null){
+                ToastProvider.showToastSuccess("Conexión exitosa a la bascula",2000);
+            weightPort.addDataListener(new SerialPortDataListener() {
+                String message;
+                @Override
+                public int getListeningEvents() {
+                    return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
+                }
+                public void serialEvent(SerialPortEvent event) {
+                    if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
+                        return;
+                    byte[] newData = new byte[weightPort.bytesAvailable()];
+                    int numRead = weightPort.readBytes(newData, newData.length);
+                    message = new String(newData,0, numRead);
+                    localInput.setText(""+Double.parseDouble(message.replaceAll("KG","")));
+                    System.out.println("peso" + message + " xD");
+                }
+            });
         }
-    };
-
-
+        else
+            ToastProvider.showToastError("Error al conectar con la bascula",1500);
+    }
 
 
     public static void start(JFXTextField input, Label label) {
@@ -39,19 +53,17 @@ public class WeightService {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if(newValue){
-                    try {
-
-                        if(PortSerial.searchPort()){
-                            localLabel.setVisible(true);
-                            localLabel.setText("Click en el botón si desea detener la captura del peso ");
-                            PortSerial.openPort();
-                            t = new Thread(task);
-                            t.setDaemon(true);
-                            t.start();
+                    if(weightPort!= null){
+                        weightPort.openPort();
+                        if(weightPort.isOpen()){
+                            localLabel.setText("Para detener la captura de peso presionar el boton");
+                        }else{
+                            localLabel.setText("ERROR: puerto no abierto o no encontrado");
                         }
-                    }catch (Exception e){
-                        ToastProvider.showToastError(e.getMessage(),500);
-                    }
+                        localLabel.setVisible(true);
+
+                    }else
+                        ToastProvider.showToastError("Error de comunicacion con la bascula",1500);
                 }
 
             }
@@ -59,23 +71,10 @@ public class WeightService {
     }
 
     public static void stop(){
-        try{
-            if(!localLabel.getText().equals("")) {
-                ToastProvider.showToastSuccess("Se detuvo la captura del peso",2000);
-                localLabel.setVisible(false);
-                localLabel.setText("");
-                task.cancel();
-                PortSerial.closePort();
-                t = null;
-            }
-
-        }catch (Exception e){
-            ToastProvider.showToastError("Error al cerrar el puerto",1500);
-        }
-
+        if(weightPort!= null){
+            weightPort.closePort();
+        }else
+            ToastProvider.showToastError("Error de comunicacion con la bascula",1500);
     }
 
-    static void updateField() throws Exception{
-        localInput.setText( ""+PortSerial.getWeight());
-    }
 }
