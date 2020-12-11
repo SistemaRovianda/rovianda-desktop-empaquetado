@@ -124,65 +124,6 @@
                         </BorderPane>
                      </children>
                   </Pane>
-                  <Pane fx:id="request" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <BorderPane fx:id="containerRequest" prefHeight="792.0" prefWidth="1080.0" styleClass="container">
-                           <left>
-                              <Pane prefHeight="632.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-                                 <BorderPane.margin>
-                                    <Insets bottom="120.0" left="40.0" top="80.0" />
-                                 </BorderPane.margin>
-                                 <children>
-                                    <Label layoutX="18.0" layoutY="30.0" text="Peticiones" />
-                                    <TableView fx:id="tableOrders" layoutX="15.0" layoutY="58.0" prefHeight="500.0" prefWidth="570.0">
-                                      <columns>
-                                        <TableColumn fx:id="columnNoOrder" prefWidth="98.0" text="No. Orden" />
-                                          <TableColumn fx:id="columnDate" prefWidth="138.0" text="Fecha" />
-                                        <TableColumn fx:id="columnVendedor" prefWidth="212.0" text="Vendedor" />
-                                          <TableColumn fx:id="columnOptions" prefWidth="120.0" text="Opciones" />
-                                      </columns>
-                                    </TableView>
-                                    <JFXComboBox fx:id="urgent" focusColor="#e1bc5c" labelFloat="true" layoutX="516.0" layoutY="18.0" onAction="#changeOrder" prefHeight="25.0" prefWidth="69.0" />
-                                    <Label layoutX="399.0" layoutY="21.0" styleClass="itemForm" text="Ordenes urgentes:" />
-                                 </children>
-                              </Pane>
-                           </left>
-                           <right>
-                              <Pane prefHeight="632.0" prefWidth="350.0" BorderPane.alignment="CENTER">
-                                 <BorderPane.margin>
-                                    <Insets bottom="120.0" right="40.0" top="80.0" />
-                                 </BorderPane.margin>
-                                 <children>
-                                    <Label layoutX="25.0" layoutY="27.0" text="Productos de la petición" />
-                                    <TableView fx:id="productsRequest" layoutX="25.0" layoutY="58.0" prefHeight="500.0" prefWidth="300.0">
-                                      <columns>
-                                        <TableColumn fx:id="columnRequestId" prefWidth="62.0" text="No." />
-                                        <TableColumn fx:id="columnRequestProduct" prefWidth="236.0" text="Producto" />
-                                      </columns>
-                                    </TableView>
-                                 </children>
-                              </Pane>
-                           </right>
-                           <top>
-                              <BorderPane prefHeight="31.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
-                                 <right>
-                                    <JFXButton alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" onAction="#minimizeScreen" prefHeight="31.0" prefWidth="31.0" styleClass="minimize" BorderPane.alignment="CENTER">
-                                       <graphic>
-                                          <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../../../assets/icons/minimize.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </JFXButton>
-                                 </right>
-                                 <BorderPane.margin>
-                                    <Insets right="15.0" top="5.0" />
-                                 </BorderPane.margin>
-                              </BorderPane>
-                           </top></BorderPane>
-                     </children>
-                  </Pane>
                   <Pane fx:id="register" layoutX="100.0" layoutY="163.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <BorderPane fx:id="containerRegister" prefHeight="792.0" prefWidth="1086.0" styleClass="container">
@@ -390,8 +331,8 @@
                                     <JFXComboBox fx:id="lotsPresentations" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="21.0" layoutY="49.0" prefWidth="150.0" promptText="Lote" styleClass="itemForm" />
                                     <Label fx:id="presentationsQuantity" alignment="CENTER_RIGHT" layoutX="202.0" layoutY="52.0" prefHeight="28.0" prefWidth="76.0" text="0" />
                                     <JFXTextField fx:id="unitsToTake" focusColor="#e1bc5c" labelFloat="true" layoutX="303.0" layoutY="54.0" prefHeight="25.0" prefWidth="160.0" promptText="Cantidad a tomar" />
-                                    <Label fx:id="errorPresentationLot" layoutX="20.0" layoutY="82.0" prefHeight="20.0" prefWidth="152.0" styleClass="error-message" text="Label" />
-                                    <Label fx:id="errorPresentationQuantity" layoutX="304.0" layoutY="82.0" prefHeight="20.0" prefWidth="159.0" styleClass="error-message" text="Label" />
+                                    <Label fx:id="errorPresentationLot" layoutX="20.0" layoutY="82.0" prefHeight="20.0" prefWidth="152.0" styleClass="error-message" text="Label" visible="false" />
+                                    <Label fx:id="errorPresentationQuantity" layoutX="304.0" layoutY="82.0" prefHeight="20.0" prefWidth="159.0" styleClass="error-message" text="Label" visible="false" />
                                     <JFXButton contentDisplay="CENTER" focusTraversable="false" layoutX="365.0" layoutY="118.0" onAction="#getPesoReproceso" prefHeight="31.0" styleClass="minimize" text=" ">
                                        <graphic>
                                           <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
@@ -402,7 +343,7 @@
                                        </graphic>
                                     </JFXButton>
                                     <JFXTextField fx:id="weightPresentations" focusColor="#e1bc5c" labelFloat="true" layoutX="103.0" layoutY="121.0" prefHeight="25.0" prefWidth="254.0" promptText="Peso" />
-                                    <Label fx:id="errorPresentationWeight" layoutX="102.0" layoutY="152.0" prefHeight="20.0" prefWidth="256.0" styleClass="error-message" text="Label" />
+                                    <Label fx:id="errorPresentationWeight" layoutX="102.0" layoutY="152.0" prefHeight="20.0" prefWidth="256.0" styleClass="error-message" text="Label" visible="false" />
                                  </children>
                               </Pane>
                            </right>
@@ -425,6 +366,66 @@
                               </BorderPane>
                            </top>
                         </BorderPane>
+                     </children>
+                  </Pane>
+                  <Pane fx:id="request" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <BorderPane fx:id="containerRequest" prefHeight="792.0" prefWidth="1080.0" styleClass="container">
+                           <left>
+                              <Pane prefHeight="632.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                                 <BorderPane.margin>
+                                    <Insets bottom="120.0" left="40.0" top="80.0" />
+                                 </BorderPane.margin>
+                                 <children>
+                                    <Label layoutX="18.0" layoutY="30.0" text="Peticiones" />
+                                    <TableView fx:id="tableOrders" layoutX="15.0" layoutY="58.0" prefHeight="500.0" prefWidth="570.0">
+                                      <columns>
+                                        <TableColumn fx:id="columnNoOrder" prefWidth="98.0" text="No. Orden" />
+                                          <TableColumn fx:id="columnDate" prefWidth="138.0" text="Fecha" />
+                                        <TableColumn fx:id="columnVendedor" prefWidth="212.0" text="Vendedor" />
+                                          <TableColumn fx:id="columnOptions" prefWidth="120.0" text="Opciones" />
+                                      </columns>
+                                    </TableView>
+                                    <JFXComboBox fx:id="urgent" focusColor="#e1bc5c" labelFloat="true" layoutX="308.0" layoutY="19.0" onAction="#changeOrder" prefHeight="25.0" prefWidth="69.0" />
+                                    <Label layoutX="192.0" layoutY="21.0" styleClass="itemForm" text="Ordenes urgentes:" />
+                                    <JFXButton layoutX="407.0" layoutY="15.0" onAction="#getReportOrdens" prefHeight="34.0" prefWidth="178.0" styleClass="gold" text="Decargar reporte de órdenes" />
+                                 </children>
+                              </Pane>
+                           </left>
+                           <right>
+                              <Pane prefHeight="632.0" prefWidth="350.0" BorderPane.alignment="CENTER">
+                                 <BorderPane.margin>
+                                    <Insets bottom="120.0" right="40.0" top="80.0" />
+                                 </BorderPane.margin>
+                                 <children>
+                                    <Label layoutX="25.0" layoutY="27.0" text="Productos de la petición" />
+                                    <TableView fx:id="productsRequest" layoutX="25.0" layoutY="58.0" prefHeight="500.0" prefWidth="300.0">
+                                      <columns>
+                                        <TableColumn fx:id="columnRequestId" prefWidth="62.0" text="No." />
+                                        <TableColumn fx:id="columnRequestProduct" prefWidth="236.0" text="Producto" />
+                                      </columns>
+                                    </TableView>
+                                 </children>
+                              </Pane>
+                           </right>
+                           <top>
+                              <BorderPane prefHeight="31.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
+                                 <right>
+                                    <JFXButton alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" onAction="#minimizeScreen" prefHeight="31.0" prefWidth="31.0" styleClass="minimize" BorderPane.alignment="CENTER">
+                                       <graphic>
+                                          <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../../assets/icons/minimize.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </JFXButton>
+                                 </right>
+                                 <BorderPane.margin>
+                                    <Insets right="15.0" top="5.0" />
+                                 </BorderPane.margin>
+                              </BorderPane>
+                           </top></BorderPane>
                      </children>
                   </Pane>
                </children>

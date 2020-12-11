@@ -25,7 +25,6 @@ public class ServiceProductCatalog {
     public static List<ProductCatalogReturn> getProductsCatalogReturns() throws Exception {
         Response response = HttpClient.get("/products-rovianda/catalog");
         List<ProductCatalogReturn> products = new ArrayList<>();
-        System.out.println(response.readEntity(String.class));
         if(response.getStatus() == 200 || response.getStatus() == 201 ){
             products = response.readEntity(new GenericType<List<ProductCatalogReturn>>(){});
         }else if (response.getStatus() == 404)

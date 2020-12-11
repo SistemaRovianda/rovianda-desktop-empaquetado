@@ -111,7 +111,7 @@ public class DataComboBox {
 
     public static void fillOptions(JFXComboBox <OptionOrder> comboBox){
         ObservableList<OptionOrder> options = FXCollections.observableArrayList();
-        options.addAll( new OptionOrder("Si", true), new OptionOrder("No",false) );
+        options.addAll( new OptionOrder("No", false), new OptionOrder("Si",true) );
         comboBox.setItems(options);
         comboBox.setConverter(new StringConverter<OptionOrder>() {
             @Override

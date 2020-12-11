@@ -35,7 +35,6 @@ public class WeightService {
                     int numRead = weightPort.readBytes(newData, newData.length);
                     message = new String(newData,0, numRead);
                     localInput.setText(""+Double.parseDouble(message.replaceAll("KG","")));
-                    System.out.println("peso" + message + " xD");
                 }
             });
         }

@@ -47,7 +47,6 @@ public class ServicePackaging {
     }
     public static List<ProductsRequest> getOrderProducts(int orderId) throws Exception{
         Response response = HttpClient.get("/seller/orders-products/"+orderId);
-        System.out.println(response.readEntity(String.class));
         List<ProductsRequest> products = new ArrayList<>();
         if(response.getStatus() == 200)
             products = response.readEntity(new GenericType<List<ProductsRequest>>(){});
@@ -61,7 +60,6 @@ public class ServicePackaging {
 
     public static  List<Presentation> getPresentations(int orderId, int productId) throws Exception {
         Response response = HttpClient.get("/seller/order/"+orderId+"/product/"+productId);
-        System.out.println(response.readEntity(String.class));
         List<Presentation> presentations = new ArrayList<>();
         if(response.getStatus() == 200)
             presentations = response.readEntity(new GenericType<List<Presentation>>(){});
@@ -75,12 +73,10 @@ public class ServicePackaging {
 
     public static void getGuard(String sellerUid){
         Response response = HttpClient.get("/seller/guard/"+sellerUid);
-        System.out.println(response.readEntity(String.class));
     }
 
     public static List<PackagingLots> getLotsByProduct(int product_id) throws Exception {
         Response response = HttpClient.get("/packaging-lots/inventory/product/"+product_id);
-        System.out.println(response.readEntity(String.class));
         List<PackagingLots> lots = new ArrayList<>();
         if(response.getStatus() == 200){
             lots = response.readEntity(new GenericType<List<PackagingLots>>(){});
@@ -106,9 +102,6 @@ public class ServicePackaging {
 
     public static boolean registerOutputsLots(List<OutputsProduct> outputsProduct) throws Exception {
         Response response = HttpClient.post("packaging-lots/inventory/product/outputs",outputsProduct);
-        outputsProduct.forEach(item->{
-            System.out.println(item.toString());
-        });
         boolean result = false;
         if (response.getStatus() == 201){
             result= true;

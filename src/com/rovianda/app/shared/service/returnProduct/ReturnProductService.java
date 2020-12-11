@@ -11,7 +11,7 @@ public class ReturnProductService {
     public static Long registerReturnProduct(ProductReturn product) throws Exception {
         Response response = HttpClient.post("packaging/devolution",product);
         ResponseDevolution id ;
-        if(response.getStatus()==404){
+        if(response.getStatus()==404 || response.getStatus() == 409){
             MessageError e = response.readEntity(MessageError.class);
             throw new Exception(e.getMsg());
         }else if (response.getStatus()==400) {

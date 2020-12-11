@@ -13,7 +13,6 @@ public class User {
 
     public static void initialInstance(User user){
         if(user!= null)
-            System.out.println(user.toString());
             instance = user;
     }
 

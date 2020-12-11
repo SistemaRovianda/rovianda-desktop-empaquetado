@@ -32,38 +32,39 @@ public class ReportProvider {
         fileChooser.getExtensionFilters().add(extension);
         fileChooser.setTitle("Guardar reporte "+filename);
         file = fileChooser.showSaveDialog(currentContainer.getScene().getWindow());
-        ToastProvider.showToastInfo("Guardando reporte",1000);
-        Task <InputStream> getReport = new Task<InputStream>() {
-            @Override
-            protected InputStream call() throws Exception {
-                return ReportService.getReport(TableViewRegister.packingId);
-            }
-        };
-        Thread thread = new Thread(getReport);
-        thread.setDaemon(true);
-        thread.start();
-        getReport.setOnSucceeded(e->{
-            ToastProvider.showToastInfo("Espere guardando reporte", 1000);
-            try {
-                InputStream in = getReport.getValue();
-                OutputStream out = new FileOutputStream(file);
-                byte[] buff = new byte[in.available()];  // how much of the blob to read/write at a time
-                int len = 0;
-                while ((len = in.read(buff)) != -1) {
-                    out.write(buff, 0, len);
+        if(file != null) {
+            ToastProvider.showToastInfo("Guardando reporte", 1000);
+            Task<InputStream> getReport = new Task<InputStream>() {
+                @Override
+                protected InputStream call() throws Exception {
+                    return ReportService.getReport(TableViewRegister.packingId);
                 }
-                out.close();
-                ToastProvider.showToastSuccess("Reporte descargado exitosamente",1500);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
+            };
+            Thread thread = new Thread(getReport);
+            thread.setDaemon(true);
+            thread.start();
+            getReport.setOnSucceeded(e -> {
+                ToastProvider.showToastInfo("Espere guardando reporte", 1000);
+                try {
+                    InputStream in = getReport.getValue();
+                    OutputStream out = new FileOutputStream(file);
+                    byte[] buff = new byte[in.available()];  // how much of the blob to read/write at a time
+                    int len = 0;
+                    while ((len = in.read(buff)) != -1) {
+                        out.write(buff, 0, len);
+                    }
+                    out.close();
+                    ToastProvider.showToastSuccess("Reporte descargado exitosamente", 1500);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            });
 
-        getReport.setOnFailed(e->{
-            ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
-            System.out.println(e.getSource().getException().getMessage());
-        });
-
+            getReport.setOnFailed(e -> {
+                ToastProvider.showToastError(e.getSource().getException().getMessage(), 1500);
+                System.out.println(e.getSource().getException().getMessage());
+            });
+        }
     }
 
     public static void  buildReportReturn(Method method){
@@ -75,40 +76,41 @@ public class ReportProvider {
         fileChooser.getExtensionFilters().add(extension);
         fileChooser.setTitle("Guardar reporte "+filename);
         file = fileChooser.showSaveDialog(currentContainer.getScene().getWindow());
-        ToastProvider.showToastInfo("Guardando reporte",1000);
-        Task <InputStream> getReport = new Task<InputStream>() {
-            @Override
-            protected InputStream call() throws Exception {
-                return ReportService.getReportReturns(ReturnProductProvider.id);
-            }
-        };
-        Thread thread = new Thread(getReport);
-        thread.setDaemon(true);
-        thread.start();
-        getReport.setOnSucceeded(e->{
-            method.method();
-            ToastProvider.showToastInfo("Espere guardando reporte", 1000);
-            ReturnProductProvider.id = new Long(0);
-            try {
-                InputStream in = getReport.getValue();
-                OutputStream out = new FileOutputStream(file);
-                byte[] buff = new byte[in.available()];  // how much of the blob to read/write at a time
-                int len = 0;
-                while ((len = in.read(buff)) != -1) {
-                    out.write(buff, 0, len);
+        if(file != null) {
+            ToastProvider.showToastInfo("Guardando reporte", 1000);
+            Task<InputStream> getReport = new Task<InputStream>() {
+                @Override
+                protected InputStream call() throws Exception {
+                    return ReportService.getReportReturns(ReturnProductProvider.id);
                 }
-                out.close();
-                ToastProvider.showToastSuccess("Reporte descargado exitosamente",1500);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
+            };
+            Thread thread = new Thread(getReport);
+            thread.setDaemon(true);
+            thread.start();
+            getReport.setOnSucceeded(e -> {
+                method.method();
+                ToastProvider.showToastInfo("Espere guardando reporte", 1000);
+                ReturnProductProvider.id = new Long(0);
+                try {
+                    InputStream in = getReport.getValue();
+                    OutputStream out = new FileOutputStream(file);
+                    byte[] buff = new byte[in.available()];  // how much of the blob to read/write at a time
+                    int len = 0;
+                    while ((len = in.read(buff)) != -1) {
+                        out.write(buff, 0, len);
+                    }
+                    out.close();
+                    ToastProvider.showToastSuccess("Reporte descargado exitosamente", 1500);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            });
 
-        getReport.setOnFailed(e->{
-            ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
-            System.out.println(e.getSource().getException().getMessage());
-        });
-
+            getReport.setOnFailed(e -> {
+                ToastProvider.showToastError(e.getSource().getException().getMessage(), 1500);
+                System.out.println(e.getSource().getException().getMessage());
+            });
+        }
     }
 
     public static void  buildReportDelivered(final int deliveredId){
@@ -146,52 +148,6 @@ public class ReportProvider {
                 exception.printStackTrace();
             }
         });
-        /*getReport.setOnSucceeded(e->{
-
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            PDDocument document = PDDocument.load(getReport.getValue());
-                            PrintService myPrinterService = findPrintService("");
-                            PrinterJob job = PrinterJob.getPrinterJob();
-                            job.setPageable(new PDFPageable(document));
-                            job.setPrintService(myPrinterService);
-                            job.print();
-                            document.close();
-                        } catch (Exception exception) {
-                            ToastProvider.showToastError("No se encontro impresora",1500);
-                        }
-
-                        if(getReport.getValue()!=null) {
-                            String filename = "reporte_entrega_a_vendedor" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                            FileChooser fileChooser = new FileChooser();
-                            FileChooser.ExtensionFilter extension = new FileChooser.ExtensionFilter("Solo PDF", "*.pdf");
-                            fileChooser.setInitialFileName(filename);
-                            fileChooser.getExtensionFilters().add(extension);
-                            fileChooser.setTitle("Guardar reporte " + filename);
-                            file = fileChooser.showSaveDialog(currentContainer.getScene().getWindow());
-                            try{
-                                System.out.println("Size bytes:"+getReport.getValue());
-                                InputStream in = getReport.getValue();
-                                OutputStream out = new FileOutputStream(file);
-                                byte[] buff = new byte[in.available()];  // how much of the blob to read/write at a time
-                                int len = 0;
-                                while ((len = in.read(buff)) != -1) {
-                                    out.write(buff, 0, len);
-                                }
-                                out.close();
-                                ToastProvider.showToastSuccess("Reporte descargado exitosamente", 1500);
-                            }catch (Exception ex){
-                                ex.printStackTrace();
-                            }
-                        }
-                    }
-                });
-
-
-        });*/
-
         getReport.setOnFailed(e->{
             ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
             System.out.println(e.getSource().getException().getMessage());
@@ -209,50 +165,85 @@ public class ReportProvider {
         fileChooser.getExtensionFilters().add(extension);
         fileChooser.setTitle("Guardar reporte de reproceso "+filename);
         file = fileChooser.showSaveDialog(currentContainer.getScene().getWindow());
-        ToastProvider.showToastInfo("Guardando reporte de reproceso",1000);
-        Task <InputStream> getReport = new Task<InputStream>() {
-            @Override
-            protected InputStream call() throws Exception {
-                return ReportService.getReportReprocessing(ReprocessingData.idReport);
-            }
-        };
-        Thread thread = new Thread(getReport);
-        thread.setDaemon(true);
-        thread.start();
-        getReport.setOnSucceeded(e->{
-            method.method();
-            ToastProvider.showToastInfo("Espere guardando reporte", 1000);
-            ReturnProductProvider.id = new Long(0);
-            try {
-                InputStream in = getReport.getValue();
-                OutputStream out = new FileOutputStream(file);
-                byte[] buff = new byte[in.available()];  // how much of the blob to read/write at a time
-                int len = 0;
-                while ((len = in.read(buff)) != -1) {
-                    out.write(buff, 0, len);
+        if(file != null) {
+            ToastProvider.showToastInfo("Guardando reporte de reproceso", 1000);
+            Task<InputStream> getReport = new Task<InputStream>() {
+                @Override
+                protected InputStream call() throws Exception {
+                    return ReportService.getReportReprocessing(ReprocessingData.idReport);
                 }
-                out.close();
-                ToastProvider.showToastSuccess("Reporte descargado exitosamente",1500);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        });
+            };
+            Thread thread = new Thread(getReport);
+            thread.setDaemon(true);
+            thread.start();
+            getReport.setOnSucceeded(e -> {
+                method.method();
+                ToastProvider.showToastInfo("Espere guardando reporte", 1000);
+                ReturnProductProvider.id = new Long(0);
+                try {
+                    InputStream in = getReport.getValue();
+                    OutputStream out = new FileOutputStream(file);
+                    byte[] buff = new byte[in.available()];  // how much of the blob to read/write at a time
+                    int len = 0;
+                    while ((len = in.read(buff)) != -1) {
+                        out.write(buff, 0, len);
+                    }
+                    out.close();
+                    ToastProvider.showToastSuccess("Reporte descargado exitosamente", 1500);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            });
 
-        getReport.setOnFailed(e->{
-            ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
-            System.out.println(e.getSource().getException().getMessage());
-        });
-
-    }
-
-    private static PrintService findPrintService(String printerName) {
-        PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
-        for (PrintService printService : printServices) {
-            if (printService.getSupportedDocFlavors().toString().contains("pdf")){
-                return printService;
-            }
+            getReport.setOnFailed(e -> {
+                ToastProvider.showToastError(e.getSource().getException().getMessage(), 1500);
+                System.out.println(e.getSource().getException().getMessage());
+            });
         }
-        return null;
     }
 
+    public static void buildReportOrderGeneral(boolean urgent){
+        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String filename = "reporte_ordenes_general_"+ReprocessingData.idReport+"_"+ date;
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extension = new FileChooser.ExtensionFilter("Solo PDF","*.pdf");
+        fileChooser.setInitialFileName(filename);
+        fileChooser.getExtensionFilters().add(extension);
+        fileChooser.setTitle("Guardar reporte de reproceso "+filename);
+        file = fileChooser.showSaveDialog(currentContainer.getScene().getWindow());
+        if(file != null){
+            ToastProvider.showToastInfo("Guardando reporte de reproceso",1000);
+            Task <InputStream> getReport = new Task<InputStream>() {
+                @Override
+                protected InputStream call() throws Exception {
+                    return ReportService.getReportGeneral(urgent, date);
+                }
+            };
+            Thread thread = new Thread(getReport);
+            thread.setDaemon(true);
+            thread.start();
+            getReport.setOnSucceeded(e->{
+                ToastProvider.showToastInfo("Espere guardando reporte", 1000);
+                try {
+                    InputStream in = getReport.getValue();
+                    OutputStream out = new FileOutputStream(file);
+                    byte[] buff = new byte[in.available()];  // how much of the blob to read/write at a time
+                    int len = 0;
+                    while ((len = in.read(buff)) != -1) {
+                        out.write(buff, 0, len);
+                    }
+                    out.close();
+                    ToastProvider.showToastSuccess("Reporte descargado exitosamente",1500);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            });
+
+            getReport.setOnFailed(e->{
+                ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
+                System.out.println(e.getSource().getException().getMessage());
+            });
+        }
+
+    }
 }

@@ -250,6 +250,7 @@ public class RegisterProductCtrl implements Initializable {
         dateReturn.setValue(LocalDate.now());
         btnSaveReturn.setVisible(false);
         presentationReturn.setValue(null);
+        btnReturnProduct.setDisable(false);
     }
 
     @FXML
@@ -633,6 +634,11 @@ public class RegisterProductCtrl implements Initializable {
                 initializePaneReprocessing();
             });
         });
+    }
+
+    @FXML
+    void getReportOrdens(){
+        ReportProvider.buildReportOrderGeneral(urgent.getValue().isValue());
     }
 
     @FXML

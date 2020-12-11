@@ -54,4 +54,16 @@ public class ReportService {
         }
         return null;
     }
+
+    public static InputStream getReportGeneral(boolean urgent, String date) throws Exception {
+        Response response = HttpClient.get("/sellers/orders-list?urgent="+urgent+"?date="+date);
+        if(response.getStatus() == 200){
+            return response.readEntity(InputStream.class);
+        }else if(response.getStatus()==400){
+            throw new Exception("Error al descargar reporte");
+        }else if(response.getStatus()==404 || response.getStatus()==500){
+            throw  new Exception("Servicio no disponible");
+        }
+        return null;
+    }
 }
