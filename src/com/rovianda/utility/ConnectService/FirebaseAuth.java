@@ -18,7 +18,7 @@ public class FirebaseAuth {
     private static FirebaseAuth instance = null;
     private FirebaseAuth () {
 
-        firebaseKey = "AIzaSyDtp99_k4WaCJWR8d4FncfRpkA4sJTt23c";//"AIzaSyDaoKnC-MSM0b069pawJ5KI1eWlbmng99o";//
+        firebaseKey = "AIzaSyDaoKnC-MSM0b069pawJ5KI1eWlbmng99o";//"AIzaSyDtp99_k4WaCJWR8d4FncfRpkA4sJTt23c";//
 
     }
 

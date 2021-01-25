@@ -56,7 +56,9 @@ public class ReportService {
     }
 
     public static InputStream getReportGeneral(boolean urgent, String date) throws Exception {
-        Response response = HttpClient.get("/sellers/orders-list?urgent="+urgent+"?date="+date);
+        System.out.println("Urgent: "+urgent);
+        System.out.println("Date: "+date);
+        Response response = HttpClient.get("/sellers/orders-list?urgent="+urgent+"&date="+date);
         if(response.getStatus() == 200){
             return response.readEntity(InputStream.class);
         }else if(response.getStatus()==400){
