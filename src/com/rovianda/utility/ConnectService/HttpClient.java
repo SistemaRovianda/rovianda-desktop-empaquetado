@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 public class HttpClient {
     static String authorization = "";
 
-    private static String URL = "https://us-central1-rovianda-88249.cloudfunctions.net/app/rovianda/";//"https://us-central1-sistema-rovianda.cloudfunctions.net/app/rovianda/";//"https://calm-sheep-63.loca.lt/rovianda-88249/us-central1/app/rovianda/";//
+    private static String URL ="https://us-central1-sistema-rovianda.cloudfunctions.net/app/rovianda/";//"https://calm-sheep-63.loca.lt/rovianda-88249/us-central1/app/rovianda/";// "https://us-central1-rovianda-88249.cloudfunctions.net/app/rovianda/";
 
     private static String URLFake ="https://b60885fe-bfd1-44cb-b324-dda60656ed34.mock.pstmn.io";
 

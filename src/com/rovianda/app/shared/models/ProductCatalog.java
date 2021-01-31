@@ -4,6 +4,15 @@ public class ProductCatalog {
     private int productId;
     private String name;
     private String lot;
+    private String observations;
+
+    public String getObservations() {
+        return observations;
+    }
+
+    public void setObservations(String observations) {
+        this.observations = observations;
+    }
 
     public int getProductId() {
         return productId;

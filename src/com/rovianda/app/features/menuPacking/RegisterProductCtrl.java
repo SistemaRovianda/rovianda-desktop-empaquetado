@@ -148,7 +148,7 @@ public class RegisterProductCtrl implements Initializable {
     private DatePicker currentDate, expirationDate, dateReprocessing,dateReturn;
 
     @FXML
-    private JFXTextArea observation,commentsReprocesing;
+    private JFXTextArea observation,commentsReprocesing,observationsOven;
 
     private ProductPackaging productPackaging;
 
@@ -494,6 +494,7 @@ public class RegisterProductCtrl implements Initializable {
         if (productId.getValue() != null) {
             DataComboBox.fillPresentationsById(presentation, productId.getValue().getProductId());
             lotId.setText(productId.getValue().getLot());
+            observationsOven.setText(productId.getValue().getObservations());
             btnCloseLotRegister.setDisable(false);
         }
 

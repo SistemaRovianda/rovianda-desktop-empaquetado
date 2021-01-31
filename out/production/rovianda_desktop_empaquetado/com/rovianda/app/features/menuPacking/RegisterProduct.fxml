@@ -138,9 +138,9 @@
                               </Pane>
                            </bottom>
                            <top>
-                              <BorderPane prefHeight="304.0" prefWidth="1071.0" BorderPane.alignment="CENTER">
+                              <BorderPane prefHeight="324.0" prefWidth="1071.0" BorderPane.alignment="CENTER">
                                  <left>
-                                    <Pane prefHeight="250.0" prefWidth="435.0" styleClass="form" BorderPane.alignment="CENTER">
+                                    <Pane prefHeight="270.0" prefWidth="435.0" styleClass="form" BorderPane.alignment="CENTER">
                                        <BorderPane.margin>
                                           <Insets bottom="15.0" left="15.0" top="5.0" />
                                        </BorderPane.margin>
@@ -153,7 +153,8 @@
                                           <Label layoutX="231.0" layoutY="134.0" styleClass="itemForm" text="Caducidad" />
                                           <JFXTextField fx:id="lotId" disable="true" focusColor="#e1bc5c" labelFloat="true" layoutX="34.0" layoutY="164.0" prefHeight="25.0" prefWidth="150.0" promptText="Lote" />
                                           <Label fx:id="errorProductId" layoutX="229.0" layoutY="103.0" prefHeight="20.0" prefWidth="175.0" styleClass="error-message" text="Label" visible="false" />
-                                          <JFXButton fx:id="btnCloseLotRegister" layoutX="180.0" layoutY="207.0" onAction="#closeLotProductRegister" styleClass="gold" text="Cerrar lote" />
+                                          <JFXTextArea fx:id="observationsOven" disable="true" focusColor="#e1bc5c" labelFloat="true" layoutX="34.0" layoutY="220.0" prefHeight="35.0" prefWidth="300.0" promptText="Observaciones de hornos" />
+                                          <JFXButton fx:id="btnCloseLotRegister" layoutX="340.0" layoutY="207.0" onAction="#closeLotProductRegister" styleClass="gold" text="Cerrar lote" />
                                        </children>
                                     </Pane>
                                  </left>
