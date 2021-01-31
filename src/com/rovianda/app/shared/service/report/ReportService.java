@@ -8,7 +8,7 @@ import java.io.InputStream;
 public class ReportService {
 
     public static InputStream getReport(int order) throws Exception {
-        Response response = HttpClient.get("/report/packagin/"+order);
+        Response response = HttpClient.get("/report/packaging/"+order);
         if(response.getStatus() == 200){
             return response.readEntity(InputStream.class);
         }else if(response.getStatus()==400){
