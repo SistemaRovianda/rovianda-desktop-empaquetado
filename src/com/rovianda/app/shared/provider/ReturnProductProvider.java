@@ -39,7 +39,7 @@ public class ReturnProductProvider {
 
     }
 
-    public static void closeLotProduct(String lotId, Method method){
+    public static void closeLotProduct(int lotId, Method method){
         ToastProvider.showToastInfo("Cerrando lote del producto", 1000);
         Task <Boolean>  closeLotTask = new Task<Boolean>() {
             @Override

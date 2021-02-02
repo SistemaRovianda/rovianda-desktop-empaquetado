@@ -22,7 +22,7 @@ public class ReturnProductService {
         return  id.getDevolutionId();
     }
 
-    public static boolean closeLot(String lotId) throws Exception {
+    public static boolean closeLot(int lotId) throws Exception {
         Response response = HttpClient.putWithoutBody("oven-close/"+lotId);
         if(response.getStatus()==404){
             throw new Exception("Servicio no disponible");

@@ -644,9 +644,9 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     void closeLotProductRegister(){
-        System.out.println(productId.getValue().getLot());
+        System.out.println(productId.getValue().getProductId());
         ModalProvider.showModal("Al cerrar el lote ya no se mostrará en el sistema, por lo cual asegúrese de que ya lleno los datos antes de cerrar el lote.", () -> {
-            ReturnProductProvider.closeLotProduct(productId.getValue().getLot(),() -> {
+            ReturnProductProvider.closeLotProduct(productId.getValue().getOvenId(),() -> {
                 initializePaneRegister();
             });
         });
