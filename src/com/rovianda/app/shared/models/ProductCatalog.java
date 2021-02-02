@@ -5,6 +5,15 @@ public class ProductCatalog {
     private String name;
     private String lot;
     private String observations;
+    private int ovenId;
+
+    public int getOvenId() {
+        return ovenId;
+    }
+
+    public void setOvenId(int ovenId) {
+        this.ovenId = ovenId;
+    }
 
     public String getObservations() {
         return observations;
