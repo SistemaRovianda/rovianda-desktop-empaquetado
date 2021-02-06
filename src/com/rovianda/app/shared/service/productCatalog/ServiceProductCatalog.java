@@ -9,6 +9,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ServiceProductCatalog {
     public static List<ProductCatalog>getProductsCatalog () throws Exception {
@@ -30,6 +31,7 @@ public class ServiceProductCatalog {
         }else if (response.getStatus() == 404)
             throw  new Exception ("Error al obtener productos del catalogo");
         response.close();
+        products = products.stream().filter(x->x.getCategory().equals("meat")).collect(Collectors.toList());
         return products;
     }
 

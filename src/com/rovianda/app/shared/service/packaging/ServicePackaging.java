@@ -32,6 +32,17 @@ public class ServicePackaging {
         response.close();
         return presentations;
     }
+    public static List<LotsPresentationsDevolutions> getLotsPresentationsReturnById(int presentationId) throws Exception {
+        Response response = HttpClient.get("products-rovianda/inventory-lots/"+presentationId);
+        List<LotsPresentationsDevolutions> presentations = new ArrayList<>();
+        if(response.getStatus() == 200){
+            presentations = response.readEntity(new GenericType<List<LotsPresentationsDevolutions>>(){});
+        }else if (response.getStatus() == 404){
+            throw new Exception("Error al obtener los lotes del producto");
+        }
+        response.close();
+        return presentations;
+    }
 
     public static List<Order> getOrderVendedor(boolean urgent) throws Exception{
         Response response = HttpClient.get("/packaging/sellers/"+urgent);

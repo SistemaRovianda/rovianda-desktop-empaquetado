@@ -108,15 +108,20 @@ public class RegisterProductCtrl implements Initializable {
     private JFXComboBox<PresentationReturn> presentationReturn;
 
     @FXML
+    private JFXComboBox<LotsPresentationsDevolutions> lotsDevolutions;
+
+    @FXML
     private JFXComboBox<OptionOrder> urgent;
 
     @FXML
     private JFXComboBox<PackagingLots> lotsPresentations;
 
+
+
     @FXML
     JFXTextField lotId, weight, lotReprocessing, weightReprocessing,
             allergenReprocessing, units, unitsToTake,
-            lotReturn,quantityReturn,weightPresentations;
+            quantityReturn,weightPresentations,quantityAvaiableToReturn;
 
     @FXML
     JFXComboBox<ProductPresentation> presentation;
@@ -239,13 +244,16 @@ public class RegisterProductCtrl implements Initializable {
         errorProductReturn.setVisible(false);
         errorPresentationReturn.setVisible(false);
         errorReturnLot.setVisible(false);
-        lotReturn.setText("");
+        //lotReturn.setText("");
         quantityReturn.setText("");
+        quantityAvaiableToReturn.setText("0");
+        quantityAvaiableToReturn.setDisable(true);
+        lotsDevolutions.setDisable(true);
         DataValidator.numberValidate(quantityReturn,errorQuantityReturn);
         DataComboBox.fillProductsCatalogReturn(productReturn);
         ItemFormValidator.isValidSelectorFocus(productReturn,errorProductReturn);
         ItemFormValidator.isValidSelectorFocus(presentationReturn,errorPresentationReturn);
-        ItemFormValidator.isValidInputFocus(lotReturn,errorReturnLot);
+        //ItemFormValidator.isValidInputFocus(lotReturn,errorReturnLot);
         ItemFormValidator.isValidInputFocus(quantityReturn,errorQuantityReturn);
         dateReturn.setValue(LocalDate.now());
         btnSaveReturn.setVisible(false);
@@ -504,8 +512,26 @@ public class RegisterProductCtrl implements Initializable {
     void selectProductReturn() {
         if (productReturn.getValue() != null) {
             DataComboBox.fillPresentationsReturnsById(presentationReturn, productReturn.getValue().getId());
+            lotsDevolutions.setValue(null);
+            lotsDevolutions.setDisable(true);
+            quantityAvaiableToReturn.setText("0");
         }
 
+    }
+
+    @FXML
+    void selectProductPresentationReturn(){
+        if(presentationReturn.getValue()!=null){
+            lotsDevolutions.setDisable(false);
+            DataComboBox.fillLotsPresentationsReturnsById(lotsDevolutions,presentationReturn.getValue().getId());
+        }
+    }
+
+    @FXML
+    void selectLotReturn(){
+        if(lotsDevolutions.getValue()!=null){
+            quantityAvaiableToReturn.setText(lotsDevolutions.getValue().getQuantity().toString());
+        }
     }
 
 
@@ -600,22 +626,27 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     void onSaveReturn(){
+        if(Double.parseDouble(quantityReturn.getText())<=lotsDevolutions.getValue().getQuantity()) {
 
-        if(ItemFormValidator.isValidSelector(productReturn,errorProductReturn)
-                && ItemFormValidator.isValidSelector(presentationReturn,errorPresentationReturn)
-                && ItemFormValidator.isValidInput(lotReturn,errorReturnLot)
-                && ItemFormValidator.isValidInput(quantityReturn,errorQuantityReturn)
-                ){
-            ModalProvider.showModal("¿Seguro que deseas realizar la devolución?", () -> {
-                ProductReturn productTemp = new ProductReturn();
-                productTemp.setUnits(Integer.parseInt(quantityReturn.getText()));
-                productTemp.setProductId(productReturn.getValue().getId());
-                productTemp.setPresentationId(presentationReturn.getValue().getId());
-                productTemp.setLotId(lotReturn.getText());
-                productTemp.setDate(dateReturn.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-                ReturnProductProvider.currentButton = btnReturnProduct;
-                ReturnProductProvider.DoReturnProduct(productTemp,btnSaveReturn);
-            });
+
+            if (ItemFormValidator.isValidSelector(productReturn, errorProductReturn)
+                    && ItemFormValidator.isValidSelector(presentationReturn, errorPresentationReturn)
+                    //&& ItemFormValidator.isValidInput(lotReturn,errorReturnLot)
+                    && ItemFormValidator.isValidInput(quantityReturn, errorQuantityReturn)
+            ) {
+                ModalProvider.showModal("¿Seguro que deseas realizar la devolución?", () -> {
+                    ProductReturn productTemp = new ProductReturn();
+                    productTemp.setUnits(Integer.parseInt(quantityReturn.getText()));
+                    productTemp.setProductId(productReturn.getValue().getId());
+                    productTemp.setPresentationId(presentationReturn.getValue().getId());
+                    productTemp.setLotId(lotsDevolutions.getValue().getLotId());
+                    productTemp.setDate(dateReturn.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+                    ReturnProductProvider.currentButton = btnReturnProduct;
+                    ReturnProductProvider.DoReturnProduct(productTemp, btnSaveReturn);
+                });
+            }
+        }else{
+            ModalProvider.showModalInfo("No se puede devolver más del producto disponible");
         }
     }
 

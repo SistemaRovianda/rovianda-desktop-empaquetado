@@ -49,6 +49,7 @@ public class DataComboBox {
     }
 
     public static void fillProductsCatalogReturn (JFXComboBox<ProductCatalogReturn> comboBox){
+        ToastProvider.showToastInfo("Obteniendo productos",1500);
         ObservableList<ProductCatalogReturn> products = FXCollections.observableArrayList();
         Task <List<ProductCatalogReturn>> productsTask = new Task<List<ProductCatalogReturn>>() {
             @Override
@@ -202,6 +203,44 @@ public class DataComboBox {
                 return null;
             }
         });
-
     }
+
+    public static void fillLotsPresentationsReturnsById(JFXComboBox<LotsPresentationsDevolutions> comboBox, int presentationId){
+        ToastProvider.showToastInfo("Obteniendo lotes del producto",1500);
+        ObservableList<LotsPresentationsDevolutions> lotsPresentations = FXCollections.observableArrayList();
+        Task <List<LotsPresentationsDevolutions>> presentationsTask = new Task<List<LotsPresentationsDevolutions>>() {
+            @Override
+            protected List<LotsPresentationsDevolutions> call() throws Exception {
+                return ServicePackaging.getLotsPresentationsReturnById(presentationId);
+            }
+        };
+        Thread thread = new Thread(presentationsTask);
+        thread.setDaemon(true);
+        thread.start();
+        presentationsTask.setOnSucceeded(e->{
+            ToastProvider.showToastInfo("Lotes de Presentaciones obtenidas",1500);
+            if(presentationsTask.getValue().size() >0){
+                lotsPresentations.addAll(presentationsTask.getValue());
+                comboBox.setDisable(false);
+            }
+            else
+                ToastProvider.showToastInfo("El producto no cuenta con presentaciones",1500);
+        });
+        presentationsTask.setOnFailed(e->{
+            ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
+        });
+        comboBox.setItems(lotsPresentations);
+        comboBox.setConverter(new StringConverter<LotsPresentationsDevolutions>() {
+            @Override
+            public String toString(LotsPresentationsDevolutions object) {
+                return object.getLotId();
+            }
+
+            @Override
+            public LotsPresentationsDevolutions fromString(String string) {
+                return null;
+            }
+        });
+    }
+
 }
