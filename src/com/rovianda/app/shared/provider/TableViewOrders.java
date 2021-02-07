@@ -24,6 +24,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,10 +41,20 @@ public class TableViewOrders {
     public static TableColumn<Presentation, Integer> columnIdPresentation;
     public static Pane presentations;
     public static JFXComboBox<PackagingLots> lots;
+    public static List<PackagingLots> lotsTemp=new ArrayList<>();
+    public static List<Boolean> registering=new ArrayList<>();
     public static JFXTextField unitsToTake, weightPresentations ;
     public static JFXButton buttonAddUnitsToTake, buttonSaveOutput;
     public static Label tagName, tagUnits, errorQuantity, errorLots,errorPresentationWeight;
     static TableView<OutputsProduct> currentTableOutput;
+
+    private static void initLots(List<PackagingLots> lots){
+        lotsTemp.clear();
+        lotsTemp.addAll(lots);
+        for(PackagingLots item : lots){
+            System.out.println("Item: "+item.getTypePresentation());
+        }
+    }
 
     public static void assignColumnNoOrder(TableColumn<Order, Integer> column) {
         column.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderId"));
@@ -57,10 +68,18 @@ public class TableViewOrders {
         column.setCellValueFactory(new PropertyValueFactory<Order, String>("date"));
     }
 
-    public static void assignColumnOptions(TableColumn<Order, JFXButton> column) {
+    public static void assignColumnOptions(TableColumn<Order, JFXButton> column,RegisterProductCtrl reg) {
         column.setCellFactory(ActionButtonColumn.<Order>forTableColumn((Order o) -> {
-            ModalProvider.showModal("Al atender la orden no se volverá a mostrar, ¿Deseas cerrar la orden?", () -> {
-                ToastProvider.showToastInfo("Atendiendo pedido", 3000);
+            ModalProvider.currentContainer = presentations;
+            currentOrder = o;
+            RegisterProductCtrl.activePresentations = true;
+            fillTablePresentations(o.getOrderId());
+            presentations.toFront();
+            fillLots(o.getOrderId());
+            DataValidator.decimalValidate(weightPresentations,errorPresentationWeight);
+            weightPresentations.setText("");
+            WeightService.start(weightPresentations,errorPresentationWeight);
+                /*ToastProvider.showToastInfo("Atendiendo pedido", 3000);
                 Task<Boolean> closeOrderTask = new Task<Boolean>() {
                     @Override
                     protected Boolean call() throws Exception {
@@ -79,12 +98,12 @@ public class TableViewOrders {
                 closeOrderTask.setOnFailed(e -> {
                     ToastProvider.showToastError(e.getSource().getException().getMessage(), 3000);
                 });
+            */
+                return  o;
+            }));
 
-
-            });
-            return o;
-        }));
     }
+
 
     public static void assignColumnProductsId() {
         columnId.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ProductsRequest, Integer>, ObservableValue<Integer>>() {
@@ -102,13 +121,13 @@ public class TableViewOrders {
     public static void assignTableOrder(TableView<Order> table) {
         currentTable = table;
         currentTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
+            /*if (newValue != null) {
                 fillTableOrdersProducts(newValue);
-            }
+            }*/
         });
     }
 
-    public static void assignTableProducts(TableView<ProductsRequest> table) {
+   /* public static void assignTableProducts(TableView<ProductsRequest> table) {
         currentTableProducts = table;
         currentTableProducts.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -124,17 +143,23 @@ public class TableViewOrders {
             }
         });
     }
-
+*/
     public static void assignTablePresentations(TableView<Presentation> table) {
         currentTablePresentation = table;
         currentTablePresentation.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 currentPresentation = newValue;
                 System.out.println("Nuevo valor: "+currentPresentation.getPresentationId());
-                tagName.setText(currentProduct.getName() + " " + currentPresentation.getPresentation()
-                        + currentPresentation.getTypePresentation());
+                tagName.setText(currentPresentation.getName() + " " + currentPresentation.getTypePresentation());
                 unitsToTake.setText("");
+
                 lots.setValue(null);
+                lots.hide();
+                lots.getItems().clear();
+                List<PackagingLots> lotsSorted= lotsTemp.stream().filter(x->x.getPresentationId()==currentPresentation.getPresentationId()).collect(Collectors.toList());
+                lotsSorted.sort((a,b)->(b.getLoteId()+b.getTypePresentation()).length()-(a.getLoteId()+a.getTypePresentation()).length());
+                lots.getItems().addAll(lotsSorted);
+                lots.show();
             }
         });
     }
@@ -146,6 +171,10 @@ public class TableViewOrders {
                 return new ReadOnlyObjectWrapper(currentTablePresentation.getItems().indexOf(p.getValue()) + 1 + "");
             }
         });
+    }
+    //reemplazo de assignColumnPresentationsId
+    public static void assignColumnProductName(TableColumn<Presentation, String> column) {
+        column.setCellValueFactory(new PropertyValueFactory<Presentation, String>("name"));
     }
 
     public static void assignColumnPresentations(TableColumn<Presentation, String> column) {
@@ -177,19 +206,23 @@ public class TableViewOrders {
                 weightPresentations.setText("");
                 lots.setValue(null);
                 OutputsProduct output = table.getSelectionModel().getSelectedItem();
-                List<OutputsProduct> outputs= currentTableOutput.getItems().stream().filter(e->
-                        e.getQuantity()!=output.getQuantity() && e.getLoteId()!=output.getLoteId()
-                                && e.getPresentationId()!=output.getPresentationId()).collect(Collectors.toList());
+                int index = table.getSelectionModel().getSelectedIndex();
 
-                List<Presentation> presentations = currentTablePresentation.getItems().stream().map(e-> {
-                     if(e.getSubOrderId() == output.getSubOrderId()){
-                         System.out.println("Se encontro: "+e.getSubOrderId()+" : "+e.getUnits());
-                         e.setUnits(e.getUnits()+output.getQuantity());
-                     }
-                            return e;
-                }).collect(Collectors.toList());
+                List<OutputsProduct> outputs= new ArrayList<>();
+                for(int i=0;i<table.getItems().size();i++){
+                    if(i!=index){
+                        outputs.add(table.getItems().get(i));
+                    }
+                }
+                List<Presentation> newP = new ArrayList<>();
+                for(Presentation p : currentTablePresentation.getItems()){
+                    if(p.getPresentationId()==output.getPresentationId() && p.getSubOrderId()==output.getSubOrderId()){
+                        p.setUnits(p.getUnits()+output.getQuantity());
+                    }
+                    newP.add(p);
+                }
                 currentTablePresentation.getItems().clear();
-                currentTablePresentation.getItems().addAll(presentations);
+                currentTablePresentation.getItems().addAll(newP);
                 currentTableOutput.getItems().clear();
                 currentTableOutput.getItems().addAll(outputs);
             }
@@ -201,7 +234,10 @@ public class TableViewOrders {
     }
 
     public static void fillTableOrders(boolean urgent) {
-        currentTableProducts.getItems().clear();
+        System.out.println("Value of urgent: "+urgent);
+        if(currentTableProducts!=null) {
+            currentTableProducts.getItems().clear();
+        }
         currentTable.getItems().clear();
         currentTableOutput.getItems().clear();
         tagName.setText("");
@@ -262,14 +298,14 @@ public class TableViewOrders {
         assignColumnProductsId();
     }
 
-    static void fillTablePresentations() {
+    static void fillTablePresentations(int orderId) {
         currentTablePresentation.getItems().clear();
         ToastProvider.showToastInfo("Espere porfavor: Obteniendo presentaciones del producto", 1000);
         Task<List<Presentation>> presentationsTask = new Task<List<Presentation>>() {
             @Override
             protected List<Presentation> call() throws Exception {
-                ServicePackaging.getLotsByProduct(currentProduct.getProduct_id());
-                return ServicePackaging.getPresentations(currentOrder.getOrderId(), currentProduct.getProduct_id());
+
+                return ServicePackaging.getPresentations(currentOrder.getOrderId());
             }
         };
         Thread thread = new Thread(presentationsTask);
@@ -277,21 +313,28 @@ public class TableViewOrders {
         thread.start();
         presentationsTask.setOnSucceeded(e -> {
             currentTablePresentation.getItems().setAll(presentationsTask.getValue());
-            currentTablePresentation.getItems().setAll(presentationsTask.getValue());
+            for(Presentation p : presentationsTask.getValue()){
+                if(p.getUnits()>0){
+                    registering.add(true);
+                }else if(p.getUnits()==0){
+                    registering.add(false);
+                }
+            }
         });
 
         presentationsTask.setOnFailed(e -> {
             ToastProvider.showToastError(e.getSource().getException().getMessage(), 3000);
         });
-        assignColumnPresentationsId();
+        //assignColumnPresentationsId();
     }
 
-    static void fillLots() {
+    static void fillLots(int orderId) {
+
         ObservableList<PackagingLots> lotsProducts = FXCollections.observableArrayList();
         Task<List<PackagingLots>> taskLots = new Task<List<PackagingLots>>() {
             @Override
             protected List<PackagingLots> call() throws Exception {
-                return ServicePackaging.getLotsByProduct(currentProduct.getProduct_id());
+                return ServicePackaging.getLotsByProduct(orderId);
             }
         };
         Thread thread = new Thread(taskLots);
@@ -322,6 +365,7 @@ public class TableViewOrders {
                      packaging.setQuantity(total);
                      return packaging;
                 }).collect(Collectors.toList());
+                initLots(packagingLots);
                 lotsProducts.addAll(packagingLots);
             } else {
                 ToastProvider.showToastInfo("No existen lotes para el producto", 1500);
@@ -344,10 +388,12 @@ public class TableViewOrders {
             }
         }*/
         lots.setItems(lotsProducts);
+
+
         lots.setConverter(new StringConverter<PackagingLots>() {
             @Override
             public String toString(PackagingLots object) {
-                return object.getLoteId()+'-'+object.getTypePresentation();
+                return object.getLoteId();
             }
 
             @Override
@@ -356,6 +402,8 @@ public class TableViewOrders {
             }
         });
     }
+
+
 
     static void addItemOutputTable() {
 
@@ -425,8 +473,8 @@ public class TableViewOrders {
     public static void saveOutputLots(Method method) {
        if(currentTableOutput.getItems().size() >0){
            List<Presentation> presentations = currentTablePresentation.getItems().stream().filter(e->e.getUnits()>0).collect(Collectors.toList());
-           if(presentations.size()==0) {
-               ToastProvider.showToastInfo("Registrando salidas de lotes", 1500);
+
+               ToastProvider.showToastInfo("Registrando salidas de lotes por favor espere...", 1500);
                Task<Boolean> taskOutputs = new Task<Boolean>() {
                    @Override
                    protected Boolean call() throws Exception {
@@ -439,17 +487,59 @@ public class TableViewOrders {
 
                taskOutputs.setOnSucceeded(e -> {
                    currentTableOutput.getItems().clear();
+                   currentTablePresentation.getItems().clear();
+                   lots.getItems().clear();
+                   registering.clear();
+                   fillTablePresentations(currentOrder.getOrderId());
+                   fillLots(currentOrder.getOrderId());
+
+                   ToastProvider.showToastInfo("Registro de salidas completado", 1500);
                    method.method();
                });
 
                taskOutputs.setOnFailed(e -> {
                    ToastProvider.showToastError(e.getSource().getException().getMessage(), 1500);
                });
-           }else{
-               ModalProvider.showModalInfo("Debes completar los registros de entrega");
-           }
+
        }else {
            ModalProvider.showModalInfo("Es necesario agregar lotes para realizar el registro");
        }
+    }
+
+    public static void closeOrder(Method method) {
+
+            List<Presentation> presentations = currentTablePresentation.getItems().stream().filter(e->e.getUnits()>0).collect(Collectors.toList());
+            System.out.println(presentations.size());
+            for(Presentation p : presentations){
+                System.out.println(p.getTypePresentation());
+            }
+            if(presentations.size()==0) {
+                if( registering.indexOf(true)==-1) {
+                    ToastProvider.showToastInfo("Cerrando pedido", 3000);
+                    Task<Boolean> closeOrderTask = new Task<Boolean>() {
+                        @Override
+                        protected Boolean call() throws Exception {
+                            return ServicePackaging.closedOrder(currentOrder);
+                        }
+                    };
+                    Thread thread = new Thread(closeOrderTask);
+                    thread.setDaemon(true);
+                    thread.start();
+                    closeOrderTask.setOnSucceeded(event -> {
+                        if (closeOrderTask.getValue())
+
+                            ReportProvider.buildReportDelivered(currentOrder.getOrderId());
+                    });
+
+                    closeOrderTask.setOnFailed(e -> {
+                        ToastProvider.showToastError(e.getSource().getException().getMessage(), 3000);
+                    });
+                }else{
+                    ModalProvider.showModalInfo("Primero guarda las entregas de producto.");
+                }
+            }else{
+                ModalProvider.showModalInfo("Debes completar los registros de entrega");
+            }
+
     }
 }

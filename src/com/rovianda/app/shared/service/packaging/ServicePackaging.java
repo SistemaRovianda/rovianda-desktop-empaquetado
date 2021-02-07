@@ -69,8 +69,8 @@ public class ServicePackaging {
         return products;
     }
 
-    public static  List<Presentation> getPresentations(int orderId, int productId) throws Exception {
-        Response response = HttpClient.get("/seller/order/"+orderId+"/product/"+productId);
+    public static  List<Presentation> getPresentations(int orderId) throws Exception {
+        Response response = HttpClient.get("/seller/order/"+orderId+"/products");
         List<Presentation> presentations = new ArrayList<>();
         if(response.getStatus() == 200)
             presentations = response.readEntity(new GenericType<List<Presentation>>(){});
@@ -86,8 +86,8 @@ public class ServicePackaging {
         Response response = HttpClient.get("/seller/guard/"+sellerUid);
     }
 
-    public static List<PackagingLots> getLotsByProduct(int product_id) throws Exception {
-        Response response = HttpClient.get("/packaging-lots/inventory/product/"+product_id);
+    public static List<PackagingLots> getLotsByProduct(int orderId) throws Exception {
+        Response response = HttpClient.get("/packaging-lots/inventory/product-order/"+orderId);
         List<PackagingLots> lots = new ArrayList<>();
         if(response.getStatus() == 200){
             lots = response.readEntity(new GenericType<List<PackagingLots>>(){});

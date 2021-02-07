@@ -6,13 +6,22 @@ public class Presentation {
     private int units;
     private String quantity;
     private int presentation;
+    private String name;
     private String typePresentation;
     private String pricePresentation;
     private int presentationId;
     public Presentation(){}
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Presentation(int subOrderId, int productId, int units,
-                        int presentation, String typePresentation,String pricePresentation){
+                        int presentation, String typePresentation, String pricePresentation){
         this.subOrderId = subOrderId;
         this.productId = productId;
         this.units = units;

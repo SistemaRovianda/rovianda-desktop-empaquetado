@@ -154,8 +154,8 @@
                                           <Label layoutX="231.0" layoutY="134.0" styleClass="itemForm" text="Caducidad" />
                                           <JFXTextField fx:id="lotId" disable="true" focusColor="#e1bc5c" labelFloat="true" layoutX="34.0" layoutY="164.0" prefHeight="25.0" prefWidth="150.0" promptText="Lote" />
                                           <Label fx:id="errorProductId" layoutX="229.0" layoutY="103.0" prefHeight="20.0" prefWidth="175.0" styleClass="error-message" text="Label" visible="false" />
-                                          <JFXTextArea fx:id="observationsOven" disable="true" focusColor="#e1bc5c" labelFloat="true" layoutX="34.0" layoutY="220.0" prefHeight="35.0" prefWidth="300.0" promptText="Observaciones de hornos" />
-                                          <JFXButton fx:id="btnCloseLotRegister" layoutX="340.0" layoutY="207.0" onAction="#closeLotProductRegister" styleClass="gold" text="Cerrar lote" />
+                                          <JFXButton fx:id="btnObservationsShow" layoutX="34.0" layoutY="207.0" onAction="#showObservationsOven" styleClass="gray" text="Observaciones" />
+                                          <JFXButton fx:id="btnCloseLotRegister" layoutX="250.0" layoutY="207.0" onAction="#closeLotProductRegister" styleClass="gold" text="Cerrar lote" />
                                        </children>
                                     </Pane>
                                  </left>
@@ -299,14 +299,14 @@
                                     <Insets bottom="80.0" left="50.0" top="25.0" />
                                  </BorderPane.margin>
                                  <children>
-                                    <TableView fx:id="tablePresentations" layoutX="20.0" layoutY="49.0" prefHeight="568.0" prefWidth="440.0">
+                                    <TableView fx:id="tablePresentations" layoutX="10.0" layoutY="49.0" prefHeight="568.0" prefWidth="450.0">
                                       <columns>
-                                        <TableColumn fx:id="columnPresentationsNo" prefWidth="105.0" text="No." />
+                                        <TableColumn fx:id="columnProductName" prefWidth="105.0" text="Producto" />
                                         <TableColumn fx:id="columnPresentationName" prefWidth="175.0" text="Presentación" />
-                                          <TableColumn fx:id="columnPresentationUnits" prefWidth="157.0" text="Unidades" />
+                                        <TableColumn fx:id="columnPresentationUnits" prefWidth="157.0" text="Unidades" />
                                       </columns>
                                     </TableView>
-                                    <Label layoutX="26.0" layoutY="21.0" prefHeight="20.0" prefWidth="114.0" text="Presentaciones" />
+                                    <Label layoutX="26.0" layoutY="21.0" prefHeight="20.0" prefWidth="150.0" text="Productos/Presentaciones" />
                                  </children>
                               </Pane>
                            </left>
@@ -327,6 +327,7 @@
                                     <Pane layoutY="617.0" prefHeight="87.0" prefWidth="480.0" styleClass="container">
                                        <children>
                                           <JFXButton fx:id="btnOutput" layoutX="386.0" layoutY="9.0" onAction="#saveOutputLots" prefHeight="35.0" prefWidth="94.0" styleClass="gold" text="Guardar" />
+                                          <JFXButton fx:id="btnCloseOrder" layoutX="260.0" layoutY="9.0" onAction="#closeOrder" prefHeight="35.0" prefWidth="114.0" styleClass="gold" text="Finalizar orden" />
                                        </children>
                                     </Pane>
                                     <Label fx:id="presentationProduct" layoutX="20.0" layoutY="8.0" prefHeight="20.0" prefWidth="440.0" styleClass="label-presentations" />
@@ -380,12 +381,12 @@
                                  </BorderPane.margin>
                                  <children>
                                     <Label layoutX="18.0" layoutY="30.0" text="Peticiones" />
-                                    <TableView fx:id="tableOrders" layoutX="15.0" layoutY="58.0" prefHeight="500.0" prefWidth="570.0">
+                                    <TableView fx:id="tableOrders" layoutX="15.0" layoutY="58.0" prefHeight="500.0" prefWidth="770.0">
                                       <columns>
                                         <TableColumn fx:id="columnNoOrder" prefWidth="98.0" text="No. Orden" />
-                                          <TableColumn fx:id="columnDate" prefWidth="138.0" text="Fecha" />
-                                        <TableColumn fx:id="columnVendedor" prefWidth="212.0" text="Vendedor" />
-                                          <TableColumn fx:id="columnOptions" prefWidth="120.0" text="Opciones" />
+                                          <TableColumn fx:id="columnDate" prefWidth="188.0" text="Fecha" />
+                                        <TableColumn fx:id="columnVendedor" prefWidth="262.0" text="Vendedor" />
+                                          <TableColumn fx:id="columnOptions" prefWidth="170.0" text="Opciones" />
                                       </columns>
                                     </TableView>
                                     <JFXComboBox fx:id="urgent" focusColor="#e1bc5c" labelFloat="true" layoutX="308.0" layoutY="19.0" onAction="#changeOrder" prefHeight="25.0" prefWidth="69.0" />
@@ -394,22 +395,23 @@
                                  </children>
                               </Pane>
                            </left>
-                           <right>
+                          <!--- <right>
                               <Pane prefHeight="632.0" prefWidth="350.0" BorderPane.alignment="CENTER">
                                  <BorderPane.margin>
                                     <Insets bottom="120.0" right="40.0" top="80.0" />
                                  </BorderPane.margin>
-                                 <children>
-                                    <Label layoutX="25.0" layoutY="27.0" text="Productos de la petición" />
-                                    <TableView fx:id="productsRequest" layoutX="25.0" layoutY="58.0" prefHeight="500.0" prefWidth="300.0">
-                                      <columns>
-                                        <TableColumn fx:id="columnRequestId" prefWidth="62.0" text="No." />
-                                        <TableColumn fx:id="columnRequestProduct" prefWidth="236.0" text="Producto" />
-                                      </columns>
-                                    </TableView>
-                                 </children>
-                              </Pane>
-                           </right>
+                           <children>
+                                 <Label layoutX="25.0" layoutY="27.0" text="Productos de la petición" />
+                                 <TableView fx:id="productsRequest" layoutX="25.0" layoutY="58.0" prefHeight="500.0" prefWidth="300.0">
+                                   <columns>
+                                     <TableColumn fx:id="columnRequestId" prefWidth="62.0" text="No." />
+                                     <TableColumn fx:id="columnRequestProduct" prefWidth="236.0" text="Producto" />
+                                   </columns>
+                                 </TableView>
+                              </children>
+                           </Pane>
+                        </right>
+-->
                            <top>
                               <BorderPane prefHeight="31.0" prefWidth="1080.0" BorderPane.alignment="CENTER">
                                  <right>
@@ -427,7 +429,8 @@
                                     <Insets right="15.0" top="5.0" />
                                  </BorderPane.margin>
                               </BorderPane>
-                           </top></BorderPane>
+                           </top>
+                        </BorderPane>
                      </children>
                   </Pane>
                </children>

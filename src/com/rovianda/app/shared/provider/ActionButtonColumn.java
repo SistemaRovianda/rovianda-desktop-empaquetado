@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 public class ActionButtonColumn<S> extends TableCell<S, JFXButton> {
 
-    private final JFXButton actionButton = new JFXButton("Orden atendida");
+    private final JFXButton actionButton = new JFXButton("Atender Orden");
 
     public ActionButtonColumn(Function <S,S> function){
         this.actionButton.getStyleClass().add( "gold");

@@ -40,6 +40,12 @@
     -fx-font-weight: 900;
 }
 
+.gray {
+    -fx-background-color: #b3bab5;
+    -fx-text-fill: #fcfffd;
+    -fx-font-weight: 900;
+}
+
 .button-cancel {
     -fx-background-color: #121212;
     -fx-text-fill: white;
@@ -67,6 +73,7 @@
 .itemForm {
     -fx-font-weight: 600;
     -fx-font-size: 10pt;
+
 }
 
 .message-modal {

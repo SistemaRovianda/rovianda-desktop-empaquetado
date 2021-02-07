@@ -19,6 +19,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -47,14 +48,14 @@ public class RegisterProductCtrl implements Initializable {
             columnUser,
             columnObservations;
 
-    @FXML
-    private TableView<ProductsRequest> productsRequest;
+    /*@FXML
+    private TableView<ProductsRequest> productsRequest;*/
 
-    @FXML
-    private TableColumn<ProductsRequest, Integer> columnRequestId;
+    /*@FXML
+    private TableColumn<ProductsRequest, Integer> columnRequestId;*/
 
-    @FXML
-    private TableColumn<ProductsRequest, String> columnRequestProduct;
+    /*@FXML
+    private TableColumn<ProductsRequest, String> columnRequestProduct;*/
 
     @FXML
     private TableView<Order> tableOrders;
@@ -89,7 +90,7 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     private TableColumn<Presentation, String>
-            columnPresentationName;
+            columnPresentationName,columnProductName;
 
     @FXML
     private AnchorPane container;
@@ -140,10 +141,11 @@ public class RegisterProductCtrl implements Initializable {
             btnModalCancel,
             btnModalAccept,
             buttonPresentationsToTake,
-            btnOutput,
+            btnOutput,btnCloseOrder,
             btnSaveReturn,
             btnReturnProduct,
             btnCloseLotRegister,
+            btnObservationsShow,
             btnSaveReportReprocessing;
 
     @FXML
@@ -170,6 +172,7 @@ public class RegisterProductCtrl implements Initializable {
             errorPresentationWeight;
 
     boolean activeProcess = false;
+    boolean activeDeliver = false;
     boolean tapRegister = true;
     boolean tapReprocessing = false;
     boolean tapReturns = false;
@@ -200,6 +203,13 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     private void onRegister() {
+        if(activeDeliver)
+                ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?", this::changeToRegist);
+            else
+                changeToRegist();
+    }
+
+    private void changeToRegist(){
         register.toFront();
         if (!tapRegister) {
             initializePaneRegister();
@@ -216,7 +226,7 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     private void onReturns(){
-        if (activeProcess)
+        if (activeProcess  || activeDeliver)
             ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?", this::changeToReturns);
         else
             changeToReturns();
@@ -263,7 +273,7 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     private void onRequest() {
-        if (activeProcess) {
+        if (activeProcess || activeDeliver) {
             ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?", this::changeTap);
         } else {
             changeTap();
@@ -283,15 +293,16 @@ public class RegisterProductCtrl implements Initializable {
             tapReturns = false;
             activePresentations = false;
             activeProcess = false;
+            activeDeliver=true;
             request.toFront();
-            this.urgent.setValue(null);
             initializePaneRequest();
+
         }
     }
 
     @FXML
     private void onExit() {
-        if (activeProcess)
+        if (activeProcess || activeDeliver)
             ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres salir?", this::exit);
         else
             exit();
@@ -314,7 +325,10 @@ public class RegisterProductCtrl implements Initializable {
     @FXML
     void onSave() {
         productPackaging.setProducts(products);
-        TableViewRegister.currentProductPackaging = productPackaging;
+        for(Product item : products){
+            System.out.println("Item: "+item.getWeight());
+        }
+       /* TableViewRegister.currentProductPackaging = productPackaging;
         TableViewRegister.registerItems(() -> {
             productId.setDisable(false);
             expirationDate.setDisable(false);
@@ -323,13 +337,12 @@ public class RegisterProductCtrl implements Initializable {
             products=new ArrayList<>();
             productId.setValue(null);
             activeProcess = false;
-        });
-
+        });*/
     }
 
     @FXML
     void onReprocessing() {
-        if (activeProcess)
+        if (activeProcess || activeDeliver)
             ModalProvider.showModal("No has realizado el registro, ¿Seguro que quieres cambiar de ventana?", this::changeToReprocessing);
         else
             changeToReprocessing();
@@ -362,6 +375,7 @@ public class RegisterProductCtrl implements Initializable {
     @FXML
     void addRegister() {
         activeProcess = true;
+        activeDeliver=false;
         if (ItemFormValidator.isValidSelector(productId, errorProductId)
                 && ItemFormValidator.isValidSelector(presentation, errorPresentation)
                 && ItemFormValidator.isValidInputNumber(units, errorUnits)
@@ -494,6 +508,7 @@ public class RegisterProductCtrl implements Initializable {
 
     private void initializePaneRequest() {
         ModalProvider.currentContainer = request;
+        DataComboBox.fillOptions(urgent);
         this.urgent.getSelectionModel().selectFirst();
     }
 
@@ -502,7 +517,7 @@ public class RegisterProductCtrl implements Initializable {
         if (productId.getValue() != null) {
             DataComboBox.fillPresentationsById(presentation, productId.getValue().getProductId());
             lotId.setText(productId.getValue().getLot());
-            observationsOven.setText(productId.getValue().getObservations());
+            //observationsOven.setText(productId.getValue().getObservations());
             btnCloseLotRegister.setDisable(false);
         }
 
@@ -552,31 +567,53 @@ public class RegisterProductCtrl implements Initializable {
         TableViewRegister.assignColumnWeight(columnWeight);
         TableViewRegister.assignColumnUser(columnUser);
         TableViewRegister.assignColumnObservations(columnObservations);
+
+        tableRegister.setOnMouseClicked(event->{
+            if(event.getButton()== MouseButton.PRIMARY && event.getClickCount()==2) {
+                int  index = tableRegister.getSelectionModel().getSelectedIndex();
+                List<TableRegisterProduct> items = tableRegister.getItems();
+                List<TableRegisterProduct> itemsMapped = new ArrayList<>();
+                List<Product> productsExistTemp = new ArrayList<>();
+
+                for(int i=0;i<items.size();i++){
+                    if(i!=index){
+                        itemsMapped.add(items.get(i));
+                        productsExistTemp.add(products.get(i));
+                    }
+                }
+                products=productsExistTemp;
+                tableRegister.getItems().clear();
+                tableRegister.getItems().addAll(itemsMapped);
+            }
+        });
+
     }
 
     private void buildTableRequest() {
         DataComboBox.fillOptions(urgent);
-        TableViewOrders.assignTableProducts(productsRequest);
+        //TableViewOrders.assignTableProducts(productsRequest);
         TableViewOrders.assignTableOrder(tableOrders);
         TableViewOrders.assignColumnNoOrder(columnNoOrder);
         TableViewOrders.assignColumnVendedor(columnVendedor);
-        TableViewOrders.assignColumnOptions(columnOptions);
+        TableViewOrders.assignColumnOptions(columnOptions,this);
         TableViewOrders.assignColumnDate(columnDate);
-        TableViewOrders.columnId = columnRequestId;
-        TableViewOrders.assignColumnProductsProduct(columnRequestProduct);
+        //TableViewOrders.columnId = columnRequestId;
+        //TableViewOrders.assignColumnProductsProduct(columnRequestProduct);
     }
 
     private void buildTablePresentations() {
         TableViewOrders.assignTablePresentations(tablePresentations);
-        TableViewOrders.columnIdPresentation = columnPresentationsNo;
+        TableViewOrders.assignColumnProductName(columnProductName);
         TableViewOrders.assignColumnPresentations(columnPresentationName);
         TableViewOrders.assignColumnUnits(columnPresentationUnits);
         TableViewOrders.lots = lotsPresentations;
+
         lotsPresentations.valueProperty().addListener(new ChangeListener<PackagingLots>() {
             @Override
             public void changed(ObservableValue<? extends PackagingLots> observable, PackagingLots oldValue, PackagingLots newValue) {
                 if(newValue!=null) {
                     List<OutputsProduct> outputs=TableViewOrders.getLotsUsed(newValue.getPresentationId());
+
                     int totalUseds=0;
                     for(OutputsProduct output : outputs){
                         totalUseds+=output.getQuantity();
@@ -607,9 +644,17 @@ public class RegisterProductCtrl implements Initializable {
     @FXML
     void saveOutputLots() {
         TableViewOrders.saveOutputLots(() -> {
+
+        });
+    }
+
+    @FXML
+    void closeOrder(){
+        TableViewOrders.closeOrder(() -> {
             onRequest();
         });
     }
+
     @FXML
     void minimizeScreen(){
         EnvironmentActions.minimizeAction();
@@ -681,5 +726,12 @@ public class RegisterProductCtrl implements Initializable {
                 initializePaneRegister();
             });
         });
+    }
+
+    @FXML
+    void showObservationsOven(){
+        if(productId.getValue()!=null) {
+            ModalProvider.showModalInfo("Observaciones: " + productId.getValue().getObservations());
+        }
     }
 }

@@ -16,7 +16,7 @@ public class NewPackaging {
         }else  if(response.getStatus()==404){
             throw new Exception("Servicio no disponible");
         }else if (response.getStatus()==400) {
-            throw new Exception("Error al registrar el productos");
+            throw new Exception("Error al registrar los productos");
         }else if (response.getStatus()==500){
             throw new Exception("Servicio no disponible");
         }
