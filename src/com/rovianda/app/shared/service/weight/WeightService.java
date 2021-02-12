@@ -19,7 +19,14 @@ public class WeightService {
     private static SerialPort weightPort;
 
     static {
-        weightPort = SerialPort.getCommPort("Prolific USB-to-Serial Comm Port");
+        SerialPort[] ports= SerialPort.getCommPorts();
+        for(SerialPort port : ports){
+            if(port.getDescriptivePortName().contains("Prolific USB-to-Serial Comm Port")){
+                weightPort = port;
+            }
+        }
+
+        //weightPort = SerialPort.getCommPort("Prolific USB-to-Serial Comm Port");
         if(weightPort!= null){
                 ToastProvider.showToastSuccess("Conexión exitosa a la bascula",2000);
             weightPort.addDataListener(new SerialPortDataListener() {
