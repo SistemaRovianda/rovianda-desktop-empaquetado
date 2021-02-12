@@ -24,7 +24,6 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -513,33 +512,42 @@ public class TableViewOrders {
             for(Presentation p : presentations){
                 System.out.println(p.getTypePresentation());
             }
-            if(presentations.size()==0) {
-                if( registering.indexOf(true)==-1) {
-                    ToastProvider.showToastInfo("Cerrando pedido", 3000);
-                    Task<Boolean> closeOrderTask = new Task<Boolean>() {
-                        @Override
-                        protected Boolean call() throws Exception {
-                            return ServicePackaging.closedOrder(currentOrder);
-                        }
-                    };
-                    Thread thread = new Thread(closeOrderTask);
-                    thread.setDaemon(true);
-                    thread.start();
-                    closeOrderTask.setOnSucceeded(event -> {
-                        if (closeOrderTask.getValue())
-
-                            ReportProvider.buildReportDelivered(currentOrder.getOrderId());
-                    });
-
-                    closeOrderTask.setOnFailed(e -> {
-                        ToastProvider.showToastError(e.getSource().getException().getMessage(), 3000);
-                    });
+            if(registering.indexOf(true)==-1) {
+                if( presentations.size()==0 ) {
+                    closeOrderTask(method);
                 }else{
                     ModalProvider.showModalInfo("Primero guarda las entregas de producto.");
                 }
             }else{
-                ModalProvider.showModalInfo("Debes completar los registros de entrega");
+                ModalProvider.showModal("¿Seguro que desea cerrar la orden? (La entrega está incompleta)",()-> {
+                    closeOrderTask(method);
+                }
+                );
             }
 
+    }
+
+    public static Method closeOrderTask(Method method){
+        ToastProvider.showToastInfo("Cerrando pedido", 3000);
+        Task<Boolean> closeOrderTask = new Task<Boolean>() {
+            @Override
+            protected Boolean call() throws Exception {
+                return ServicePackaging.closedOrder(currentOrder);
+            }
+        };
+        Thread thread = new Thread(closeOrderTask);
+        thread.setDaemon(true);
+        thread.start();
+        closeOrderTask.setOnSucceeded(event -> {
+            if (closeOrderTask.getValue())
+
+                ReportProvider.buildReportDelivered(currentOrder.getOrderId(),method);
+        });
+
+        closeOrderTask.setOnFailed(e -> {
+            ToastProvider.showToastError(e.getSource().getException().getMessage(), 3000);
+        });
+
+        return method;
     }
 }

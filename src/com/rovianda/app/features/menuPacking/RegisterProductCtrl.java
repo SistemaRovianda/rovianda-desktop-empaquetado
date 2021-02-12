@@ -324,11 +324,12 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     void onSave() {
+
         productPackaging.setProducts(products);
         for(Product item : products){
             System.out.println("Item: "+item.getWeight());
         }
-       /* TableViewRegister.currentProductPackaging = productPackaging;
+        TableViewRegister.currentProductPackaging = productPackaging;
         TableViewRegister.registerItems(() -> {
             productId.setDisable(false);
             expirationDate.setDisable(false);
@@ -337,7 +338,7 @@ public class RegisterProductCtrl implements Initializable {
             products=new ArrayList<>();
             productId.setValue(null);
             activeProcess = false;
-        });*/
+        });
     }
 
     @FXML
@@ -385,40 +386,75 @@ public class RegisterProductCtrl implements Initializable {
             btnSaveProduct.setDisable(false);
             productId.setDisable(true);
             expirationDate.setDisable(true);
-            TableRegisterProduct item = new TableRegisterProduct();
-            item.setProduct(productId.getValue().getName());
-            item.setLot(lotId.getText());
-            item.setExpiration(expirationDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-            item.setPresentation(presentation.getValue().getPresentation()+" "+presentation.getValue().getTypePresentation());
-            item.setUnits(units.getText());
-            item.setWeight(weight.getText());
-            item.setUser(User.getInstance().getFullName());
-            item.setObservations(observation.getText());
-            TableViewRegister.addItem(item);
-            createItemRegister();
+            List<TableRegisterProduct> items = TableViewRegister.items;
+            Boolean founded = false;
+            TableViewRegister.clearTable();
+            for(int i=0;i<items.size();i++){
+                TableRegisterProduct item = items.get(i);
+                if(item.getLot().equals(lotId.getText()) && item.getExpiration().equals(expirationDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                && item.getPresentation().equals(presentation.getValue().getPresentation()+" "+presentation.getValue().getTypePresentation()) && item.getProduct().equals(productId.getValue().getName())){
+                    founded=true;
+                    item.setUnits(String.valueOf(Integer.parseInt(item.getUnits())+Integer.parseInt(units.getText())));
+                    item.setWeight(String.valueOf(Float.parseFloat(item.getWeight())+Float.parseFloat(weight.getText())));
+                    if(!observation.getText().isEmpty()) {
+                        item.setObservations(item.getObservations() + "-" + observation.getText());
+                    }
+                }
+                TableViewRegister.addItem(item);
+            }
+
+
+            if(founded==false) {
+                TableRegisterProduct item = new TableRegisterProduct();
+                item.setProduct(productId.getValue().getName());
+                item.setLot(lotId.getText());
+                item.setExpiration(expirationDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                item.setPresentation(presentation.getValue().getPresentation() + " " + presentation.getValue().getTypePresentation());
+                item.setUnits(units.getText());
+                item.setWeight(weight.getText());
+                item.setUser(User.getInstance().getFullName());
+                item.setObservations(observation.getText());
+                TableViewRegister.addItem(item);
+            }
+            createItemRegister(founded);
         }
 
 
     }
 
-    private void createItemRegister() {
-        Product product = new Product();
-        if (TableViewRegister.items.size() <= 1) {
-            productPackaging.setRegisterDate(currentDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-            productPackaging.setProductId(productId.getValue().getProductId());
-            productPackaging.setLotId(lotId.getText());
-            productPackaging.setExpiration(expirationDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+    private void createItemRegister(boolean flag) {
+        if(flag==false) {
+            Product product = new Product();
+            if (TableViewRegister.items.size() <= 1) {
+                productPackaging.setRegisterDate(currentDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                productPackaging.setProductId(productId.getValue().getProductId());
+                productPackaging.setLotId(lotId.getText());
+                productPackaging.setExpiration(expirationDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            }
+            product.setPresentationId(presentation.getValue().getPresentationId());
+            product.setWeight(Double.parseDouble(weight.getText()));
+            product.setObservations(observation.getText());
+            product.setUnits(Integer.parseInt(units.getText()));
+            products.add(product);
+            presentation.setValue(null);
+            weight.setText("");
+            errorWeight.setVisible(false);
+            observation.setText("");
+            units.setText("");
+        }else{
+            for(Product product : products){
+                if(product.getPresentationId()==presentation.getValue().getPresentationId()){
+                    product.setWeight(product.getWeight()+Double.parseDouble(weight.getText()));
+                    product.setUnits(product.getUnits()+Integer.parseInt(units.getText()));
+                    System.out.println("Modificado");
+                }
+            }
+            presentation.setValue(null);
+            weight.setText("");
+            errorWeight.setVisible(false);
+            observation.setText("");
+            units.setText("");
         }
-        product.setPresentationId(presentation.getValue().getPresentationId());
-        product.setWeight(Double.parseDouble(weight.getText()));
-        product.setObservations(observation.getText());
-        product.setUnits(Integer.parseInt(units.getText()));
-        products.add(product);
-        presentation.setValue(null);
-        weight.setText("");
-        errorWeight.setVisible(false);
-        observation.setText("");
-        units.setText("");
     }
 
 
@@ -432,6 +468,7 @@ public class RegisterProductCtrl implements Initializable {
     }
 
     private void createItemRegisterReprocessing() {
+
         Reprocessing itemRegister = new Reprocessing();
         itemRegister.setAllergen(allergenReprocessing.getText());
         itemRegister.setDate(dateReprocessing.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -651,7 +688,7 @@ public class RegisterProductCtrl implements Initializable {
     @FXML
     void closeOrder(){
         TableViewOrders.closeOrder(() -> {
-            onRequest();
+            changeTap();
         });
     }
 

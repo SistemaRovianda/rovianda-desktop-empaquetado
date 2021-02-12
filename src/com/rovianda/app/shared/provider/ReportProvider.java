@@ -112,7 +112,6 @@ public class ReportProvider {
             });
         }
     }
-
     public static void  buildReportDelivered(final int deliveredId){
         ToastProvider.showToastInfo("Obteniendo ticket",1000);
         Task <InputStream> getReport = new Task<InputStream>() {
@@ -144,6 +143,49 @@ public class ReportProvider {
                 }
                 out.close();
                 ToastProvider.showToastSuccess("Reporte descargado exitosamente",1500);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+        getReport.setOnFailed(e->{
+            ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
+            System.out.println(e.getSource().getException().getMessage());
+        });
+
+
+    }
+    public static void  buildReportDelivered(final int deliveredId,Method method){
+        ToastProvider.showToastInfo("Obteniendo ticket",1000);
+        Task <InputStream> getReport = new Task<InputStream>() {
+            @Override
+            protected InputStream call() throws Exception {
+                return ReportService.getReportDelivery(deliveredId);
+            }
+        };
+        Thread thread = new Thread(getReport);
+        thread.setDaemon(true);
+        thread.start();
+        getReport.setOnSucceeded(e->{
+
+            ToastProvider.showToastInfo("Espere guardando reporte", 1000);
+            String filename = "reporte_entrega_a_vendedor" + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extension = new FileChooser.ExtensionFilter("Solo PDF", "*.pdf");
+            fileChooser.setInitialFileName(filename);
+            fileChooser.getExtensionFilters().add(extension);
+            fileChooser.setTitle("Guardar reporte " + filename);
+            file = fileChooser.showSaveDialog(currentContainer.getScene().getWindow());
+            try {
+                InputStream in = getReport.getValue();
+                OutputStream out = new FileOutputStream(file);
+                byte[] buff = new byte[in.available()];  // how much of the blob to read/write at a time
+                int len = 0;
+                while ((len = in.read(buff)) != -1) {
+                    out.write(buff, 0, len);
+                }
+                out.close();
+                ToastProvider.showToastSuccess("Reporte descargado exitosamente",1500);
+                method.method();
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
