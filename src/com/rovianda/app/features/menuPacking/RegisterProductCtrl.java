@@ -653,7 +653,9 @@ public class RegisterProductCtrl implements Initializable {
 
                     int totalUseds=0;
                     for(OutputsProduct output : outputs){
-                        totalUseds+=output.getQuantity();
+                        if(output.getLoteId().equals(newValue.getLoteId())) {
+                            totalUseds += output.getQuantity();
+                        }
                     }
                     presentationsQuantity.setText(String.valueOf(newValue.getQuantity()-totalUseds));
                 }
