@@ -20,7 +20,9 @@ public class WeightService {
 
     static {
         SerialPort[] ports= SerialPort.getCommPorts();
+        //weightPort = SerialPort.getCommPort("/dev/ttys005");
         for(SerialPort port : ports){
+            System.out.println("Port: "+port.getDescriptivePortName());
             if(port.getDescriptivePortName().contains("Prolific USB-to-Serial Comm Port")){
                 weightPort = port;
             }
@@ -39,14 +41,40 @@ public class WeightService {
                     if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
                         return;
                     byte[] newData = new byte[weightPort.bytesAvailable()];
-                    int numRead = weightPort.readBytes(newData, newData.length);
+                    int numRead = weightPort.readBytes(newData,Math.min(newData.length, weightPort.bytesAvailable()));
                     message = new String(newData,0, numRead);
-                    localInput.setText(""+Double.parseDouble(message.replaceAll("KG","").replaceAll("KN","") ));
+                    message = message.replace("KG"," ").replaceAll("KN"," ").replaceFirst(".","");
+
+                    localInput.setText(""+Double.parseDouble(message ));
                 }
             });
         }
         else
             ToastProvider.showToastError("Error al conectar con la bascula",1500);
+    }
+
+    public static void reconnect(){
+        if(weightPort!= null){
+            ToastProvider.showToastSuccess("Conexión exitosa a la bascula",2000);
+            weightPort.addDataListener(new SerialPortDataListener() {
+                String message;
+                @Override
+                public int getListeningEvents() {
+                    return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
+                }
+                public void serialEvent(SerialPortEvent event) {
+                    if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
+                        return;
+                    byte[] newData = new byte[weightPort.bytesAvailable()];
+                    int numRead = weightPort.readBytes(newData,Math.min(newData.length, weightPort.bytesAvailable()));
+                    message = new String(newData,0, numRead);
+                    message = message.replace("KG"," ").replaceAll("KN"," ").replaceFirst(".","");
+                    if(localInput!=null) {
+                        localInput.setText("" + Double.parseDouble(message));
+                    }
+                }
+            });
+        }
     }
 
 
@@ -55,12 +83,26 @@ public class WeightService {
         localInput = input;
         Tooltip tooltip = new Tooltip("Click para obtener el peso de la bascula");
         localInput.setTooltip(tooltip);
-        localInput.focusedProperty().addListener(new ChangeListener<Boolean>() {
+        if(!weightPort.isOpen()){
+            weightPort.openPort();
+
+        }
+        if(weightPort.isOpen()){
+            localLabel.setText("Para detener la captura de peso presionar el boton");
+        }else{
+            localLabel.setText("ERROR: puerto no abierto o no encontrado");
+        }
+        //localLabel.setVisible(true);
+
+       /* localInput.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if(newValue){
                     if(weightPort!= null){
-                        weightPort.openPort();
+                        if(!weightPort.isOpen()){
+                            weightPort.openPort();
+                            reconnect();
+                        }
                         if(weightPort.isOpen()){
                             localLabel.setText("Para detener la captura de peso presionar el boton");
                         }else{
@@ -73,12 +115,15 @@ public class WeightService {
                 }
 
             }
-        });
+        });*/
     }
 
     public static void stop(){
         if(weightPort!= null){
-            weightPort.closePort();
+
+
+                weightPort.closePort();
+
         }else
             ToastProvider.showToastError("Error de comunicacion con la bascula",1500);
     }

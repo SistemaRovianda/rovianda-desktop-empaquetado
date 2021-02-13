@@ -25,6 +25,7 @@ public class AuthService {
             if(!User.getInstance().getRol().equals("PACKAGING"))
                 throw new Exception("Usuario no válido");
         }else{
+           System.out.println("Access: "+response.getStatus());
             throw  new Exception("Error al iniciar sesión intente mas tarde");
         }
         response.close();

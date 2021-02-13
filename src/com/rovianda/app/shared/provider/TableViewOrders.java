@@ -42,11 +42,11 @@ public class TableViewOrders {
     public static JFXComboBox<PackagingLots> lots;
     public static List<PackagingLots> lotsTemp=new ArrayList<>();
     public static List<Boolean> registering=new ArrayList<>();
-    public static JFXTextField unitsToTake, weightPresentations ;
+    public static JFXTextField unitsToTake, weightPresentations,weightPresentationsTemp ;
     public static JFXButton buttonAddUnitsToTake, buttonSaveOutput;
     public static Label tagName, tagUnits, errorQuantity, errorLots,errorPresentationWeight;
     static TableView<OutputsProduct> currentTableOutput;
-
+    public WeightService cap3= new WeightService();
     private static void initLots(List<PackagingLots> lots){
         lotsTemp.clear();
         lotsTemp.addAll(lots);
@@ -77,7 +77,7 @@ public class TableViewOrders {
             fillLots(o.getOrderId());
             DataValidator.decimalValidate(weightPresentations,errorPresentationWeight);
             weightPresentations.setText("");
-            WeightService.start(weightPresentations,errorPresentationWeight);
+            WeightService.start(weightPresentationsTemp,errorPresentationWeight);
                 /*ToastProvider.showToastInfo("Atendiendo pedido", 3000);
                 Task<Boolean> closeOrderTask = new Task<Boolean>() {
                     @Override

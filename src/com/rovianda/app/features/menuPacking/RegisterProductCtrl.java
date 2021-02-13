@@ -120,9 +120,9 @@ public class RegisterProductCtrl implements Initializable {
 
 
     @FXML
-    JFXTextField lotId, weight, lotReprocessing, weightReprocessing,
+    JFXTextField lotId, weight,weightTemp, lotReprocessing, weightReprocessing,weightReprocessingTemp,
             allergenReprocessing, units, unitsToTake,
-            quantityReturn,weightPresentations,quantityAvaiableToReturn;
+            quantityReturn,weightPresentations,weightPresentationsTemp,quantityAvaiableToReturn;
 
     @FXML
     JFXComboBox<ProductPresentation> presentation;
@@ -310,6 +310,7 @@ public class RegisterProductCtrl implements Initializable {
     }
 
     void exit() {
+        WeightService.stop();
         AuthService.SignOutSession();
         Fade.invisibleElement(container, 500, () -> {
             try {
@@ -529,7 +530,7 @@ public class RegisterProductCtrl implements Initializable {
         presentation.setDisable(true);
         btnCloseLotRegister.setDisable(true);
         lotId.setText("");
-        WeightService.start(weight,errorWeight);
+        WeightService.start(weightTemp,errorWeight);
 
     }
 
@@ -541,7 +542,7 @@ public class RegisterProductCtrl implements Initializable {
         ItemFormValidator.isValidInputFocus(weightReprocessing, weightError);
         ItemFormValidator.isValidInputFocus(allergenReprocessing, errorReproAllergen);
         ItemFormValidator.isValidInputFocus(lotReprocessing,errorReproLot);
-        WeightService.start(weightReprocessing,weightError);
+        WeightService.start(weightReprocessingTemp,weightError);
     }
 
     private void initializePaneRequest() {
@@ -670,6 +671,7 @@ public class RegisterProductCtrl implements Initializable {
         TableViewOrders.buttonSaveOutput = btnOutput;
         TableViewOrders.errorPresentationWeight = errorPresentationWeight;
         TableViewOrders.weightPresentations = weightPresentations;
+        TableViewOrders.weightPresentationsTemp = weightPresentationsTemp;
         TableViewOrders.buildTableOutputProduct(OutputsProductTake, columnOutputProductLot, columnOutputProductQuantity,columnOutputProductWeight);
         TableViewOrders.assignUnitsTextField(unitsToTake);
     }
@@ -707,11 +709,18 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     void getPesoReproceso() {
-       WeightService.stop();
+        weightReprocessing.setText(weightReprocessingTemp.getText());
+       //WeightService.stop();
+    }
+
+    @FXML
+    void getPesoPresentations(){
+        weightPresentations.setText(weightPresentationsTemp.getText());
     }
     @FXML
     void getPesoRegistro(){
-       WeightService.stop();
+        weight.setText(weightTemp.getText());
+       //WeightService.stop();
     }
 
     @FXML
