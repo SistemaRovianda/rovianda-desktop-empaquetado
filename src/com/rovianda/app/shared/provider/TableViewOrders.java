@@ -471,8 +471,6 @@ public class TableViewOrders {
 
     public static void saveOutputLots(Method method) {
        if(currentTableOutput.getItems().size() >0){
-           List<Presentation> presentations = currentTablePresentation.getItems().stream().filter(e->e.getUnits()>0).collect(Collectors.toList());
-
                ToastProvider.showToastInfo("Registrando salidas de lotes por favor espere...", 1500);
                Task<Boolean> taskOutputs = new Task<Boolean>() {
                    @Override
@@ -502,6 +500,7 @@ public class TableViewOrders {
 
        }else {
            ModalProvider.showModalInfo("Es necesario agregar lotes para realizar el registro");
+           method.method();
        }
     }
 

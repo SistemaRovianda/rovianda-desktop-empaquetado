@@ -41,7 +41,7 @@ public class WeightService {
                     byte[] newData = new byte[weightPort.bytesAvailable()];
                     int numRead = weightPort.readBytes(newData, newData.length);
                     message = new String(newData,0, numRead);
-                    localInput.setText(""+Double.parseDouble(message.replaceAll("KG","")));
+                    localInput.setText(""+Double.parseDouble(message.replaceAll("KG","").replaceAll("KN","") ));
                 }
             });
         }

@@ -176,6 +176,7 @@ public class RegisterProductCtrl implements Initializable {
     boolean tapRegister = true;
     boolean tapReprocessing = false;
     boolean tapReturns = false;
+    boolean isRegisteringOutputs=false;
     public static boolean activePresentations = false;
 
     boolean start= false;
@@ -682,9 +683,14 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     void saveOutputLots() {
-        TableViewOrders.saveOutputLots(() -> {
-
-        });
+        if(isRegisteringOutputs==false) {
+            isRegisteringOutputs=true;
+            TableViewOrders.saveOutputLots(() -> {
+                isRegisteringOutputs=false;
+            });
+        }else{
+            ModalProvider.showModalInfo("Registros ya enviados, Espere hasta que el registro sea completado...");
+        }
     }
 
     @FXML
