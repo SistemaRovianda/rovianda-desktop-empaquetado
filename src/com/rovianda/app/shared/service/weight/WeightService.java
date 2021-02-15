@@ -20,10 +20,10 @@ public class WeightService {
 
     static {
         SerialPort[] ports= SerialPort.getCommPorts();
-        //weightPort = SerialPort.getCommPort("/dev/ttys004");
+       // weightPort = SerialPort.getCommPort("Bluetooth-Incoming-Port");
        for(SerialPort port : ports) {
             System.out.println("Port: " + port.getDescriptivePortName());
-            if (port.getDescriptivePortName().contains("Prolific USB-to-Serial Comm Port")) {
+            if (port.getDescriptivePortName().contains("USB-Serial Controller") || port.getDescriptivePortName().contains("Prolific USB-to-Serial Comm Port") ) {
                 weightPort = port;
             }
         }
@@ -32,7 +32,8 @@ public class WeightService {
         if(weightPort!= null){
                 ToastProvider.showToastSuccess("Conexión exitosa a la bascula",2000);
             weightPort.addDataListener(new SerialPortDataListener() {
-                String message;
+                String message="";
+                int countIndex=0;
                 @Override
                 public int getListeningEvents() {
                     return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
@@ -41,17 +42,34 @@ public class WeightService {
                     if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE)
                         return;
                     byte[] newData = new byte[weightPort.bytesAvailable()];
-                    int numRead = weightPort.readBytes(newData,Math.min(newData.length, weightPort.bytesAvailable()));
-                    message = new String(newData,0, numRead);
-                    message = message.replace("KG"," ").replaceAll("KN"," ").replaceFirst(".","");
+                    int numRead = weightPort.readBytes(newData, Math.min(newData.length, weightPort.bytesAvailable()));
+                        message += new String(newData, 0, numRead);
+                        if (message.indexOf("KG") != -1 || message.indexOf("KN") != -1 || message.indexOf("KGN") != -1) {
 
-                    localInput.setText(""+Double.parseDouble(message ));
+                            System.out.println(new String(newData, 0, numRead));
+                            message = message.replace("KG", " ").replaceAll("KN", " ").replaceAll("KGN", "").replaceFirst(".", "");
+                            try {
+                                Double weight = Double.parseDouble(message);
+                                if (weight > 0) {
+                                    localInput.setText("" + weight);
+
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Fallo de conversion");
+
+                            message = "";
+
+                        }
+                    }
+
                 }
             });
         }
         else
             ToastProvider.showToastError("Error al conectar con la bascula",1500);
     }
+
+
 
     public static void start(JFXTextField input, Label label) {
         localLabel = label;
