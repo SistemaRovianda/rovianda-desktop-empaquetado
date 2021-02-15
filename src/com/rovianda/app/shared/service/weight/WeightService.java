@@ -23,7 +23,7 @@ public class WeightService {
        // weightPort = SerialPort.getCommPort("Bluetooth-Incoming-Port");
        for(SerialPort port : ports) {
             System.out.println("Port: " + port.getDescriptivePortName());
-            if (port.getDescriptivePortName().contains("USB-Serial Controller") || port.getDescriptivePortName().contains("Prolific USB-to-Serial Comm Port") ) {
+            if (port.getDescriptivePortName().contains("Prolific USB-to-Serial Comm Port") ) {
                 weightPort = port;
             }
         }
