@@ -5,6 +5,7 @@ import com.fazecast.jSerialComm.SerialPortDataListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
 import com.jfoenix.controls.JFXTextField;
 import com.rovianda.app.shared.provider.ToastProvider;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
@@ -20,7 +21,7 @@ public class WeightService {
 
     static {
         SerialPort[] ports= SerialPort.getCommPorts();
-       // weightPort = SerialPort.getCommPort("Bluetooth-Incoming-Port");
+        //weightPort = SerialPort.getCommPort("/dev/ttys004");
        for(SerialPort port : ports) {
             System.out.println("Port: " + port.getDescriptivePortName());
             if (port.getDescriptivePortName().contains("Prolific USB-to-Serial Comm Port") ) {
@@ -33,7 +34,7 @@ public class WeightService {
                 ToastProvider.showToastSuccess("Conexión exitosa a la bascula",2000);
             weightPort.addDataListener(new SerialPortDataListener() {
                 String message="";
-                int countIndex=0;
+
                 @Override
                 public int getListeningEvents() {
                     return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
@@ -46,17 +47,22 @@ public class WeightService {
                         message += new String(newData, 0, numRead);
                         if (message.indexOf("KG") != -1 || message.indexOf("KN") != -1 || message.indexOf("KGN") != -1) {
 
-                            System.out.println(new String(newData, 0, numRead));
+
                             message = message.replace("KG", " ").replaceAll("KN", " ").replaceAll("KGN", "").replaceFirst(".", "");
                             try {
-                                Double weight = Double.parseDouble(message);
-                                if (weight > 0) {
-                                    localInput.setText("" + weight);
-
+                                if(!message.isEmpty()) {
+                                    Double weight = Double.parseDouble(message);
+                                    if (weight > 0) {
+                                        if ( ( !localInput.getText().isEmpty() && Double.parseDouble(localInput.getText())!=weight ) || localInput.getText().isEmpty()) {
+                                            System.out.println("Asignando: " + message);
+                                            Platform.runLater(() -> {
+                                                localInput.setText("" + weight);
+                                            });
+                                        }
+                                    }
                                 }
                             } catch (Exception e) {
-                                System.out.println("Fallo de conversion");
-
+                                System.out.println("Fallo de conversion"+e.getMessage());
                             message = "";
 
                         }
