@@ -8,7 +8,7 @@
 <?import com.jfoenix.controls.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="container" prefHeight="792.0" prefWidth="1300.0" stylesheets="@RegisterProduct.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rovianda.app.features.menuPacking.RegisterProductCtrl">
+<AnchorPane fx:id="container" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@RegisterProduct.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rovianda.app.features.menuPacking.RegisterProductCtrl">
    <children>
       <BorderPane layoutX="6.0" layoutY="8.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>

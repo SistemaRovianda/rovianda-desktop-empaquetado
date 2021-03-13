@@ -215,7 +215,7 @@ public class TableViewOrders {
                 }
                 List<Presentation> newP = new ArrayList<>();
                 for(Presentation p : currentTablePresentation.getItems()){
-                    if(p.getPresentationId()==output.getPresentationId() && p.getSubOrderId()==output.getSubOrderId()){
+                    if(p.getPresentationId()==output.getPresentationId() && p.getSubOrderId()==output.getSubOrderId() && p.getSubOrderId()==output.getSubOrderId()){
                         p.setUnits(p.getUnits()+output.getQuantity());
                     }
                     newP.add(p);
@@ -410,9 +410,10 @@ public class TableViewOrders {
                 ItemFormValidator.isValidInputDecimal(weightPresentations,errorPresentationWeight) ) {
             if(currentTablePresentation!=null) {
                 if(lots.getValue().getPresentationId()==currentPresentation.getPresentationId()) {
+
                     List presentations = currentTablePresentation.getItems().stream().map(presentation -> {
 
-                        if (presentation.getPresentationId() == currentPresentation.getPresentationId()) {
+                        if (presentation.getPresentationId() == currentPresentation.getPresentationId() && currentPresentation.getSubOrderId()==presentation.getSubOrderId()) {
                             if (presentation.getUnits() > 0) {
                                 int units = Integer.parseInt(unitsToTake.getText());
                                 if (lots.getValue().getQuantity() >= units) {
@@ -434,6 +435,7 @@ public class TableViewOrders {
                             } else {
                                 ModalProvider.showModalInfo("El registro de la suborden ya esta completo");
                             }
+
                         }
                         return presentation;
                     }).collect(Collectors.toList());
