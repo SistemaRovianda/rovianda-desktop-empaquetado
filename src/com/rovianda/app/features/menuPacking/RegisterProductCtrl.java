@@ -122,7 +122,8 @@ public class RegisterProductCtrl implements Initializable {
     @FXML
     JFXTextField lotId, weight,weightTemp, lotReprocessing, weightReprocessing,weightReprocessingTemp,
             allergenReprocessing, units, unitsToTake,
-            quantityReturn,weightPresentations,weightPresentationsTemp,quantityAvaiableToReturn;
+            quantityReturn,weightPresentations,weightPresentationsTemp,quantityAvaiableToReturn,
+            weightDevolutions,weightDevolutionsTemp;
 
     @FXML
     JFXComboBox<ProductPresentation> presentation;
@@ -169,7 +170,8 @@ public class RegisterProductCtrl implements Initializable {
             errorPresentationLot,
             errorPresentationQuantity,
             errorProductReturn,errorPresentationReturn,errorReturnLot,errorQuantityReturn,
-            errorPresentationWeight;
+            errorPresentationWeight,
+            errorDevolutionsWeight;
 
     boolean activeProcess = false;
     boolean activeDeliver = false;
@@ -266,6 +268,7 @@ public class RegisterProductCtrl implements Initializable {
         ItemFormValidator.isValidSelectorFocus(presentationReturn,errorPresentationReturn);
         //ItemFormValidator.isValidInputFocus(lotReturn,errorReturnLot);
         ItemFormValidator.isValidInputFocus(quantityReturn,errorQuantityReturn);
+        WeightService.start(weightDevolutionsTemp,errorDevolutionsWeight);
         dateReturn.setValue(LocalDate.now());
         btnSaveReturn.setVisible(false);
         presentationReturn.setValue(null);
@@ -717,6 +720,14 @@ public class RegisterProductCtrl implements Initializable {
     void getPesoPresentations(){
         weightPresentations.setText(weightPresentationsTemp.getText());
     }
+
+    @FXML
+    void getPesoDevolutions(){
+
+        weightDevolutions.setText(weightDevolutionsTemp.getText());
+
+    }
+
     @FXML
     void getPesoRegistro(){
         weight.setText(weightTemp.getText());
@@ -733,16 +744,21 @@ public class RegisterProductCtrl implements Initializable {
                     //&& ItemFormValidator.isValidInput(lotReturn,errorReturnLot)
                     && ItemFormValidator.isValidInput(quantityReturn, errorQuantityReturn)
             ) {
-                ModalProvider.showModal("¿Seguro que deseas realizar la devolución?", () -> {
-                    ProductReturn productTemp = new ProductReturn();
-                    productTemp.setUnits(Integer.parseInt(quantityReturn.getText()));
-                    productTemp.setProductId(productReturn.getValue().getId());
-                    productTemp.setPresentationId(presentationReturn.getValue().getId());
-                    productTemp.setLotId(lotsDevolutions.getValue().getLotId());
-                    productTemp.setDate(dateReturn.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-                    ReturnProductProvider.currentButton = btnReturnProduct;
-                    ReturnProductProvider.DoReturnProduct(productTemp, btnSaveReturn);
-                });
+                if(weightDevolutions.getText().isEmpty()) {
+                    ModalProvider.showModal("¿Seguro que deseas realizar la devolución?", () -> {
+                        ProductReturn productTemp = new ProductReturn();
+                        productTemp.setUnits(Integer.parseInt(quantityReturn.getText()));
+                        productTemp.setProductId(productReturn.getValue().getId());
+                        productTemp.setPresentationId(presentationReturn.getValue().getId());
+                        productTemp.setLotId(lotsDevolutions.getValue().getLotId());
+                        productTemp.setDate(dateReturn.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+                        ReturnProductProvider.currentButton = btnReturnProduct;
+                        productTemp.setWeight(Float.parseFloat(weightDevolutions.getText()));
+                        ReturnProductProvider.DoReturnProduct(productTemp, btnSaveReturn);
+                    });
+                }else{
+                    ModalProvider.showModalInfo("Introduce un peso a devolver");
+                }
             }
         }else{
             ModalProvider.showModalInfo("No se puede devolver más del producto disponible");

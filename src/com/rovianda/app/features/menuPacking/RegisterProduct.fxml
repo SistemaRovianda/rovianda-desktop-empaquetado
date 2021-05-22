@@ -86,6 +86,21 @@
                                           <JFXTextField fx:id="quantityReturn" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="255.0" layoutY="152.0" prefHeight="30.0" prefWidth="200.0" promptText="Cantidad a devolver" styleClass="itemForm" />
                                           <JFXTextField fx:id="quantityAvaiableToReturn" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="21.0" layoutY="202.0" prefHeight="30.0" prefWidth="200.0" promptText="Disponible" styleClass="itemForm" />
                                           <DatePicker fx:id="dateReturn" editable="false" focusTraversable="false" layoutX="21.0" layoutY="244.0" prefHeight="30.0" prefWidth="200.0" />
+
+                                          <JFXButton contentDisplay="CENTER" focusTraversable="false" layoutX="21.0" layoutY="330.0" onAction="#getPesoDevolutions" prefHeight="31.0" styleClass="minimize" text=" ">
+                                             <graphic>
+                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../assets/icons/weight.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </JFXButton>
+
+                                          <JFXTextField fx:id="weightDevolutions" focusColor="#e1bc5c" labelFloat="true" layoutX="21.0" layoutY="290.0" prefHeight="25.0" prefWidth="150.0" promptText="Peso capturado: " />
+                                          <JFXTextField fx:id="weightDevolutionsTemp" disable="true" editable="false" focusColor="#e1bc5c" labelFloat="true" layoutX="210.0" layoutY="290.0" prefHeight="25.0" prefWidth="100.0" promptText="Peso en Bascula: " />
+                                          <Label fx:id="errorDevolutionsWeight" layoutX="102.0" layoutY="152.0" prefHeight="20.0" prefWidth="256.0" styleClass="error-message" text="Label" visible="false" />
+
                                           <JFXButton fx:id="btnReturnProduct" focusTraversable="false" layoutX="255.0" layoutY="384.0" onAction="#onSaveReturn" prefHeight="30.0" prefWidth="90.0" styleClass="button-success" text="Devolver" />
                                           <Label fx:id="errorQuantityReturn" layoutX="255.0" layoutY="192.0" prefHeight="20.0" prefWidth="200.0" styleClass="error-message" text="error" wrapText="true" />
                                           <Label fx:id="errorReturnLot" layoutX="21.0" layoutY="192.0" prefHeight="20.0" prefWidth="200.0" styleClass="error-message" text="error" wrapText="true" />

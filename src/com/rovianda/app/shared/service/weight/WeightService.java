@@ -21,13 +21,13 @@ public class WeightService {
 
     static {
         SerialPort[] ports= SerialPort.getCommPorts();
-        //weightPort = SerialPort.getCommPort("/dev/ttys004");
-       for(SerialPort port : ports) {
+        weightPort = SerialPort.getCommPort("/dev/ttys003");
+       /*for(SerialPort port : ports) {
             System.out.println("Port: " + port.getDescriptivePortName());
             if (port.getDescriptivePortName().contains("Prolific USB-to-Serial Comm Port") ) {
                 weightPort = port;
             }
-        }
+        }*/
         //weightPort = SerialPort.getCommPort("Prolific USB-to-Serial Comm Port");
 
         if(weightPort!= null){

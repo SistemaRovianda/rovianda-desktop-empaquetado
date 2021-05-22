@@ -7,6 +7,15 @@ public class ProductReturn {
      private int productId;
      private int presentationId;
      private long units;
+     private Float weight;
+
+    public Float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Float weight) {
+        this.weight = weight;
+    }
 
     public String getLotId() {
         return lotId;
