@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ServicePackaging {
     public static List<ProductPresentation> getPresentationsById(int productId) throws Exception {
-        Response response = HttpClient.get("packaging/products/presentations/"+productId);
+        Response response = HttpClient.get("/packaging/products/presentations/"+productId);
         List<ProductPresentation> presentations = new ArrayList<>();
         if(response.getStatus() == 200){
             presentations = response.readEntity(new GenericType<List<ProductPresentation>>(){});
@@ -22,7 +22,7 @@ public class ServicePackaging {
     }
 
     public static List<PresentationReturn> getPresentationsReturnById(int productId) throws Exception {
-        Response response = HttpClient.get("products-rovianda/catalog/"+productId);
+        Response response = HttpClient.get("/products-rovianda/catalog/"+productId);
         List<PresentationReturn> presentations = new ArrayList<>();
         if(response.getStatus() == 200){
             presentations = response.readEntity(new GenericType<List<PresentationReturn>>(){});
@@ -33,10 +33,33 @@ public class ServicePackaging {
         return presentations;
     }
     public static List<LotsPresentationsDevolutions> getLotsPresentationsReturnById(int presentationId) throws Exception {
-        Response response = HttpClient.get("products-rovianda/inventory-lots/"+presentationId);
+        Response response = HttpClient.get("/products-rovianda/inventory-lots/"+presentationId);
         List<LotsPresentationsDevolutions> presentations = new ArrayList<>();
         if(response.getStatus() == 200){
             presentations = response.readEntity(new GenericType<List<LotsPresentationsDevolutions>>(){});
+        }else if (response.getStatus() == 404){
+            throw new Exception("Error al obtener los lotes del producto");
+        }
+        response.close();
+        return presentations;
+    }
+
+    public static List<String> getLotsByProductReturnById(int productId) throws Exception {
+        Response response = HttpClient.get("/product-rovianda/oven-lots/"+productId);
+        List<String> presentations = new ArrayList<>();
+        if(response.getStatus() == 200){
+            presentations = response.readEntity(new GenericType<List<String>>(){});
+        }else if (response.getStatus() == 404){
+            throw new Exception("Error al obtener los lotes del producto");
+        }
+        response.close();
+        return presentations;
+    }
+    public static List<String> getLotsByProductAndDateReturnById(int productId,String date) throws Exception {
+        Response response = HttpClient.get("/product-reprocesing/oven-lots/"+productId+"?date="+date);
+        List<String> presentations = new ArrayList<>();
+        if(response.getStatus() == 200){
+            presentations = response.readEntity(new GenericType<List<String>>(){});
         }else if (response.getStatus() == 404){
             throw new Exception("Error al obtener los lotes del producto");
         }
@@ -98,8 +121,11 @@ public class ServicePackaging {
         return lots;
     }
 
-    public static boolean closedOrder(Order order) throws Exception {
-        Response response = HttpClient.putWithoutBody("/packaging/"+order.getOrderId());
+    public static boolean closedOrder(Order order,String date) throws Exception {
+        CloseOrderRequest closeOrderRequest = new CloseOrderRequest();
+        closeOrderRequest.setOrderId(order.getOrderId());
+        closeOrderRequest.setDateOrderAtemp(date);
+        Response response = HttpClient.putWithBody("/packaging/"+order.getOrderId(),closeOrderRequest);
         boolean result = false;
         if (response.getStatus() == 204){
             result = true;
@@ -112,7 +138,7 @@ public class ServicePackaging {
     }
 
     public static boolean registerOutputsLots(List<OutputsProduct> outputsProduct) throws Exception {
-        Response response = HttpClient.post("packaging-lots/inventory/product/outputs",outputsProduct);
+        Response response = HttpClient.post("/packaging-lots/inventory/product/outputs",outputsProduct);
         boolean result = false;
         if (response.getStatus() == 201){
             result= true;

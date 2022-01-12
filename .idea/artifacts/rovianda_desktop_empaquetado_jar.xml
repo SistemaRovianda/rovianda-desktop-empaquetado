@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="rovianda_desktop_empaquetado:jar">
+  <artifact type="jar" build-on-make="true" name="rovianda_desktop_empaquetado:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/rovianda_desktop_empaquetado_jar</output-path>
     <root id="archive" name="rovianda_desktop_empaquetado.jar">
       <element id="module-output" name="rovianda_desktop_empaquetado" />
@@ -20,13 +20,9 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/genson-1.3.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/hk2-locator-2.2.0-b14.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-fxml-11.0.2.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-fxml-11.0.2-mac.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-controls-11.0.2.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-controls-11.0.2-mac.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-graphics-11.0.2.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-graphics-11.0.2-mac.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-base-11.0.2.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/lib/javafx-base-11.0.2-mac.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/pdfbox-2.0.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/fontbox-2.0.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/commons-logging-1.2.jar" path-in-jar="/" />

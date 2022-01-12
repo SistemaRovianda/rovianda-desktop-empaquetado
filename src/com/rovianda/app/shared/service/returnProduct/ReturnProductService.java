@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 
 public class ReturnProductService {
     public static Long registerReturnProduct(ProductReturn product) throws Exception {
-        Response response = HttpClient.post("packaging/devolution",product);
+        Response response = HttpClient.post("/packaging/devolution",product);
         ResponseDevolution id ;
         if(response.getStatus()==404 || response.getStatus() == 409){
             MessageError e = response.readEntity(MessageError.class);
@@ -23,7 +23,7 @@ public class ReturnProductService {
     }
 
     public static boolean closeLot(int lotId) throws Exception {
-        Response response = HttpClient.putWithoutBody("oven-close/"+lotId);
+        Response response = HttpClient.putWithoutBody("/oven-close/"+lotId);
         if(response.getStatus()==404){
             throw new Exception("Servicio no disponible");
         }else if (response.getStatus()==400) {

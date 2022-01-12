@@ -15,10 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -109,7 +106,16 @@ public class RegisterProductCtrl implements Initializable {
     private JFXComboBox<PresentationReturn> presentationReturn;
 
     @FXML
-    private JFXComboBox<LotsPresentationsDevolutions> lotsDevolutions;
+    private JFXComboBox<ProductCatalogReturn> productReprocesing;
+
+    @FXML
+    private JFXComboBox<String> presentationReprocesing;
+
+    @FXML
+    private JFXComboBox<LotsPresentationsDevolutions> lotsReturn;
+
+    @FXML
+    private JFXComboBox<String>lotReprocessing;
 
     @FXML
     private JFXComboBox<OptionOrder> urgent;
@@ -120,9 +126,13 @@ public class RegisterProductCtrl implements Initializable {
 
 
     @FXML
-    JFXTextField lotId, weight,weightTemp, lotReprocessing, weightReprocessing,weightReprocessingTemp,
+    JFXTextField lotId, weight,weightTemp, weightReprocessing,weightReprocessingTemp,
+            weightMermReprocesing,
             allergenReprocessing, units, unitsToTake,
-            quantityReturn,weightPresentations,weightPresentationsTemp,quantityAvaiableToReturn;
+            quantityReturn,weightPresentations,weightPresentationsTemp,
+            productToReprocesing,presentationToReprocesing,
+            quantityAvaiableToReturn,
+            weightDevolutions,weightDevolutionsTemp;
 
     @FXML
     JFXComboBox<ProductPresentation> presentation;
@@ -152,7 +162,8 @@ public class RegisterProductCtrl implements Initializable {
     private JFXSpinner spinnerReprocessing;
 
     @FXML
-    private DatePicker currentDate, expirationDate, dateReprocessing,dateReturn;
+    private DatePicker currentDate, expirationDate, dateReprocessing
+            ,dateToSearchLotReprocesing,dateReturn,dateOrderAtemp;
 
     @FXML
     private JFXTextArea observation,commentsReprocesing,observationsOven;
@@ -162,14 +173,16 @@ public class RegisterProductCtrl implements Initializable {
     private  List<Product> products = new ArrayList<>();
 
     @FXML
-    private Label weightError, errorReproAllergen, errorReproLot, labelModal,
+    private Label weightError,weightMermError, errorReproAllergen, errorReproLot, labelModal,
             errorPresentation, errorUnits, errorWeight, errorObservations, errorProductId,
             presentationProduct,
             presentationsQuantity,
             errorPresentationLot,
             errorPresentationQuantity,
             errorProductReturn,errorPresentationReturn,errorReturnLot,errorQuantityReturn,
-            errorPresentationWeight;
+            errorPresentationWeight,
+            errorDevolutionsWeight,
+            timeOrderAtendedLabel;
 
     boolean activeProcess = false;
     boolean activeDeliver = false;
@@ -190,6 +203,7 @@ public class RegisterProductCtrl implements Initializable {
         ResponsiveBorderPane.addSizeBorderPane(containerPresentations);
         ResponsiveBorderPane.addSizeBorderPane(containerReturns);
         TableViewOrders.presentations = presentations;
+        TableViewOrders.dateOrderAtem=dateOrderAtemp;
         ReportProvider.currentContainer = register;
         buildTableRegister();
         buildTableRequest();
@@ -259,13 +273,14 @@ public class RegisterProductCtrl implements Initializable {
         quantityReturn.setText("");
         quantityAvaiableToReturn.setText("0");
         quantityAvaiableToReturn.setDisable(true);
-        lotsDevolutions.setDisable(true);
+        lotsReturn.setDisable(true);
         DataValidator.numberValidate(quantityReturn,errorQuantityReturn);
         DataComboBox.fillProductsCatalogReturn(productReturn);
         ItemFormValidator.isValidSelectorFocus(productReturn,errorProductReturn);
         ItemFormValidator.isValidSelectorFocus(presentationReturn,errorPresentationReturn);
         //ItemFormValidator.isValidInputFocus(lotReturn,errorReturnLot);
         ItemFormValidator.isValidInputFocus(quantityReturn,errorQuantityReturn);
+        WeightService.start(weightDevolutionsTemp,errorDevolutionsWeight);
         dateReturn.setValue(LocalDate.now());
         btnSaveReturn.setVisible(false);
         presentationReturn.setValue(null);
@@ -464,22 +479,27 @@ public class RegisterProductCtrl implements Initializable {
     void onSaveReprocessing() {
         if (
                 ItemFormValidator.isValidInputDecimal(weightReprocessing, weightError) &&
-                        ItemFormValidator.isValidInput(lotReprocessing,errorReproLot)&&
+
                         ItemFormValidator.isValidInput(allergenReprocessing, errorReproAllergen))
             createItemRegisterReprocessing();
     }
 
     private void createItemRegisterReprocessing() {
-
         Reprocessing itemRegister = new Reprocessing();
+        itemRegister.setProductId(productReprocesing.getValue().getId());
         itemRegister.setAllergen(allergenReprocessing.getText());
         itemRegister.setDate(dateReprocessing.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        itemRegister.setLotId(lotReprocessing.getText());
+        itemRegister.setLotId(lotReprocessing.getValue());
         itemRegister.setComment(commentsReprocesing.getText());
         try {
             itemRegister.setWeight(Double.parseDouble(weightReprocessing.getText()));
         } catch (Exception e) {
             itemRegister.setWeight(0);
+        }
+        try{
+            itemRegister.setWeightMerm(Double.parseDouble(weightMermReprocesing.getText()));
+        }catch (Exception e){
+            itemRegister.setWeightMerm(0);
         }
         ReprocessingData.registerReprocessing(itemRegister, btnSaveReprocessing, spinnerReprocessing, () -> {
             this.initValueReprocessing();
@@ -491,14 +511,14 @@ public class RegisterProductCtrl implements Initializable {
 
     private void initValueReprocessing() {
         allergenReprocessing.setText("");
-        lotReprocessing.setText("");
         weightReprocessing.setText("");
         weightError.setVisible(false);
+        weightMermError.setVisible(false);
         errorReproAllergen.setVisible(false);
         errorReproLot.setVisible(false);
         commentsReprocesing.setText("");
         btnSaveReportReprocessing.setVisible(false);
-
+        //productReprocesing;
     }
 
     private void buildPaneRegister() {
@@ -536,12 +556,28 @@ public class RegisterProductCtrl implements Initializable {
 
     private void initializePaneReprocessing() {
         ModalProvider.currentContainer = reprocessing;
+        DataComboBox.fillProductsCatalogReturn(productReprocesing);
         initValueReprocessing();
         dateReprocessing.setValue(LocalDate.now());
+        dateToSearchLotReprocesing.setValue(LocalDate.now());
         DataValidator.decimalValidate(weightReprocessing, weightError);
         ItemFormValidator.isValidInputFocus(weightReprocessing, weightError);
         ItemFormValidator.isValidInputFocus(allergenReprocessing, errorReproAllergen);
-        ItemFormValidator.isValidInputFocus(lotReprocessing,errorReproLot);
+        weightMermReprocesing.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("^\\d+(\\.\\d{1,2})?$")) {
+                    weightMermReprocesing.setText(newValue.replaceAll("[^\\d+(\\.\\d{1,2})?$/g]", ""));
+
+                    weightMermError.setText("Formato Inválido");
+                    weightMermError.setVisible(true);
+
+                }else {
+
+                    weightMermError.setVisible(false);
+                }
+            }
+        });
         WeightService.start(weightReprocessingTemp,weightError);
     }
 
@@ -566,25 +602,40 @@ public class RegisterProductCtrl implements Initializable {
     void selectProductReturn() {
         if (productReturn.getValue() != null) {
             DataComboBox.fillPresentationsReturnsById(presentationReturn, productReturn.getValue().getId());
-            lotsDevolutions.setValue(null);
-            lotsDevolutions.setDisable(true);
+            lotsReturn.setValue(null);
+            lotsReturn.setDisable(true);
             quantityAvaiableToReturn.setText("0");
         }
-
     }
+
+
 
     @FXML
     void selectProductPresentationReturn(){
         if(presentationReturn.getValue()!=null){
-            lotsDevolutions.setDisable(false);
-            DataComboBox.fillLotsPresentationsReturnsById(lotsDevolutions,presentationReturn.getValue().getId());
+            lotsReturn.setDisable(false);
+            DataComboBox.fillLotsPresentationsReturnsById(lotsReturn,presentationReturn.getValue().getId());
         }
     }
 
     @FXML
     void selectLotReturn(){
-        if(lotsDevolutions.getValue()!=null){
-            quantityAvaiableToReturn.setText(lotsDevolutions.getValue().getQuantity().toString());
+        if(lotsReturn.getValue()!=null){
+            quantityAvaiableToReturn.setText(lotsReturn.getValue().getQuantity().toString());
+        }
+    }
+
+    @FXML
+    void selectPresentationReprocesing(){
+        if(presentationReprocesing.getValue()!=null){
+            //DataComboBox.fillLotsPresentationsReturnsById(lotReprocessing,presentationReprocesing.getValue().getId());
+        }
+    }
+
+    @FXML
+    void searchLotOfProductReprocesing(){
+        if(productReprocesing.getValue()!=null){
+            DataComboBox.fillLotsByProductAndDateReturnsById(lotReprocessing, productReprocesing.getValue().getId(),dateToSearchLotReprocesing.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         }
     }
 
@@ -646,7 +697,15 @@ public class RegisterProductCtrl implements Initializable {
         TableViewOrders.assignColumnPresentations(columnPresentationName);
         TableViewOrders.assignColumnUnits(columnPresentationUnits);
         TableViewOrders.lots = lotsPresentations;
-
+        dateOrderAtemp.setValue(LocalDate.now());
+        dateOrderAtemp.setDayCellFactory(picker->new DateCell(){
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                LocalDate today = LocalDate.now();
+                setDisable(empty || item.compareTo(today)<0);
+            }
+        });
         lotsPresentations.valueProperty().addListener(new ChangeListener<PackagingLots>() {
             @Override
             public void changed(ObservableValue<? extends PackagingLots> observable, PackagingLots oldValue, PackagingLots newValue) {
@@ -713,36 +772,45 @@ public class RegisterProductCtrl implements Initializable {
        //WeightService.stop();
     }
 
+
     @FXML
     void getPesoPresentations(){
         weightPresentations.setText(weightPresentationsTemp.getText());
     }
+
+    @FXML
+    void getPesoDevolutions(){
+        weightDevolutions.setText(weightDevolutionsTemp.getText());
+    }
+
     @FXML
     void getPesoRegistro(){
         weight.setText(weightTemp.getText());
-       //WeightService.stop();
     }
 
     @FXML
     void onSaveReturn(){
-        if(Double.parseDouble(quantityReturn.getText())<=lotsDevolutions.getValue().getQuantity()) {
-
-
+        if(Double.parseDouble(quantityReturn.getText())<=lotsReturn.getValue().getQuantity()) {
             if (ItemFormValidator.isValidSelector(productReturn, errorProductReturn)
                     && ItemFormValidator.isValidSelector(presentationReturn, errorPresentationReturn)
                     //&& ItemFormValidator.isValidInput(lotReturn,errorReturnLot)
                     && ItemFormValidator.isValidInput(quantityReturn, errorQuantityReturn)
             ) {
-                ModalProvider.showModal("¿Seguro que deseas realizar la devolución?", () -> {
-                    ProductReturn productTemp = new ProductReturn();
-                    productTemp.setUnits(Integer.parseInt(quantityReturn.getText()));
-                    productTemp.setProductId(productReturn.getValue().getId());
-                    productTemp.setPresentationId(presentationReturn.getValue().getId());
-                    productTemp.setLotId(lotsDevolutions.getValue().getLotId());
-                    productTemp.setDate(dateReturn.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-                    ReturnProductProvider.currentButton = btnReturnProduct;
-                    ReturnProductProvider.DoReturnProduct(productTemp, btnSaveReturn);
-                });
+                if(!weightDevolutions.getText().isEmpty()) {
+                    ModalProvider.showModal("¿Seguro que deseas realizar el reproceso?", () -> {
+                        ProductReturn productTemp = new ProductReturn();
+                        productTemp.setUnits(Integer.parseInt(quantityReturn.getText()));
+                        productTemp.setProductId(productReturn.getValue().getId());
+                        productTemp.setPresentationId(presentationReturn.getValue().getId());
+                        productTemp.setLotId(lotsReturn.getValue().getLotId());
+                        productTemp.setDate(dateReturn.getValue().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+                        ReturnProductProvider.currentButton = btnReturnProduct;
+                        productTemp.setWeight(Float.parseFloat(weightDevolutions.getText()));
+                        ReturnProductProvider.DoReturnProduct(productTemp, btnSaveReturn);
+                    });
+                }else{
+                    ModalProvider.showModalInfo("Introduce un peso a reprocesar");
+                }
             }
         }else{
             ModalProvider.showModalInfo("No se puede devolver más del producto disponible");

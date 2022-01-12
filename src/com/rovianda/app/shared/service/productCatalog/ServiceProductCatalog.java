@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class ServiceProductCatalog {
     public static List<ProductCatalog>getProductsCatalog () throws Exception {
-        Response response = HttpClient.get("packaging/products/oven");
+        Response response = HttpClient.get("/packaging/products/oven");
         List <ProductCatalog> products = new ArrayList<>();
         if(response.getStatus() == 200){
             products = response.readEntity(new GenericType<List<ProductCatalog>>(){});
@@ -24,14 +24,14 @@ public class ServiceProductCatalog {
     }
 
     public static List<ProductCatalogReturn> getProductsCatalogReturns() throws Exception {
-        Response response = HttpClient.get("/products-rovianda/catalog");
+        Response response = HttpClient.get("/quality/products-catalog");
         List<ProductCatalogReturn> products = new ArrayList<>();
         if(response.getStatus() == 200 || response.getStatus() == 201 ){
             products = response.readEntity(new GenericType<List<ProductCatalogReturn>>(){});
         }else if (response.getStatus() == 404)
             throw  new Exception ("Error al obtener productos del catalogo");
         response.close();
-        products = products.stream().filter(x->x.getCategory().equals("meat")).collect(Collectors.toList());
+
         return products;
     }
 

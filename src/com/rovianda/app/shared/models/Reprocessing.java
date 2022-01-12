@@ -6,8 +6,17 @@ public class Reprocessing {
     private int productId;
     private String lotId;
     private double weight;
+    private double weightMerm;
     private String allergen;
     private String comment;
+
+    public double getWeightMerm() {
+        return weightMerm;
+    }
+
+    public void setWeightMerm(double weightMerm) {
+        this.weightMerm = weightMerm;
+    }
 
     public String getDate() {
         return date;

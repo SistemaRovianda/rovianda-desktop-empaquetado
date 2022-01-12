@@ -6,13 +6,23 @@ public class OutputsProduct {
      private int quantity;
      private int presentationId;
      private double weight;
+     private String productName;
 
-     public OutputsProduct(String loteId, int subOrderId, int quantity,int presentationId, double weight){
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public OutputsProduct(String loteId, int subOrderId, int quantity, int presentationId, double weight, String productName){
          this.loteId =  loteId;
          this.subOrderId = subOrderId;
          this.quantity = quantity;
          this.presentationId  = presentationId;
          this.weight = weight;
+         this.productName=productName;
      }
 
     public String getLoteId() {

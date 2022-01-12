@@ -10,6 +10,16 @@ public class Presentation {
     private String typePresentation;
     private String pricePresentation;
     private int presentationId;
+    private int outOfStock;
+
+    public int isOutOfStock() {
+        return outOfStock;
+    }
+
+    public void setOutOfStock(int outOfStock) {
+        this.outOfStock = outOfStock;
+    }
+
     public Presentation(){}
 
     public String getName() {

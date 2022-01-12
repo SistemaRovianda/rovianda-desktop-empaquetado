@@ -37,6 +37,5 @@ public class RoviandaAppRun extends Application {
         stage.setHeight(ResponsiveDimensions.getHeight());
         stage.setWidth(ResponsiveDimensions.getWidth());
         stage.show();
-
     }
 }

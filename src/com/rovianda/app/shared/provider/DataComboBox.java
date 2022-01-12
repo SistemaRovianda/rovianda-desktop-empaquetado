@@ -224,7 +224,7 @@ public class DataComboBox {
                 comboBox.setDisable(false);
             }
             else
-                ToastProvider.showToastInfo("El producto no cuenta con presentaciones",1500);
+                ToastProvider.showToastInfo("El producto no cuenta con lotes disponibles",1500);
         });
         presentationsTask.setOnFailed(e->{
             ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
@@ -238,6 +238,82 @@ public class DataComboBox {
 
             @Override
             public LotsPresentationsDevolutions fromString(String string) {
+                return null;
+            }
+        });
+    }
+
+    public static void fillLotsByProductReturnsById(JFXComboBox<String> comboBox, int productId){
+        ToastProvider.showToastInfo("Obteniendo lotes del producto",1500);
+        ObservableList<String> lotsPresentations = FXCollections.observableArrayList();
+        Task <List<String>> presentationsTask = new Task<List<String>>() {
+            @Override
+            protected List<String> call() throws Exception {
+                return ServicePackaging.getLotsByProductReturnById(productId);
+            }
+        };
+        Thread thread = new Thread(presentationsTask);
+        thread.setDaemon(true);
+        thread.start();
+        presentationsTask.setOnSucceeded(e->{
+            ToastProvider.showToastInfo("Lotes de Presentaciones obtenidas",1500);
+            if(presentationsTask.getValue().size() >0){
+                lotsPresentations.addAll(presentationsTask.getValue());
+                comboBox.setDisable(false);
+            }
+            else
+                ToastProvider.showToastInfo("El producto no cuenta con lotes disponibles",1500);
+        });
+        presentationsTask.setOnFailed(e->{
+            ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
+        });
+        comboBox.setItems(lotsPresentations);
+        comboBox.setConverter(new StringConverter<String>() {
+            @Override
+            public String toString(String item) {
+                return item;
+            }
+
+            @Override
+            public String fromString(String string) {
+                return null;
+            }
+        });
+    }
+
+    public static void fillLotsByProductAndDateReturnsById(JFXComboBox<String> comboBox, int productId,String date){
+        ToastProvider.showToastInfo("Obteniendo lotes del producto",1500);
+        ObservableList<String> lotsPresentations = FXCollections.observableArrayList();
+        Task <List<String>> presentationsTask = new Task<List<String>>() {
+            @Override
+            protected List<String> call() throws Exception {
+                return ServicePackaging.getLotsByProductAndDateReturnById(productId,date);
+            }
+        };
+        Thread thread = new Thread(presentationsTask);
+        thread.setDaemon(true);
+        thread.start();
+        presentationsTask.setOnSucceeded(e->{
+            ToastProvider.showToastInfo("Lotes obtenidos",1500);
+            if(presentationsTask.getValue().size() >0){
+                lotsPresentations.addAll(presentationsTask.getValue());
+                comboBox.setDisable(false);
+            }
+            else
+                ToastProvider.showToastInfo("El producto no cuenta con lotes disponibles",1500);
+        });
+        presentationsTask.setOnFailed(e->{
+            ToastProvider.showToastError(e.getSource().getException().getMessage(),1500);
+        });
+        comboBox.setItems(lotsPresentations);
+        comboBox.setConverter(new StringConverter<String>() {
+            @Override
+            public String toString(String item) {
+                return item;
+            }
+
+            @Override
+            public String fromString(String string) {
                 return null;
             }
         });

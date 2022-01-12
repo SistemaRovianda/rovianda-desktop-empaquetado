@@ -7,6 +7,15 @@ public class Order {
     private String userId;
     private String vendedor;
     private boolean status;
+    private boolean outOfStock;
+
+    public boolean isOutOfStock() {
+        return outOfStock;
+    }
+
+    public void setOutOfStock(boolean outOfStock) {
+        this.outOfStock = outOfStock;
+    }
 
     public Order(){}
 

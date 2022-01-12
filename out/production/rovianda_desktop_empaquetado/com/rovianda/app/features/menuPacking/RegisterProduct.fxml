@@ -8,7 +8,7 @@
 <?import com.jfoenix.controls.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="container" prefHeight="792.0" prefWidth="1300.0" stylesheets="@RegisterProduct.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rovianda.app.features.menuPacking.RegisterProductCtrl">
+<AnchorPane fx:id="container" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@RegisterProduct.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rovianda.app.features.menuPacking.RegisterProductCtrl">
    <children>
       <BorderPane layoutX="6.0" layoutY="8.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
@@ -82,16 +82,32 @@
                                  <children>
                                     <Pane layoutX="8.0" layoutY="76.0" prefHeight="437.0" prefWidth="473.0" style="-fx-background-color: white;">
                                        <children>
-                                          <JFXComboBox fx:id="lotsDevolutions" onAction="#selectLotReturn" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="21.0" layoutY="152.0" prefHeight="30.0" prefWidth="200.0" promptText="Lote" styleClass="itemForm" />
+                                          <JFXComboBox fx:id="productReturn" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="21.0" layoutY="56.0" onAction="#selectProductReturn" prefHeight="30.0" prefWidth="200.0" promptText="Producto" styleClass="itemForm" />
+                                          <JFXComboBox fx:id="presentationReturn" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="255.0" layoutY="56.0" prefWidth="200.0" onAction="#selectProductPresentationReturn" promptText="Presentacion del producto" styleClass="itemForm" />
+                                          <JFXComboBox fx:id="lotsReturn" onAction="#selectLotReturn" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="21.0" layoutY="152.0" prefHeight="30.0" prefWidth="200.0" promptText="Lote" styleClass="itemForm" />
                                           <JFXTextField fx:id="quantityReturn" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="255.0" layoutY="152.0" prefHeight="30.0" prefWidth="200.0" promptText="Cantidad a devolver" styleClass="itemForm" />
                                           <JFXTextField fx:id="quantityAvaiableToReturn" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="21.0" layoutY="202.0" prefHeight="30.0" prefWidth="200.0" promptText="Disponible" styleClass="itemForm" />
                                           <DatePicker fx:id="dateReturn" editable="false" focusTraversable="false" layoutX="21.0" layoutY="244.0" prefHeight="30.0" prefWidth="200.0" />
+
+                                          <JFXButton contentDisplay="CENTER" focusTraversable="false" layoutX="21.0" layoutY="330.0" onAction="#getPesoDevolutions" prefHeight="31.0" styleClass="minimize" text=" ">
+                                             <graphic>
+                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../assets/icons/weight.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </JFXButton>
+
+                                          <JFXTextField fx:id="weightDevolutions" focusColor="#e1bc5c" labelFloat="true" layoutX="21.0" layoutY="290.0" prefHeight="25.0" prefWidth="150.0" promptText="Peso capturado: " />
+                                          <JFXTextField fx:id="weightDevolutionsTemp" disable="true" editable="false" focusColor="#e1bc5c" labelFloat="true" layoutX="210.0" layoutY="290.0" prefHeight="25.0" prefWidth="100.0" promptText="Peso en Bascula: " />
+                                          <Label fx:id="errorDevolutionsWeight" layoutX="102.0" layoutY="152.0" prefHeight="20.0" prefWidth="256.0" styleClass="error-message" text="Label" visible="false" />
+
                                           <JFXButton fx:id="btnReturnProduct" focusTraversable="false" layoutX="255.0" layoutY="384.0" onAction="#onSaveReturn" prefHeight="30.0" prefWidth="90.0" styleClass="button-success" text="Devolver" />
                                           <Label fx:id="errorQuantityReturn" layoutX="255.0" layoutY="192.0" prefHeight="20.0" prefWidth="200.0" styleClass="error-message" text="error" wrapText="true" />
                                           <Label fx:id="errorReturnLot" layoutX="21.0" layoutY="192.0" prefHeight="20.0" prefWidth="200.0" styleClass="error-message" text="error" wrapText="true" />
                                           <JFXSpinner fx:id="spinnerReprocessing1" layoutX="221.0" layoutY="322.0" prefHeight="33.0" prefWidth="55.0" visible="false" />
-                                          <JFXComboBox fx:id="productReturn" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="21.0" layoutY="56.0" onAction="#selectProductReturn" prefHeight="30.0" prefWidth="200.0" promptText="Producto" styleClass="itemForm" />
-                                          <JFXComboBox fx:id="presentationReturn" focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="255.0" layoutY="56.0" prefWidth="200.0" onAction="#selectProductPresentationReturn" promptText="Presentacion del producto" styleClass="itemForm" />
+
                                           <Label fx:id="errorProductReturn" layoutX="21.0" layoutY="98.0" prefHeight="20.0" prefWidth="200.0" styleClass="error-message" text="error" wrapText="true" />
                                           <Label fx:id="errorPresentationReturn" layoutX="255.0" layoutY="98.0" prefHeight="20.0" prefWidth="200.0" styleClass="error-message" text="error" wrapText="true" />
                                           <JFXButton fx:id="btnSaveReturn" focusTraversable="false" layoutX="365.0" layoutY="384.0" onAction="#onSaveReturnReport" prefHeight="30.0" prefWidth="90.0" styleClass="button-success" text="Reporte" />
@@ -242,18 +258,27 @@
                                     <Insets bottom="120.0" left="300.0" right="300.0" top="60.0" />
                                  </BorderPane.margin>
                                  <children>
-                                    <Pane layoutX="8.0" layoutY="76.0" prefHeight="445.0" prefWidth="473.0" style="-fx-background-color: white;">
+                                    <Pane layoutX="8.0" layoutY="76.0" prefHeight="500.0" prefWidth="473.0" style="-fx-background-color: white;">
                                        <children>
-                                          <JFXTextField fx:id="lotReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="268.0" layoutY="81.0" prefHeight="30.0" prefWidth="172.0" promptText="Lote" styleClass="itemForm" />
-                                          <JFXTextField fx:id="allergenReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="269.0" layoutY="188.0" prefHeight="30.0" prefWidth="171.0" promptText="Alérgeno" styleClass="itemForm" />
-                                          <DatePicker fx:id="dateReprocessing" editable="false" layoutX="34.0" layoutY="83.0" />
-                                          <JFXButton fx:id="btnSaveReprocessing" layoutX="355.0" layoutY="401.0" onAction="#onSaveReprocessing" prefHeight="30.0" prefWidth="90.0" styleClass="button-success" text="Guardar" />
-                                          <JFXTextField fx:id="weightReprocessing" focusColor="#e1bc5c" labelFloat="true" layoutX="34.0" layoutY="188.0" prefHeight="30.0" prefWidth="143.0" promptText="Peso Obtenido" styleClass="itemForm" />
-                                          <Label fx:id="weightError" layoutX="36.0" layoutY="224.0" prefHeight="71.0" prefWidth="201.0" styleClass="error-message" text="error" wrapText="true" />
-                                          <Label fx:id="errorReproAllergen" layoutX="269.0" layoutY="224.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" wrapText="true" />
-                                          <Label fx:id="errorReproLot" layoutX="268.0" layoutY="119.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" wrapText="true" />
-                                          <JFXSpinner fx:id="spinnerReprocessing" layoutX="221.0" layoutY="322.0" prefHeight="33.0" prefWidth="55.0" visible="false" />
-                                          <JFXButton contentDisplay="CENTER" focusTraversable="false" layoutX="185.0" layoutY="188.0" onAction="#getPesoReproceso" prefHeight="31.0" styleClass="minimize" text=" ">
+                                          <JFXComboBox fx:id="productReprocesing"  focusColor="#e1bc5c" focusTraversable="false" labelFloat="true" layoutX="34.0" layoutY="50"  prefHeight="30.0" prefWidth="200.0" promptText="Producto" styleClass="itemForm" />
+                                          <Label  layoutX="240.0" layoutY="20.0" prefHeight="20.0" prefWidth="172.0"  text="Fecha de creación." wrapText="true" />
+                                          <DatePicker fx:id="dateToSearchLotReprocesing" editable="false"  prefWidth="200.0"  styleClass="itemForm" layoutX="240.0" layoutY="50.0" />
+                                          <JFXComboBox fx:id="lotReprocessing" focusColor="#e1bc5c" labelFloat="true"  prefWidth="200.0" promptText="Lote" styleClass="itemForm"   layoutX="34.0" layoutY="150.0"/>
+                                          <JFXButton contentDisplay="CENTER" focusTraversable="false" layoutX="220.0" layoutY="100.0" onAction="#searchLotOfProductReprocesing" prefHeight="31.0" styleClass="minimize" text=" ">
+                                             <graphic>
+                                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../assets/icons/search.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </JFXButton>
+                                          <JFXTextField fx:id="allergenReprocessing" focusColor="#e1bc5c" labelFloat="true"  prefHeight="30.0" prefWidth="200.0" promptText="Alérgeno" styleClass="itemForm"  layoutX="240" layoutY="150"/>
+                                          <Label fx:id="errorReproAllergen" layoutX="34.0" layoutY="180.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" wrapText="true" />
+                                          <Label layoutX="34.0" layoutY="200.0" prefHeight="20.0" prefWidth="172.0" text="Fecha de registro." wrapText="true" />
+                                          <DatePicker fx:id="dateReprocessing" editable="false"  layoutX="34" layoutY="225" />
+                                          <JFXTextField fx:id="weightReprocessing" focusColor="#e1bc5c" labelFloat="true" prefHeight="30.0" prefWidth="190.0" promptText="Peso Obtenido" styleClass="itemForm" layoutX="240.0" layoutY="210.0" />
+                                          <JFXButton contentDisplay="CENTER" focusTraversable="false" layoutX="380.0" layoutY="198.0" onAction="#getPesoReproceso" prefHeight="31.0" styleClass="minimize" text=" ">
                                              <graphic>
                                                 <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
@@ -262,9 +287,15 @@
                                                 </ImageView>
                                              </graphic>
                                           </JFXButton>
-                                          <JFXTextField fx:id="weightReprocessingTemp" disable="true" editable="false" focusColor="#e1bc5c" labelFloat="true" layoutX="34.0" layoutY="250.0" prefHeight="30.0" prefWidth="143.0" promptText="Peso en bascula:" styleClass="itemForm" />
-                                          <JFXTextArea fx:id="commentsReprocesing" focusColor="#e1bc5c" labelFloat="true" layoutX="30.0" layoutY="304.0" prefHeight="69.0" prefWidth="414.0" promptText="Observaciones" styleClass="itemForm" />
-                                          <JFXButton fx:id="btnSaveReportReprocessing" layoutX="249.0" layoutY="401.0" onAction="#onSaveReportReprocessing" prefHeight="30.0" prefWidth="90.0" styleClass="button-success" text="Reporte" />
+                                          <JFXTextField fx:id="weightReprocessingTemp" disable="true" editable="false" focusColor="#e1bc5c" labelFloat="true" layoutX="240.0" layoutY="260.0" prefHeight="30.0" prefWidth="143.0" promptText="Peso en bascula:" styleClass="itemForm" />
+                                          <Label fx:id="weightError" layoutX="240.0" layoutY="220.0" prefHeight="71.0" prefWidth="201.0" styleClass="error-message" text="error" wrapText="true" />
+                                          <JFXTextField fx:id="weightMermReprocesing" focusColor="#e1bc5c" labelFloat="true" layoutX="34.0" layoutY="280.0" prefHeight="30.0" prefWidth="200.0" promptText="Peso de merma" styleClass="itemForm" />
+                                          <Label fx:id="weightMermError" layoutX="36.0" layoutY="290.0" prefHeight="71.0" prefWidth="201.0" styleClass="error-message" text="error" wrapText="true" />
+                                          <Label fx:id="errorReproLot" layoutX="268.0" layoutY="129.0" prefHeight="20.0" prefWidth="172.0" styleClass="error-message" text="error" wrapText="true" />
+                                          <JFXSpinner fx:id="spinnerReprocessing" layoutX="221.0" layoutY="332.0" prefHeight="33.0" prefWidth="55.0" visible="false" />
+                                          <JFXTextArea fx:id="commentsReprocesing" focusColor="#e1bc5c" labelFloat="true" layoutX="30.0" layoutY="350.0" prefHeight="69.0" prefWidth="414.0" promptText="Observaciones" styleClass="itemForm" />
+                                          <JFXButton fx:id="btnSaveReprocessing" layoutX="355.0" layoutY="450.0" onAction="#onSaveReprocessing" prefHeight="30.0" prefWidth="90.0" styleClass="button-success" text="Guardar" />
+                                          <JFXButton fx:id="btnSaveReportReprocessing" layoutX="249.0" layoutY="450.0" onAction="#onSaveReportReprocessing" prefHeight="30.0" prefWidth="90.0" styleClass="button-success" text="Reporte" />
                                        </children>
                                     </Pane>
                                     <Label layoutX="14.0" layoutY="43.0" text="Reproceso" />
@@ -320,14 +351,16 @@
                                  <children>
                                     <TableView fx:id="OutputsProductTake" layoutX="20.0" layoutY="226.0" prefHeight="360.0" prefWidth="440.0">
                                        <columns>
-                                          <TableColumn fx:id="columnOutputProductLot" prefWidth="132.0" text="Lote" />
+                                          <TableColumn fx:id="columnOutputProductLot" prefWidth="132.0" text="Producto" />
                                           <TableColumn fx:id="columnOutputProductQuantity" minWidth="6.0" prefWidth="155.0" text="Cantidad" />
                                           <TableColumn fx:id="columnOutputProductWeight" prefWidth="152.0" text="Peso" />
                                        </columns>
                                     </TableView>
                                     <JFXButton fx:id="buttonPresentationsToTake" layoutX="20.0" layoutY="179.0" prefHeight="37.0" prefWidth="440.0" styleClass="gold" text="Tomar" />
-                                    <Pane layoutY="617.0" prefHeight="87.0" prefWidth="480.0" styleClass="container">
+                                    <Pane layoutY="617.0" prefHeight="87.0" prefWidth="680.0" styleClass="container">
                                        <children>
+                                          <Label fx:id="timeOrderAtendedLabel" layoutX="0.0" layoutY="1.0" prefHeight="20.0" prefWidth="152.0" text="Fecha de atención" visible="true" />
+                                          <DatePicker fx:id="dateOrderAtemp" editable="false"  layoutX="0" layoutY="25.0" />
                                           <JFXButton fx:id="btnOutput" layoutX="386.0" layoutY="9.0" onAction="#saveOutputLots" prefHeight="35.0" prefWidth="94.0" styleClass="gold" text="Guardar" />
                                           <JFXButton fx:id="btnCloseOrder" layoutX="260.0" layoutY="9.0" onAction="#closeOrder" prefHeight="35.0" prefWidth="114.0" styleClass="gold" text="Finalizar orden" />
                                        </children>

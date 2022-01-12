@@ -14,17 +14,16 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TableViewOrders {
@@ -39,6 +38,7 @@ public class TableViewOrders {
     public static TableColumn<ProductsRequest, Integer> columnId;
     public static TableColumn<Presentation, Integer> columnIdPresentation;
     public static Pane presentations;
+    public static DatePicker dateOrderAtem;
     public static JFXComboBox<PackagingLots> lots;
     public static List<PackagingLots> lotsTemp=new ArrayList<>();
     public static List<Boolean> registering=new ArrayList<>();
@@ -57,14 +57,77 @@ public class TableViewOrders {
 
     public static void assignColumnNoOrder(TableColumn<Order, Integer> column) {
         column.setCellValueFactory(new PropertyValueFactory<Order, Integer>("orderId"));
+        /*
+        column.setCellFactory(new Callback<TableColumn<Order, Integer>, TableCell<Order, Integer>>() {
+            @Override
+            public TableCell<Order, Integer> call(TableColumn<Order, Integer> param) {
+                return new TableCell<Order,Integer>(){
+                    @Override
+                    protected void updateItem(Integer item, boolean empty) {
+                        if(getIndex()<getTableView().getItems().size() && getIndex()>-1) {
+                            System.out.println("table size: " + getTableView().getItems().size() + " - " + getIndex());
+                            Order order = getTableView().getItems().get(getIndex());
+                            if (order != null) {
+                                setText(String.valueOf(order.getOrderId()));
+                                if (order.isOutOfStock()) {
+                                    setStyle("-fx-background-color: orange");
+                                }
+                            }
+                        }
+                    };
+                };
+            }
+        });
+*/
     }
 
     public static void assignColumnVendedor(TableColumn<Order, String> column) {
         column.setCellValueFactory(new PropertyValueFactory<Order, String>("vendedor"));
+        /*column.setCellFactory(new Callback<TableColumn<Order, String>, TableCell<Order, String>>() {
+            @Override
+            public TableCell<Order, String> call(TableColumn<Order, String> param) {
+                return new TableCell<Order,String>(){
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        if(getIndex()<getTableView().getItems().size() && getIndex()>-1) {
+                            System.out.println("table size: " + getTableView().getItems().size() + " - " + getIndex());
+                            Order order = getTableView().getItems().get(getIndex());
+                            if (order != null) {
+                                setText(String.valueOf(order.getVendedor()));
+                                if (order.isOutOfStock()) {
+                                    setStyle("-fx-background-color: orange");
+                                }
+                            }
+                        }
+                    };
+                };
+            }
+        });*/
     }
 
     public static void assignColumnDate(TableColumn<Order, String> column) {
         column.setCellValueFactory(new PropertyValueFactory<Order, String>("date"));
+        /*column.setCellFactory(new Callback<TableColumn<Order, String>, TableCell<Order, String>>() {
+            @Override
+            public TableCell<Order, String> call(TableColumn<Order, String> param) {
+                return new TableCell<Order,String>(){
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        System.out.println("table size: "+getTableView().getItems().size()+" - "+getIndex());
+                        if(getIndex()<getTableView().getItems().size() && getIndex()>-1) {
+                        Order order =getTableView().getItems().get(getIndex());
+                        if(order!=null){
+                        setText(String.valueOf(order.getDate()));
+                        System.out.println("Out: "+order.isOutOfStock());
+
+                        if(order.isOutOfStock()){
+                            setStyle("-fx-background-color:  orange" );
+                        }}
+                        }
+                    };
+                };
+            }
+        });*/
     }
 
     public static void assignColumnOptions(TableColumn<Order, JFXButton> column,RegisterProductCtrl reg) {
@@ -119,11 +182,13 @@ public class TableViewOrders {
 
     public static void assignTableOrder(TableView<Order> table) {
         currentTable = table;
+
         currentTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             /*if (newValue != null) {
                 fillTableOrdersProducts(newValue);
             }*/
         });
+
     }
 
    /* public static void assignTableProducts(TableView<ProductsRequest> table) {
@@ -174,14 +239,77 @@ public class TableViewOrders {
     //reemplazo de assignColumnPresentationsId
     public static void assignColumnProductName(TableColumn<Presentation, String> column) {
         column.setCellValueFactory(new PropertyValueFactory<Presentation, String>("name"));
+        /*column.setCellFactory(new Callback<TableColumn<Presentation, String>, TableCell<Presentation, String>>() {
+            @Override
+            public TableCell<Presentation, String> call(TableColumn<Presentation, String> param) {
+                return new TableCell<Presentation,String>(){
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        System.out.println("table size: "+getTableView().getItems().size()+" - "+getIndex());
+                        if(getIndex()<getTableView().getItems().size() && getIndex()>-1) {
+                            Presentation presentation =getTableView().getItems().get(getIndex());
+                            if(presentation!=null){
+                                setText(String.valueOf(presentation.getName()));
+
+
+                                if(presentation.isOutOfStock()==1){
+                                    setStyle("-fx-background-color:  orange" );
+                                }}
+                        }
+                    };
+                };
+            }
+        });*/
     }
 
     public static void assignColumnPresentations(TableColumn<Presentation, String> column) {
         column.setCellValueFactory(new PropertyValueFactory<Presentation, String>("typePresentation"));
+        /*column.setCellFactory(new Callback<TableColumn<Presentation, String>, TableCell<Presentation, String>>() {
+            @Override
+            public TableCell<Presentation, String> call(TableColumn<Presentation, String> param) {
+                return new TableCell<Presentation,String>(){
+                    @Override
+                    protected void updateItem(String item, boolean empty) {
+                        System.out.println("table size: "+getTableView().getItems().size()+" - "+getIndex());
+                        if(getIndex()<getTableView().getItems().size() && getIndex()>-1) {
+                            Presentation presentation =getTableView().getItems().get(getIndex());
+                            if(presentation!=null){
+                                setText(String.valueOf(presentation.getTypePresentation()));
+
+
+                                if(presentation.isOutOfStock()==1){
+                                    setStyle("-fx-background-color:  orange" );
+                                }}
+                        }
+                    };
+                };
+            }
+        });*/
     }
 
     public static void assignColumnUnits(TableColumn<Presentation, Integer> column) {
         column.setCellValueFactory(new PropertyValueFactory<Presentation, Integer>("units"));
+        /*column.setCellFactory(new Callback<TableColumn<Presentation, Integer>, TableCell<Presentation, Integer>>() {
+            @Override
+            public TableCell<Presentation, Integer> call(TableColumn<Presentation, Integer> param) {
+                return new TableCell<Presentation,Integer>(){
+                    @Override
+                    protected void updateItem(Integer item, boolean empty) {
+                        System.out.println("table size: "+getTableView().getItems().size()+" - "+getIndex());
+                        if(getIndex()<getTableView().getItems().size() && getIndex()>-1) {
+                            Presentation presentation =getTableView().getItems().get(getIndex());
+                            if(presentation!=null){
+                                setText(String.valueOf(presentation.getUnits()));
+
+
+                                if(presentation.isOutOfStock()==1){
+                                    setStyle("-fx-background-color:  orange" );
+                                }}
+                        }
+                    };
+                };
+            }
+        });*/
     }
 
     public static void assignUnitsTextField(JFXTextField units) {
@@ -196,7 +324,7 @@ public class TableViewOrders {
     public static void buildTableOutputProduct(TableView<OutputsProduct> table, TableColumn<OutputsProduct, String> columnLot, TableColumn<OutputsProduct, Integer> columnQuantity,
                                                TableColumn<OutputsProduct, Double> columnWeight) {
         currentTableOutput = table;
-        columnLot.setCellValueFactory(new PropertyValueFactory<OutputsProduct, String>("loteId"));
+        columnLot.setCellValueFactory(new PropertyValueFactory<OutputsProduct, String>("productName"));
         columnQuantity.setCellValueFactory(new PropertyValueFactory<OutputsProduct, Integer>("quantity"));
         columnWeight.setCellValueFactory( new PropertyValueFactory<OutputsProduct,Double>("weight"));
         currentTableOutput.setOnMouseClicked( event->{
@@ -215,7 +343,7 @@ public class TableViewOrders {
                 }
                 List<Presentation> newP = new ArrayList<>();
                 for(Presentation p : currentTablePresentation.getItems()){
-                    if(p.getPresentationId()==output.getPresentationId() && p.getSubOrderId()==output.getSubOrderId()){
+                    if(p.getPresentationId()==output.getPresentationId() && p.getSubOrderId()==output.getSubOrderId() && p.getSubOrderId()==output.getSubOrderId()){
                         p.setUnits(p.getUnits()+output.getQuantity());
                     }
                     newP.add(p);
@@ -256,8 +384,6 @@ public class TableViewOrders {
         ordersTask.setOnSucceeded(e -> {
             if (ordersTask.getValue().size() == 0) {
                 ToastProvider.showToastInfo("No existen ordenes por el momento", 3000);
-
-
             } else {
                 currentTable.getItems().setAll(ordersTask.getValue());
             }
@@ -410,9 +536,10 @@ public class TableViewOrders {
                 ItemFormValidator.isValidInputDecimal(weightPresentations,errorPresentationWeight) ) {
             if(currentTablePresentation!=null) {
                 if(lots.getValue().getPresentationId()==currentPresentation.getPresentationId()) {
+
                     List presentations = currentTablePresentation.getItems().stream().map(presentation -> {
 
-                        if (presentation.getPresentationId() == currentPresentation.getPresentationId()) {
+                        if (presentation.getPresentationId() == currentPresentation.getPresentationId() && currentPresentation.getSubOrderId()==presentation.getSubOrderId()) {
                             if (presentation.getUnits() > 0) {
                                 int units = Integer.parseInt(unitsToTake.getText());
                                 if (lots.getValue().getQuantity() >= units) {
@@ -422,7 +549,7 @@ public class TableViewOrders {
                                         presentation.setUnits(presentation.getUnits() - units);
                                         OutputsProduct item = new OutputsProduct(lots.getValue().getLoteId(), currentPresentation.getSubOrderId(), units,
                                                 currentPresentation.getPresentationId(),
-                                                Double.parseDouble(weightPresentations.getText()));
+                                                Double.parseDouble(weightPresentations.getText()),currentPresentation.getName());
                                         currentTableOutput.getItems().add(item);
                                     } else {
                                         ModalProvider.showModalInfo("No puedes asignar mas de los que se piden");
@@ -434,6 +561,7 @@ public class TableViewOrders {
                             } else {
                                 ModalProvider.showModalInfo("El registro de la suborden ya esta completo");
                             }
+
                         }
                         return presentation;
                     }).collect(Collectors.toList());
@@ -528,10 +656,23 @@ public class TableViewOrders {
 
     public static Method closeOrderTask(Method method){
         ToastProvider.showToastInfo("Cerrando pedido", 3000);
+        Date date = new Date();   // given date
+        Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
+        calendar.setTime(date);
+        String dateStr=dateOrderAtem.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String hours =String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
+        String minutes = String.valueOf(calendar.get(Calendar.MINUTE));
+        if(Integer.parseInt(hours)<10){
+            hours="0"+hours;
+        }
+        if(Integer.parseInt(minutes)<10){
+            minutes="0"+minutes;
+        }
+        String dateParsed =dateStr+"T"+hours+":"+minutes+":00.000Z";
         Task<Boolean> closeOrderTask = new Task<Boolean>() {
             @Override
             protected Boolean call() throws Exception {
-                return ServicePackaging.closedOrder(currentOrder);
+                return ServicePackaging.closedOrder(currentOrder,dateParsed);
             }
         };
         Thread thread = new Thread(closeOrderTask);

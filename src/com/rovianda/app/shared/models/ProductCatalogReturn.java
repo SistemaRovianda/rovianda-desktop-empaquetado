@@ -3,16 +3,9 @@ package com.rovianda.app.shared.models;
 public class ProductCatalogReturn {
     private int id;
     private String name;
-    private String imgS3;
-    private String category;
+    private String status;
 
-    public String getCategory() {
-        return category;
-    }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
 
     public int getId() {
         return id;
@@ -30,13 +23,11 @@ public class ProductCatalogReturn {
         this.name = name;
     }
 
-
-    public String getImgS3() {
-        return imgS3;
+    public String getStatus() {
+        return status;
     }
 
-    public void setImgS3(String imgS3) {
-        this.imgS3 = imgS3;
+    public void setStatus(String status) {
+        this.status = status;
     }
-
 }
