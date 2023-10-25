@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="loginContainer" prefHeight="840.0" prefWidth="1200.0" styleClass="container" stylesheets="@Login.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rovianda.app.features.login.LoginCtrl">
+   <children>
+      <BorderPane layoutX="274.0" layoutY="83.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <right>
+            <Pane prefHeight="588.0" prefWidth="449.0" styleClass="form" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="130.0" />
+               </BorderPane.margin>
+               <children>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="36.0" layoutY="314.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../assets/icons/user.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="36.0" layoutY="228.0" styleClass="title" text="Login" />
+                  <JFXTextField fx:id="inputEmail" focusColor="#e1bc5c" labelFloat="true" layoutX="85.0" layoutY="307.0" onAction="#updateButton" prefHeight="30.0" prefWidth="320.0" promptText="Usuario" styleClass="item-form">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </JFXTextField>
+                  <JFXPasswordField fx:id="inputPassword" focusColor="#e1bc5c" labelFloat="true" layoutX="85.0" layoutY="425.0" prefHeight="25.0" prefWidth="320.0" promptText="Contraseña" styleClass="item-form">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </JFXPasswordField>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" layoutX="36.0" layoutY="432.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../assets/icons/lock.png" />
+                     </image>
+                  </ImageView>
+                  <JFXButton fx:id="buttonLogin" disable="true" focusTraversable="false" layoutX="85.0" layoutY="555.0" onAction="#onClick" prefHeight="37.0" prefWidth="105.0" text="Iniciar Sesión" />
+                  <Label fx:id="labelEmail" layoutX="85.0" layoutY="354.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" visible="false" />
+                  <Label fx:id="labelPassword" layoutX="86.0" layoutY="468.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" visible="false" />
+                  <Label fx:id="labelSpinner" layoutX="85.0" layoutY="501.0" prefHeight="17.0" prefWidth="319.0" styleClass="error-message" text="message" textAlignment="CENTER" visible="false" />
+                  <JFXSpinner fx:id="spinner" layoutX="206.0" layoutY="505.0" prefHeight="32.0" prefWidth="38.0" visible="false" />
+                  <JFXButton fx:id="minimize" contentDisplay="CENTER" focusTraversable="false" layoutX="363.0" layoutY="8.0" onAction="#minimizeScreen" prefHeight="31.0" prefWidth="31.0" styleClass="minimize">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../assets/icons/minimize.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
+                  <JFXButton fx:id="exit" contentDisplay="CENTER" focusTraversable="false" layoutX="411.0" layoutY="8.0" prefHeight="31.0" prefWidth="31.0" styleClass="exit" textAlignment="CENTER">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../assets/icons/close.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
+               </children>
+            </Pane>
+         </right>
+         <left>
+            <Pane prefHeight="288.0" prefWidth="515.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="250.0" left="50.0" top="200.0" />
+               </BorderPane.margin>
+               <children>
+                  <Label layoutX="28.0" layoutY="22.0" prefHeight="60.0" prefWidth="459.0" styleClass="title-container" text="Bienvenido" />
+                  <Label layoutX="28.0" layoutY="91.0" prefHeight="172.0" prefWidth="459.0" styleClass="message-container"
+                         text="Aplicación de distribución de empaques carnicos y productos de linea de quesos de ROVIANDA S.A.P.I DE C.V."
+                         textAlignment="JUSTIFY" wrapText="true" />
+               </children>
+            </Pane>
+         </left>
+      </BorderPane>
+   </children>
+</AnchorPane>

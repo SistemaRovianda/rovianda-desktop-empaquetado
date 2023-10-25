@@ -25,9 +25,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class RegisterProductCtrl implements Initializable {
 
@@ -837,6 +835,7 @@ public class RegisterProductCtrl implements Initializable {
 
     @FXML
     void getReportOrdens(){
+
         ReportProvider.buildReportOrderGeneral(urgent.getValue().isValue());
     }
 
